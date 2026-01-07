@@ -11,6 +11,7 @@ import Album from "./pages/Album"
 import Theme from "./pages/Theme"
 import Review from "./pages/Review"
 import Loading from "./components/Loading"
+import AI from './pages/AI'
 import "./App.css"
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
           <Route path="/album" element={<Album />} />
           <Route path="/theme" element={<Theme />} />
           <Route path="/review" element={<Review />} />
+          <Route path="/ai" element={<AI />} />
         </Routes>
       </main>
       <Footer />
