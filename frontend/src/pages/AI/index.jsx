@@ -2,20 +2,27 @@ import axios from "axios";
 import { useState } from "react";
 import Loading from "../../components/Loading";
 const Ai = () => {
-  // const [topic, setTopic] = useState({});
+  const [value, setValues] = useState({});
 
-  // const onChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setTopic[name] = value;
-  // };
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    setValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
   const [poem, setPoem] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const sendRequest = async () => {
-    alert("보내고 받기");
+    console.log(value);
     setLoading(true);
     await axios
-      .post("http://127.0.0.1:8000/ai/poem", { topic: "독감", style: "현대" })
+      .post("http://127.0.0.1:8000/ai/poem", {
+        topic: value.topic,
+        style: value.style,
+      })
       .then((res) => {
         console.log(res.data);
         setPoem(res.data.summary);
@@ -39,7 +46,13 @@ const Ai = () => {
             }}
           >
             <label>제목</label>
-            <input type="text" id="title"></input>
+            <input
+              type="text"
+              id="title"
+              name="topic"
+              value={value.topic}
+              onChange={onChange}
+            ></input>
           </div>
           <div
             style={{
@@ -51,7 +64,12 @@ const Ai = () => {
             }}
           >
             <label>스타일</label>
-            <input type="text"></input>
+            <input
+              type="text"
+              name="style"
+              onChange={onChange}
+              value={value.style}
+            ></input>
           </div>
         </div>
         <button
