@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Link } from "react-router";
+import { useState } from "react"
+import { Link } from "react-router"
 
 const MainNav = () => {
-  const [select, setSelect] = useState("home");
+  const [select, setSelect] = useState("home")
   return (
     <div className="MainNav">
       <ul>
@@ -46,9 +46,17 @@ const MainNav = () => {
             Theme
           </li>
         </Link>
+        <Link to="/review">
+          <li
+            className={`${select === "Review" ? "check" : ""}`}
+            onClick={() => setSelect("Review")}
+          >
+            Review
+          </li>
+        </Link>
       </ul>
     </div>
-  );
-};
+  )
+}
 
-export default MainNav;
+export default MainNav
