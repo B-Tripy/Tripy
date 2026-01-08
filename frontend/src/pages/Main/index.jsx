@@ -39,7 +39,35 @@ const Main = () => {
       date: "2024년 10월 15일 ~ 10월 20일",
       imgUrl: "./assets/img/tripy.png",
     },
-  ]
+    {
+      id: 1,
+      title: "제주도 푸른 밤",
+      location: "대한민국, 제주도",
+      date: "2024년 7월 10일 ~ 7월 14일",
+      imgUrl: "./assets/img/tripy.png",
+    },
+    {
+      id: 2,
+      title: "오사카 미식 탐방",
+      location: "일본, 오사카",
+      date: "2024년 8월 3일 ~ 8월 9일",
+      imgUrl: "./assets/img/tripy.png",
+    },
+    {
+      id: 3,
+      title: "방콕 문화 유산 탐방",
+      location: "태국, 방콕",
+      date: "2024년 9월 1일 ~ 9월 6일",
+      imgUrl: "./assets/img/tripy.png",
+    },
+    {
+      id: 4,
+      title: "파리 낭만 여행",
+      location: "프랑스, 파리",
+      date: "2024년 10월 15일 ~ 10월 20일",
+      imgUrl: "./assets/img/tripy.png",
+    },
+  ];
 
   // ★ 스타일 객체 정의 (CSS를 자바스크립트 객체로 변환)
   const styles = {
@@ -54,6 +82,7 @@ const Main = () => {
     // 헤더 영역
     header: {
       marginBottom: "2.5rem",
+      marginTop: "150px",
     },
     title: {
       fontSize: "1.5rem",
@@ -182,7 +211,7 @@ const Main = () => {
       fontSize: "0.875rem",
       color: "#6b7280",
     },
-  }
+  };
 
   return (
     <div style={styles.container}>
@@ -317,7 +346,7 @@ const Main = () => {
         </div>
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default Main
+export default Main;
