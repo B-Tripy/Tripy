@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { useAuthStore } from "../store/authStore";
-import Login from "./auth/Login";
-import Join from "./auth/Join";
-import Navigation from "./nav/MainNav";
+import { useState } from "react"
+import { useAuthStore } from "../store/authStore"
+import Login from "./auth/Login"
+import Join from "./auth/Join"
+import Navigation from "./nav/MainNav"
 // import Loading from "./Loading";
 
 function Header() {
@@ -14,34 +14,34 @@ function Header() {
     logout,
     loading,
     error,
-  } = useAuthStore();
+  } = useAuthStore()
 
   // 로컬 상태 (폼 입력용)
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [nickname, setNickname] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   // const [errMessage, setErrMessage] = useState(true);
-  const [select, setSelect] = useState(true);
+  const [select, setSelect] = useState(true)
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    const result = await authLogin(email, password);
+    e.preventDefault()
+    const result = await authLogin(email, password)
 
     if (result?.success) {
-      setNickname("");
-      setEmail("");
-      setPassword("");
+      setNickname("")
+      setEmail("")
+      setPassword("")
       // fetchPosts();
     }
-  };
+  }
 
   const handleJoin = async () => {
-    await authJoin(nickname, email, password);
-  };
+    await authJoin(nickname, email, password)
+  }
   const handleLogout = () => {
-    logout();
+    logout()
     // logoutList();
-  };
+  }
   // useEffect(() => {
   //   setTimeout(() => {
   //     setErrMessage(false);
@@ -90,7 +90,7 @@ function Header() {
       </div>
       {/* {loading && <Loading />} */}
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header

@@ -6,7 +6,7 @@ const pool = mysql.createPool({
   port: 3307,
   user: "root",
   password: "1234", // 본인 MySQL 비밀번호로 변경
-  database: "tripy",
+  database: "trip-db",
   waitForConnections: true,
   connectionLimit: 10,
 })

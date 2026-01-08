@@ -1,8 +1,8 @@
-import { useState } from "react"
-import { Link } from "react-router"
+import { useState } from "react";
+import { Link } from "react-router";
 
 const MainNav = () => {
-  const [select, setSelect] = useState("home")
+  const [select, setSelect] = useState("home");
   return (
     <div className="MainNav">
       <ul>
@@ -14,36 +14,12 @@ const MainNav = () => {
             Home
           </li>
         </Link>
-        <Link to="/dash">
+        <Link to="/plan">
           <li
-            className={`${select === "Dash" ? "check" : ""}`}
-            onClick={() => setSelect("Dash")}
+            className={`${select === "Plan" ? "check" : ""}`}
+            onClick={() => setSelect("Plan")}
           >
-            DashBoard
-          </li>
-        </Link>
-        <Link to="/board">
-          <li
-            className={`${select === "Board" ? "check" : ""}`}
-            onClick={() => setSelect("Board")}
-          >
-            Board
-          </li>
-        </Link>
-        <Link to="/album">
-          <li
-            className={`${select === "Album" ? "check" : ""}`}
-            onClick={() => setSelect("Album")}
-          >
-            Album
-          </li>
-        </Link>
-        <Link to="/theme">
-          <li
-            className={`${select === "Theme" ? "check" : ""}`}
-            onClick={() => setSelect("Theme")}
-          >
-            Theme
+            Plan
           </li>
         </Link>
         <Link to="/review">
@@ -62,9 +38,41 @@ const MainNav = () => {
             Recommend
           </li>
         </Link>
+        <Link to="/album">
+          <li
+            className={`${select === "Album" ? "check" : ""}`}
+            onClick={() => setSelect("Album")}
+          >
+            Album
+          </li>
+        </Link>
+        <Link to="/theme">
+          <li
+            className={`${select === "Theme" ? "check" : ""}`}
+            onClick={() => setSelect("Theme")}
+          >
+            Theme
+          </li>
+        </Link>
+        <Link to="/ai">
+          <li
+            className={`${select === "AI" ? "check" : ""}`}
+            onClick={() => setSelect("AI")}
+          >
+            AI
+          </li>
+        </Link>
+        <Link to="/recommend">
+          <li
+            className={`${select === "Recommend" ? "check" : ""}`}
+            onClick={() => setSelect("Recommend")}
+          >
+            Recommend
+          </li>
+        </Link>
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default MainNav
+export default MainNav;
