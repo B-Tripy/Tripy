@@ -3,10 +3,10 @@ import { useEffect } from "react"
 import { useAuthStore } from "./store/authStore"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import Home from "./components/Board"
+import Home from "./pages/Main"
 import { Routes, Route } from "react-router"
-import DashBoard from "./pages/DashBoard"
-import Board from "./pages/Board"
+import Plan from "./pages/Plan"
+import Recommend from "./pages/Recommend"
 import Album from "./pages/Album"
 import Theme from "./pages/Theme"
 import Review from "./pages/Review"
@@ -43,8 +43,8 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/dash" element={<DashBoard />} />
-          <Route path="/board" element={<Board />} />
+          <Route path="/plan" element={<Plan />} />
+          <Route path="/recommend" element={<Recommend />} />
           <Route path="/album" element={<Album />} />
           <Route path="/theme" element={<Theme />} />
           <Route path="/review" element={<Review />} />
