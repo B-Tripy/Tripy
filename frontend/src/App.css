@@ -451,6 +451,33 @@ button:active {
   }
 }
 
+#site-header,
+#site-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  z-index: 100;
+  transition: transform 0.25s ease;
+}
+#site-header {
+  top: 0;
+  transform: translateY(0);
+}
+#site-footer {
+  bottom: 0;
+  transform: translateY(100%);
+}
+.hidden-top {
+  transform: translateY(-100%);
+} /* 헤더 숨김 */
+.visible-bottom {
+  transform: translateY(0);
+} /* 푸터 보임 */
+
 @keyframes spin {
   0% {
     transform: translate(-50%, -50%) rotate(0deg);
