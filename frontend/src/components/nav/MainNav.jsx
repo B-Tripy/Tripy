@@ -14,20 +14,28 @@ const MainNav = () => {
             Home
           </li>
         </Link>
-        <Link to="/dash">
+        <Link to="/plan">
           <li
-            className={`${select === "Dash" ? "check" : ""}`}
-            onClick={() => setSelect("Dash")}
+            className={`${select === "Plan" ? "check" : ""}`}
+            onClick={() => setSelect("Plan")}
           >
-            DashBoard
+            Plan
           </li>
         </Link>
-        <Link to="/board">
+        <Link to="/review">
           <li
-            className={`${select === "Board" ? "check" : ""}`}
-            onClick={() => setSelect("Board")}
+            className={`${select === "Review" ? "check" : ""}`}
+            onClick={() => setSelect("Review")}
           >
-            Board
+            Review
+          </li>
+        </Link>
+        <Link to="/recommend">
+          <li
+            className={`${select === "Recommend" ? "check" : ""}`}
+            onClick={() => setSelect("Recommend")}
+          >
+            Recommend
           </li>
         </Link>
         <Link to="/album">
@@ -44,14 +52,6 @@ const MainNav = () => {
             onClick={() => setSelect("Theme")}
           >
             Theme
-          </li>
-        </Link>
-        <Link to="/review">
-          <li
-            className={`${select === "Review" ? "check" : ""}`}
-            onClick={() => setSelect("Review")}
-          >
-            Review
           </li>
         </Link>
         <Link to="/ai">

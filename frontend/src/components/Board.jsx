@@ -1,77 +1,77 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react"
+import axios from "axios"
 // import Loading from "./Loading";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "../store/authStore"
 /**
  * API 기본 경로
  * - 개발(로컬): vite proxy를 통해 /api -> http://localhost:5000
  * - 배포: 같은 도메인에서 서비스하면 기본값(/api)로 동작
  * - 별도 도메인/포트로 백엔드 운영 시: .env에 VITE_API_URL=http://<host>:5000/api 지정
  */
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+const API_URL = import.meta.env.VITE_API_URL || "/api"
 //★ instance 객체를 사용해서 에러를 하나로 모아서 alert창으로 획일적으로 보여준다
 const instance = axios.create({
   widthCredentials: true,
-});
+})
 
-export let fetchPosts = null;
-export let logoutList = null;
+export let fetchPosts = null
+export let logoutList = null
 function Board({ title = "자유 게시판" }) {
-  const [posts, setPosts] = useState([]);
-  const [newTitle, setNewTitle] = useState("");
-  const [newContent, setNewContent] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState([])
+  const [newTitle, setNewTitle] = useState("")
+  const [newContent, setNewContent] = useState("")
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    fetchPosts();
+    fetchPosts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
   logoutList = () => {
-    setPosts([]);
-  };
+    setPosts([])
+  }
   fetchPosts = async () => {
     try {
-      setLoading(true);
-      const res = await instance.get(`${API_URL}/posts`);
-      console.log(res.data);
-      setPosts(res.data);
+      setLoading(true)
+      const res = await instance.get(`${API_URL}/posts`)
+      console.log(res.data)
+      setPosts(res.data)
     } catch (e) {
       // alert("게시글을 불러오지 못했습니다.");
-      console.error(e);
+      console.error(e)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleAddPost = async (e) => {
-    e.preventDefault();
-    if (!newTitle.trim()) return alert("제목을 입력하세요.");
+    e.preventDefault()
+    if (!newTitle.trim()) return alert("제목을 입력하세요.")
 
     try {
       const res = await instance.post(`${API_URL}/posts`, {
         title: newTitle.trim(),
         content: newContent.trim(),
-      });
-      setPosts([res.data, ...posts]);
-      setNewTitle("");
-      setNewContent("");
+      })
+      setPosts([res.data, ...posts])
+      setNewTitle("")
+      setNewContent("")
     } catch (e) {
-      console.error(e);
+      console.error(e)
       // alert("글 작성에 실패했습니다.");
     }
-  };
+  }
 
   const handleDelete = async (id) => {
-    if (!window.confirm("정말 삭제하시겠습니까?")) return;
+    if (!window.confirm("정말 삭제하시겠습니까?")) return
 
     try {
-      await instance.delete(`${API_URL}/posts/${id}`);
-      setPosts(posts.filter((p) => p.id !== id));
+      await instance.delete(`${API_URL}/posts/${id}`)
+      setPosts(posts.filter((p) => p.id !== id))
     } catch (e) {
-      console.error(e);
+      console.error(e)
       // alert("삭제 실패");
     }
-  };
+  }
 
   return (
     <div className="board container">
@@ -118,7 +118,7 @@ function Board({ title = "자유 게시판" }) {
         ))}
       </ul>
     </div>
-  );
+  )
 }
 
-export default Board;
+export default Board
