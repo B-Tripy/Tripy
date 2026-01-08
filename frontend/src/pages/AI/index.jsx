@@ -33,8 +33,8 @@ const Ai = () => {
       });
   };
   return (
-    <div>
-      <div className="album container" style={{ display: "flex" }}>
+    <div className="album container">
+      <div style={{ display: "flex" }}>
         <div style={{ marginRight: "10px" }}>
           <div
             style={{
