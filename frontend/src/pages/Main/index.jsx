@@ -1,6 +1,14 @@
 import React from "react"
+import { useNavigate } from "react-router-dom"
 
 const Main = () => {
+  const navigate = useNavigate()
+  const PlanPage = () => {
+    navigate("/plan")
+  }
+  const AlbumPage = () => {
+    navigate("/album")
+  }
   // 데이터 (여행 목록)
   const recentTrips = [
     {
@@ -184,10 +192,16 @@ const Main = () => {
         <p style={styles.description}>오늘 어떤 여행을 계획해 볼까요?</p>
 
         <div style={styles.buttonGroup}>
-          <button style={{ ...styles.btn, ...styles.btnPrimary }}>
+          <button
+            style={{ ...styles.btn, ...styles.btnPrimary }}
+            onClick={PlanPage}
+          >
             <i className="fa-solid fa-plus"></i> 새 여행 만들기
           </button>
-          <button style={{ ...styles.btn, ...styles.btnSecondary }}>
+          <button
+            style={{ ...styles.btn, ...styles.btnSecondary }}
+            onClick={AlbumPage}
+          >
             <i className="fa-regular fa-image"></i> 앨범 이동
           </button>
         </div>
