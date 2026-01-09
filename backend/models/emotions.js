@@ -24,6 +24,8 @@ module.exports = class Emotions extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
+        createdAt: true,
+        updatedAt: false,
         modelName: "Emotion",
         paranoid: false,
         charset: "utf8",

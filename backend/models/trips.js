@@ -32,6 +32,8 @@ module.exports = class Trips extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
+        createdAt: true,
+        updatedAt: false,
         modelName: "Trip",
         paranoid: false,
         charset: "utf8",
@@ -44,6 +46,7 @@ module.exports = class Trips extends Sequelize.Model {
     db.Trip.hasMany(db.EmotionsTarget);
     db.Trip.belongsToMany(db.User, { through: "UserTrip" });
     db.Trip.hasMany(db.Theme);
+ 
   }
 };
 

@@ -41,6 +41,8 @@ module.exports = class Photos extends Sequelize.Model {
         timestamps: true,
         underscored: false,
         modelName: "Photo",
+        createdAt: true,
+        updatedAt: false,
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
