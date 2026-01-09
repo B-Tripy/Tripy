@@ -1,10 +1,11 @@
-import { useState } from "react"
-import { Link } from "react-router"
+import { useState } from "react";
+import { Link } from "react-router";
+import styles from "./MainNav.module.scss";
 
 const MainNav = () => {
-  const [select, setSelect] = useState("home")
+  const [select, setSelect] = useState("home");
   return (
-    <div className="MainNav">
+    <div className={styles.MainNav}>
       <ul>
         <Link to="/">
           <li
@@ -64,7 +65,7 @@ const MainNav = () => {
         </Link>
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default MainNav
+export default MainNav;

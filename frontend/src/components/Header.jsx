@@ -67,11 +67,7 @@ function Header() {
     logout();
     // logoutList();
   };
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setErrMessage(false);
-  //   }, 3000);
-  // }, [error]);
+
 
   return (
     <header className={`header ${!isVisible ? "hidden" : ""}`}>

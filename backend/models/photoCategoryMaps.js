@@ -20,6 +20,8 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
+        createdAt: true,
+        updatedAt: false,
         modelName: "PhotoCategoryMap",
         paranoid: false,
         charset: "utf8",

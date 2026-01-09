@@ -1,14 +1,14 @@
-import React from "react"
-import { useNavigate } from "react-router-dom"
-
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import Pagination from "../../components/common/pagination/PagiNation";
 const Main = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const PlanPage = () => {
-    navigate("/plan")
-  }
+    navigate("/plan");
+  };
   const AlbumPage = () => {
-    navigate("/album")
-  }
+    navigate("/album");
+  };
   // 데이터 (여행 목록)
   const recentTrips = [
     {
@@ -345,6 +345,7 @@ const Main = () => {
           ))}
         </div>
       </section>
+      <Pagination />
     </div>
   );
 };

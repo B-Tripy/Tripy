@@ -20,6 +20,8 @@ module.exports = class Categories extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
+        createdAt: true,
+        updatedAt: false,
         modelName: "Category",
         paranoid: false,
         charset: "utf8",
@@ -28,7 +30,6 @@ module.exports = class Categories extends Sequelize.Model {
     );
   }
   static associate(db) {
-
     db.Category.hasMany(db.PhotoCategoryMap);
   }
 };
