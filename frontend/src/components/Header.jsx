@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "../store/authStore";
 import Login from "./auth/Login";
 import Join from "./auth/Join";
@@ -6,6 +6,31 @@ import Navigation from "./nav/MainNav";
 // import Loading from "./Loading";
 
 function Header() {
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+        // 스크롤 내릴 때 (Down)
+        setIsVisible(false);
+      } else {
+        // 스크롤 올릴 때 (Up)
+        setIsVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    // 컴포넌트 언마운트 시 이벤트 제거 (메모리 누수 방지)
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   // Zustand에서 상태와 액션 가져오기
   const {
     user,
@@ -49,7 +74,7 @@ function Header() {
   // }, [error]);
 
   return (
-    <header className="header" id="site-header">
+    <header className={`header ${!isVisible ? "hidden" : ""}`}>
       <div className="container header-content">
         <div className="header-left">
           <img className="logo" src="/assets/img/tripy.png" width="200px" />
