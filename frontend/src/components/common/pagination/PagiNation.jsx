@@ -64,7 +64,7 @@
 // };
 // export default PageNation;
 // components/Pagination.jsx
-import React from "react";
+
 import { usePaginationStore } from "../../../store/paginationStore";
 
 function Pagination() {
