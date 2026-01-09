@@ -23,7 +23,11 @@ module.exports = class Trips extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
+        start_date: {
+          type: Sequelize.DATE,
+          defaultValue: Sequelize.NOW,
+        },
+        end_date: {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },

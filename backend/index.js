@@ -8,11 +8,11 @@ const cors = require("cors");
 const boardRouter = require("./routes/board_router");
 const userRouter = require("./routes/user_router");
 const uploadRouter = require("./routes/upload_router");
-const chatRouter = require("../socket");
+// const chatRouter = require("../socket");
 const passportConfig = require("./passport");
 const { RedisStore } = require("connect-redis");
 const { createClient } = require("redis");
-const socket=require('socket')
+// const socket=require('socket')
 const redisClient = createClient();
 const http = require("http");
 
@@ -33,7 +33,7 @@ sequelize
 
 const app = express();
 const server = http.createServer(app);
-const io=new Server(server,{cors:"*"})
+// const io = new Server(server, { cors: "*" });
 
 const allowedOrigins = [
   "http://localhost:5173", // 리액트(Vite) 로컬 개발 서버
@@ -91,7 +91,7 @@ app.use("/api/posts", boardRouter);
 // 사용자 라우터 연결
 app.use("/api/users", userRouter);
 app.use("/api/upload", uploadRouter);
-app.use("/api/chat", chatRouter);
+// app.use("/api/chat", chatRouter);
 
 // 기본 라우트
 app.get("/api", (req, res) => {
