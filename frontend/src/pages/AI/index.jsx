@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import Loading from "../../components/Loading";
+import PageNation from "../../components/common/pagination/PagiNation";
 const Ai = () => {
   const [value, setValues] = useState({});
 
@@ -82,6 +83,7 @@ const Ai = () => {
       <div style={{ margin: "100px" }}>
         <textarea value={poem} rows="40" cols="40"></textarea>
       </div>
+      <PageNation />
       {loading && <Loading />}
     </div>
   );
