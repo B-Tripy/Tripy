@@ -1,11 +1,36 @@
-import { useState } from "react"
-import { useAuthStore } from "../store/authStore"
-import Login from "./auth/Login"
-import Join from "./auth/Join"
-import Navigation from "./nav/MainNav"
+import { useState, useEffect, useRef } from "react";
+import { useAuthStore } from "../store/authStore";
+import Login from "./auth/Login";
+import Join from "./auth/Join";
+import Navigation from "./nav/MainNav";
 // import Loading from "./Loading";
 
 function Header() {
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+        // 스크롤 내릴 때 (Down)
+        setIsVisible(false);
+      } else {
+        // 스크롤 올릴 때 (Up)
+        setIsVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    // 컴포넌트 언마운트 시 이벤트 제거 (메모리 누수 방지)
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   // Zustand에서 상태와 액션 가져오기
   const {
     user,
@@ -14,34 +39,34 @@ function Header() {
     logout,
     loading,
     error,
-  } = useAuthStore()
+  } = useAuthStore();
 
   // 로컬 상태 (폼 입력용)
-  const [nickname, setNickname] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   // const [errMessage, setErrMessage] = useState(true);
-  const [select, setSelect] = useState(true)
+  const [select, setSelect] = useState(true);
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    const result = await authLogin(email, password)
+    e.preventDefault();
+    const result = await authLogin(email, password);
 
     if (result?.success) {
-      setNickname("")
-      setEmail("")
-      setPassword("")
+      setNickname("");
+      setEmail("");
+      setPassword("");
       // fetchPosts();
     }
-  }
+  };
 
   const handleJoin = async () => {
-    await authJoin(nickname, email, password)
-  }
+    await authJoin(nickname, email, password);
+  };
   const handleLogout = () => {
-    logout()
+    logout();
     // logoutList();
-  }
+  };
   // useEffect(() => {
   //   setTimeout(() => {
   //     setErrMessage(false);
@@ -49,7 +74,7 @@ function Header() {
   // }, [error]);
 
   return (
-    <header className="header">
+    <header className={`header ${!isVisible ? "hidden" : ""}`}>
       <div className="container header-content">
         <div className="header-left">
           <img className="logo" src="/assets/img/tripy.png" width="200px" />
@@ -90,7 +115,7 @@ function Header() {
       </div>
       {/* {loading && <Loading />} */}
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
