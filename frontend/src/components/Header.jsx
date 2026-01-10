@@ -3,6 +3,7 @@ import { useAuthStore } from "../store/authStore";
 import Login from "./auth/Login";
 import Join from "./auth/Join";
 import Navigation from "./nav/MainNav";
+import MessageModal from "./modals/MessageModal";
 // import Loading from "./Loading";
 
 function Header() {
@@ -68,9 +69,8 @@ function Header() {
     // logoutList();
   };
 
-
   return (
-    <header className={`header ${!isVisible ? "hidden" : ""}`}>
+    <div className={`header ${!isVisible ? "hidden" : ""}`}>
       <div className="container header-content">
         <div className="header-left">
           <img className="logo" src="/assets/img/tripy.png" width="200px" />
@@ -108,9 +108,10 @@ function Header() {
           </div>
           {error && <p className="login-error">{error}</p>}
         </div>
+      <MessageModal />
       </div>
       {/* {loading && <Loading />} */}
-    </header>
+    </div>
   );
 }
 
