@@ -1,29 +1,28 @@
-import { useState } from "react";
 import { useMessageStore } from "../../store/messageStore";
 import styles from "./MessageModal.module.css";
+
 const MessageModal = () => {
   const { latestMessage, clearLatest } = useMessageStore();
-  const [show, setShow] = useState(true);
+
+  if (!latestMessage) return null; // 메시지가 없으면 모달 숨김
+
   const confirm = () => {
     clearLatest();
-    setShow(false);
   };
+
   const hold = () => {
     clearLatest();
-    setShow(false);
   };
-  if (!latestMessage) return null;
 
   return (
-    <div className={`messageModal ${latestMessage || show ? "show" : ""}`}>
+    <div className={`messageModal show`}>
       <div className={styles.backdrop}>
         <div className={styles.modal}>
           <h3>새 메세지 도착</h3>
           <p>
-            <b>보낸사람:</b>
-            {/* {latestMessage.fromUser} */}
+            <b>보낸사람:</b> {latestMessage.fromUserEmail}
           </p>
-          {/* <p>{latestMessage.text}</p> */}
+          <p>{latestMessage.text}</p>
           <div className={styles.buttons}>
             <button onClick={confirm}>수락</button>
             <button onClick={hold}>보류</button>

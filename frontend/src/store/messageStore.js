@@ -4,7 +4,7 @@ export const useMessageStore = create((set) => ({
   latestMessage: null,
   addMessage: (msg) =>
     set((state) => ({
-      message: [...state.messages, msg],
+      messages: [...state.messages, msg],
       latestMessage: msg,
     })),
   clearLatest: () => set({ latestMessage: null }),

@@ -1,11 +1,18 @@
-import io from "socket.io-client";
+import { io } from "socket.io-client";
 import { useMessageStore } from "./store/messageStore";
 
 const socket = io("http://localhost:5000", {
   withCredentials: true,
   transports: ["websocket"],
+  reconnection: true, // 연결 끊기면 자동 재시도
+  reconnectionAttempts: 10, // 최대 10번 시도
+  reconnectionDelay: 1000, // 1초 간격으로 시도
 });
-socket.on("incomming_message", (msg) => {
+socket.on("connect", () => {
+  console.log("소켓 연결 성공", socket.id);
+});
+socket.on("incoming_message", (msg) => {
+  console.log("msg", msg);
   useMessageStore.getState().addMessage(msg);
 });
 export default socket;

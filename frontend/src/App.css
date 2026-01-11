@@ -81,7 +81,7 @@ button:active {
   z-index: 10;
 
   /* background-color: white; */
-  color: white;
+  color: black;
   transition: transform 0.3s ease-in-out;
   z-index: 1;
 }
@@ -208,7 +208,7 @@ button:active {
   transition: 0.7s ease-in-out;
 }
 .messageModal.show {
-  bottom: -75%;
+  bottom: -90%;
   right: 0;
 }
 /* ---------- Board ---------- */

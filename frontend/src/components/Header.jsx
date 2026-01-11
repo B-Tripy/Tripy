@@ -4,6 +4,7 @@ import Login from "./auth/Login";
 import Join from "./auth/Join";
 import Navigation from "./nav/MainNav";
 import MessageModal from "./modals/MessageModal";
+import SendMessage from "./modals/SendMessage";
 // import Loading from "./Loading";
 
 function Header() {
@@ -108,7 +109,8 @@ function Header() {
           </div>
           {error && <p className="login-error">{error}</p>}
         </div>
-      <MessageModal />
+        <MessageModal />
+        <SendMessage />
       </div>
       {/* {loading && <Loading />} */}
     </div>
