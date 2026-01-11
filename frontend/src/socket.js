@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 import { useMessageStore } from "./store/messageStore";
 
-const socket = io("http://192.168.45.200:5000", {
+const socket = io(import.meta.env.VITE_BACKEND_URL, {
   withCredentials: true,
   transports: ["websocket"],
   reconnection: true, // 연결 끊기면 자동 재시도

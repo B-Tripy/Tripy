@@ -7,6 +7,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "http://192.168.45.200:5000",
+        // target: import.meta.env.VITE_BACKEND_URL,
         changeOrigin: true,
       },
     },
