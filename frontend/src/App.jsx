@@ -1,26 +1,27 @@
 /* eslint-disable no-unused-vars */
-import { useEffect } from "react"
-import { useAuthStore } from "./store/authStore"
-import Header from "./components/Header"
-import Footer from "./components/Footer"
-import Home from "./pages/Main"
-import { Routes, Route } from "react-router"
-import Plan from "./pages/Plan"
-import Recommend from "./pages/Recommend"
-import Album from "./pages/Album"
-import Theme from "./pages/Theme"
-import Review from "./pages/Review"
-import Loading from "./components/Loading"
-import AI from './pages/AI'
-import "./App.css"
+
+import { useEffect } from "react";
+import { useAuthStore } from "./store/authStore";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Home from "./pages/Main";
+import { Routes, Route } from "react-router";
+import Plan from "./pages/Plan";
+import Recommend from "./pages/Recommend";
+import Album from "./pages/Album";
+import Theme from "./pages/Theme";
+import Review from "./pages/Review";
+import Loading from "./components/Loading";
+import AI from "./pages/AI";
+import "./App.css";
 
 function App() {
-  const { user, isChecking, checkAuth } = useAuthStore()
+  const { user, isChecking, checkAuth } = useAuthStore();
 
   useEffect(() => {
     // 새로고침 하자마자 서버에 세션 유효성 확인
-    checkAuth()
-  }, [])
+    checkAuth();
+  }, []);
   if (isChecking) {
     return (
       <div
@@ -35,7 +36,7 @@ function App() {
         {/* <p>로그인 상태를 확인하고 있습니다...</p> */}
         <Loading />
       </div>
-    )
+    );
   }
   return (
     <div className="App">
@@ -53,7 +54,7 @@ function App() {
       </main>
       <Footer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
