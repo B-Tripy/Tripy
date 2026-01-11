@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import PageNation from "../../components/common/pagination/PagiNation"
+import { useNavigate } from "react-router-dom"
 
 const API_URL = import.meta.env.VITE_API_URL || "/api"
 // 오타 수정: widthCredentials -> withCredentials
@@ -11,6 +12,7 @@ const instance = axios.create({
 const Review = () => {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
   const formatDate = (dateString) => {
     if (!dateString) return ""
     const date = new Date(dateString)
@@ -127,7 +129,13 @@ const Review = () => {
 
           {/* 데이터 렌더링 (DB 컬럼명에 맞춰 수정) */}
           {posts.map((post) => (
-            <div key={post.id} style={styles.tripItem}>
+            <div
+              key={post.id}
+              style={styles.tripItem}
+              onClick={() => {
+                navigate(`/review/${post.id}`)
+              }}
+            >
               <div style={styles.tripInfo}>
                 <div style={styles.tripThumb}>
                   {/* 로고 이미지가 있다면 넣고, 없으면 기본 이미지 */}
