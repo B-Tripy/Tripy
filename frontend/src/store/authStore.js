@@ -5,6 +5,8 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 // 공통 인스턴스 설정
+// axios.defaults.baseURL = "http://192.168.45.200:5000";
+// axios.defaults.withCredentials = true; // 쿠키 전송 허용 필수!
 const instance = axios.create({
   withCredentials: true, // 모든 요청에 쿠키 포함
 });
