@@ -72,7 +72,7 @@ const sessionMiddleware = session({
   store: new RedisStore({ client: redisClient, prefix: "sess:" }),
   resave: false,
   saveUninitialized: false,
-  secret: process.env.COOKIE_SECRET,
+  secret: process.env.COOKIE_SECRET || "PASSWORD",
   rolling: true,
   proxy: true, // 추가: 포트가 다르거나 프록시 환경일 때 쿠키 안정성 향상
   cookie: {
