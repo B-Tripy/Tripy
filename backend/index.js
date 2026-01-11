@@ -5,10 +5,16 @@ const cookieParser = require("cookie-parser")
 const session = require("express-session")
 const passport = require("passport")
 const cors = require("cors")
-const boardRouter = require("./routes/board_router")
+const mainRouter = require("./routes/main_router")
+const planRouter = require("./routes/plan_router")
+const reviewRouter = require("./routes/review_router")
 const userRouter = require("./routes/user_router")
 const uploadRouter = require("./routes/upload_router")
-const reviewRouter = require("./routes/review_router")
+const albumRouter = require("./routes/album_router")
+const analysisRouter = require("./routes/analysis_router")
+const recommendRouter = require("./routes/recommend_router")
+
+const boardRouter = require("./routes/board_router")
 // const chatRouter = require("../socket");
 const passportConfig = require("./passport")
 const { RedisStore } = require("connect-redis")
@@ -87,11 +93,27 @@ app.use(sessionMiddleware)
 app.use(passport.initialize())
 app.use(passport.session())
 // 라우터 등록 (세션 설정 이후에!)
+app.use("/api/main", mainRouter)
+
+//플랜 라우터 연결
+app.use("/api/plan", planRouter)
+
 // 리뷰게시판 라우터 연결
 app.use("/api/review", reviewRouter)
+
 // 사용자 라우터 연결
 app.use("/api/users", userRouter)
 app.use("/api/upload", uploadRouter)
+
+//앨범 라우터 연결
+app.use("/api/album", albumRouter)
+
+//분석 라우터 연결
+app.use("/api/analysis", analysisRouter)
+
+//추천 라우터 연결
+app.use("/api/recommend", recommendRouter)
+
 // app.use("/api/chat", chatRouter);
 
 // 기본 라우트
