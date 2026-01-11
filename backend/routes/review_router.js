@@ -23,4 +23,23 @@ router.get("/", requireAuth, async (req, res) => {
   }
 })
 
+router.get("/:id", requireAuth, async (req, res) => {
+  try {
+    const tripId = req.params.id
+    const userId = req.user.id // 본인의 게시글인지 확인하기 위해 필요할 수 있음
+
+    // DB에서 tripId로 조회
+    const post = await getPostById(tripId)
+
+    if (!post) {
+      return res.status(404).json({ error: "게시글을 찾을 수 없습니다." })
+    }
+
+    return res.status(200).json(post)
+  } catch (err) {
+    console.error("게시글 상세 조회 오류:", err)
+    return res.status(500).json({ error: "서버 오류" })
+  }
+})
+
 module.exports = router
