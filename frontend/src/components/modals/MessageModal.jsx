@@ -1,21 +1,34 @@
+import { useEffect, useState } from "react";
 import { useMessageStore } from "../../store/messageStore";
 import { useAuthStore } from "../../store/authStore";
 import styles from "./MessageModal.module.css";
 import axios from "axios";
+
 const MessageModal = () => {
   const { user } = useAuthStore();
-  const { latestMessage, clearLatest } = useMessageStore();
+  const { messages, latestMessage, clearLatest } = useMessageStore();
+  const [visible, setVisible] = useState(false);
 
-  if (!latestMessage) return null; // 메시지가 없으면 모달 숨김
+  useEffect(() => {
+    if (latestMessage) {
+      // 메시지가 생기면 모달을 먼저 렌더링하고
+      // 다음 tick에서 show 클래스를 붙여 transition 실행
+      setVisible(true);
+    } else {
+      setVisible(false);
+    }
+  }, [latestMessage]);
+
+  if (!latestMessage) return null;
 
   const confirm = async () => {
     clearLatest();
-    console.log("tripId", latestMessage.tripId, "userId", user.id);
     try {
-      await axios.post("/api/companion", {
+      const res = await axios.post("/api/companion", {
         tripId: latestMessage.tripId,
         userId: user.id,
       });
+      console.log("res.data", res.data, "messages", messages);
     } catch (e) {
       console.error(e);
     }
@@ -26,7 +39,7 @@ const MessageModal = () => {
   };
 
   return (
-    <div className={`messageModal show`}>
+    <div className={`messageModal ${visible ? "show" : ""}`}>
       <div className={styles.backdrop}>
         <div className={styles.modal}>
           <h3>새 메세지 도착</h3>

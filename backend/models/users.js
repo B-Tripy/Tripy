@@ -36,7 +36,7 @@ module.exports = class Users extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.User.belongsToMany(db.Trip, { through: "UserTrip" });
+    db.User.belongsToMany(db.Trip, { through: "UserTrip",foreignKey: "UserId" });
     db.User.hasMany(db.Post);
     db.User.hasMany(db.Photo);
     db.User.hasMany(db.Bookmark);

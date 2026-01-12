@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import PageNation from "../../components/common/pagination/PagiNation";
 import { useNavigate } from "react-router-dom";
 import SendMessage from "../../components/modals/SendMessage";
+import Loading from "../../components/Loading";
 
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 // 오타 수정: widthCredentials -> withCredentials
@@ -172,9 +173,7 @@ const Review = () => {
       </section>
 
       {/* 로딩 중일 때 표시 */}
-      {loading && (
-        <p style={{ textAlign: "center", marginTop: "1rem" }}>로딩 중...</p>
-      )}
+      {loading && <Loading />}
 
       <div style={{ marginTop: "2rem" }}>
         <PageNation />
