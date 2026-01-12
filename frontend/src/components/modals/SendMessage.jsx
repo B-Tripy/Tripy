@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import socket from "../../socket";
 
-export default function SendMessage() {
+export default function SendMessage({ tripId, tripTitle }) {
   const [toUserEmail, setToUserEmail] = useState("");
   const [text, setText] = useState("");
 
@@ -21,23 +21,25 @@ export default function SendMessage() {
   }, []);
 
   const sendMessage = () => {
-    console.log("emit 실행:", toUserEmail, text);
-    socket.emit("send_to_user", { toUserEmail, text });
+    console.log("emit 실행:", toUserEmail, tripId, tripTitle, text);
+    socket.emit("send_to_user", { toUserEmail, tripId, tripTitle, text });
   };
 
   return (
     <div>
-      <h3>메시지 보내기</h3>
+      {/* <p>
+        {tripId} {tripTitle}동행요청
+      </p> */}
       <input
         placeholder="받는 유저 Email"
         value={toUserEmail}
         onChange={(e) => setToUserEmail(e.target.value)}
       />
-      <input
+      {/* <input
         placeholder="메시지 내용"
         value={text}
         onChange={(e) => setText(e.target.value)}
-      />
+      /> */}
       <button onClick={sendMessage}>보내기</button>
     </div>
   );
