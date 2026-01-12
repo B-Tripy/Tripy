@@ -40,7 +40,7 @@ const Review = () => {
   useEffect(() => {
     fetchPosts();
   }, []);
-
+  const inviteMember = (postId, tripId) => {};
   // ★ 스타일 객체 (제공해주신 디자인 적용)
   const styles = {
     container: {
@@ -162,7 +162,10 @@ const Review = () => {
                   </p>
                 </div>
               </div>
-              <SendMessage tripId={post.id} tripTitle={post.title} />
+              <button onClick={() => inviteMember(post.id, post.title)}>
+                멤버초대
+              </button>
+              {/* <SendMessage tripId={post.id} tripTitle={post.title} /> */}
               <i
                 className="fa-solid fa-chevron-right"
                 style={{ color: "#d1d5db" }}

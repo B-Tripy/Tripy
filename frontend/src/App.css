@@ -265,6 +265,21 @@ button:active {
   transform: translateY(100%); /* 제자리로 내려옴 */
   opacity: 1; /* 보이게 */
 }
+.sendMessage {
+  position: absolute;
+  bottom: 0; /* header 바로 밑 기준 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  transform: translateY(-90%); /* 위로 숨겨둠 */
+  opacity: 0; /* 투명하게 */
+  transition: transform 0.7s ease-in-out, opacity 0.7s ease-in-out;
+}
+
+.sendMessage.show {
+  transform: translateY(100%); /* 제자리로 내려옴 */
+  opacity: 1; /* 보이게 */
+}
 
 /* ---------- Board ---------- */
 .board {
