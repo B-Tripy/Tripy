@@ -62,14 +62,6 @@ const MainNav = () => {
             AI
           </li>
         </Link>
-        <Link to="/recommend">
-          <li
-            className={`${select === "Recommend" ? "check" : ""}`}
-            onClick={() => setSelect("Recommend")}
-          >
-            Recommend
-          </li>
-        </Link>
       </ul>
     </div>
   )

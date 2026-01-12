@@ -1,45 +1,39 @@
+import { useEffect, useState } from "react";
 import "./Recommend.css";
 
-const RECOMMEND_LIST = [
-  {
-    id: 1,
-    city: "도쿄",
-    country: "일본",
-    tags: ["도시형", "문화", "쇼핑"],
-    reasonTitle: "현대와 전통이 조화를 이루는 도시",
-    reasonDesc:
-      "첨단 기술과 전통 문화가 공존하며 다양한 먹거리와 쇼핑을 즐길 수 있습니다.",
-    duration: "3~5일",
-    season: "3~5월, 9~11월",
-    budget: "150~200만원",
-  },
-  {
-    id: 2,
-    city: "파리",
-    country: "프랑스",
-    tags: ["문화", "예술", "로맨틱"],
-    reasonTitle: "로맨틱한 예술과 문화의 중심지",
-    reasonDesc:
-      "에펠탑, 루브르 박물관 등 세계적인 명소가 가득한 낭만의 도시입니다.",
-    duration: "4~6일",
-    season: "4~6월, 9~10월",
-    budget: "200~300만원",
-  },
-  {
-    id: 3,
-    city: "산토리니",
-    country: "그리스",
-    tags: ["휴양", "자연", "감성"],
-    reasonTitle: "에게해의 가장 아름다운 섬",
-    reasonDesc:
-      "푸른 바다와 하얀 건축물이 어우러진 환상적인 풍경을 경험할 수 있습니다.",
-    duration: "3~5일",
-    season: "4~10월",
-    budget: "250~350만원",
-  },
-];
-
 const Recommend = () => {
+  const [recommendations, setRecommendations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchRecommendations() {
+      setLoading(true);
+      try {
+        const res = await fetch("http://localhost:8000/ai/recommend", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ count: 3 }),
+        });
+
+        const data = await res.json();
+        console.log("API 응답:", data); // 디버깅용
+
+        // ✅ 핵심 수정
+        setRecommendations(data.recommendations || []);
+      } catch (error) {
+        console.error("추천 데이터 로드 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchRecommendations();
+  }, []);
+
+  if (loading) {
+    return <p className="loading">AI 추천 여행지를 불러오는 중...</p>;
+  }
+
   return (
     <div className="recommend container">
       <h2 className="recommend-title">여행지 추천</h2>
@@ -48,36 +42,17 @@ const Recommend = () => {
       </p>
 
       <div className="recommend-list">
-        {RECOMMEND_LIST.map((item) => (
-          <div key={item.id} className="recommend-card">
-            {/* 제목 */}
+        {recommendations.map((item, index) => (
+          <div key={index} className="recommend-card">
             <div className="card-header">
-              <h3>
-                {item.city}, {item.country}
-              </h3>
-              <div className="tags">
-                {item.tags.map((tag) => (
-                  <span key={tag} className="tag">
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              <h3>{item.title}</h3>
             </div>
 
-            {/* 추천 이유 */}
             <div className="card-reason">
-              <strong className="reason-title">{item.reasonTitle}</strong>
-              <p className="reason-desc">{item.reasonDesc}</p>
+              <strong className="reason-title">추천 이유</strong>
+              <p className="reason-desc">{item.reason}</p>
             </div>
 
-            {/* 정보 */}
-            <div className="card-info">
-              <span>📅 추천 기간: {item.duration}</span>
-              <span>🌸 베스트 시즌: {item.season}</span>
-              <span>💰 예상 비용: {item.budget}</span>
-            </div>
-
-            {/* 버튼 */}
             <div className="card-actions">
               <button className="btn btn-outline-success">
                 ⭐ 즐겨찾기에 추가
