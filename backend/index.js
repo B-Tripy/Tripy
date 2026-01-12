@@ -44,10 +44,19 @@ const server = http.createServer(app)
 
 const allowedOrigins = [
   "http://localhost:5173", // 리액트(Vite) 로컬 개발 서버
+  "http://192.168.45.200:5173", // 우리집 pc ip
+  "http://192.168.45.223:5173", //
   "http://192.168.45.168:8081", // 안드로이드/기타 기기 접속 주소
   "http://192.168.10.56:8081",
   "http://192.168.10.10:8081",
 ]
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+  },
+})
 
 app.use(
   cors({
@@ -70,8 +79,8 @@ app.set("port", process.env.PORT || 5000)
 const sessionMiddleware = session({
   store: new RedisStore({ client: redisClient, prefix: "sess:" }),
   resave: false,
-  saveUninitialized: true,
-  secret: process.env.COOKIE_SECRET,
+  saveUninitialized: false,
+  secret: process.env.COOKIE_SECRET || "PASSWORD",
   rolling: true,
   proxy: true, // 추가: 포트가 다르거나 프록시 환경일 때 쿠키 안정성 향상
   cookie: {
@@ -116,6 +125,15 @@ app.use("/api/recommend", recommendRouter)
 
 // app.use("/api/chat", chatRouter);
 
+const wrap = (middleware) => (socket, next) =>
+  middleware(socket.request, {}, next)
+
+io.use(wrap(sessionMiddleware))
+io.use(wrap(passport.initialize()))
+io.use(wrap(passport.session()))
+
+registerSocketHandlers(io)
+
 // 기본 라우트
 app.get("/api", (req, res) => {
   res.send("🚀 /api간단 게시판 API 서버 실행 중")
@@ -127,6 +145,6 @@ app.get("/", (req, res) => {
 })
 
 const PORT = process.env.PORT || 5000
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`서버 실행 중: http://localhost:${PORT}`)
 })

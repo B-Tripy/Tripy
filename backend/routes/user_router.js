@@ -37,6 +37,10 @@ router.post("/login", (req, res, next) => {
           }
 
           // 최종 성공 응답
+          console.log(req.session);
+          req.session.userId = user.id;
+          req.session.nickname = user.nickname;
+          req.session.email = user.email;
           return res.status(200).json({
             message: "로그인 성공",
             user: {
