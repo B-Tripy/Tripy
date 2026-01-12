@@ -3,6 +3,8 @@ import { useAuthStore } from "../store/authStore";
 import Login from "./auth/Login";
 import Join from "./auth/Join";
 import Navigation from "./nav/MainNav";
+import MessageModal from "./modals/MessageModal";
+import SendMessage from "./modals/SendMessage";
 // import Loading from "./Loading";
 
 function Header() {
@@ -67,14 +69,9 @@ function Header() {
     logout();
     // logoutList();
   };
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setErrMessage(false);
-  //   }, 3000);
-  // }, [error]);
 
   return (
-    <header className={`header ${!isVisible ? "hidden" : ""}`}>
+    <div className={`header ${!isVisible ? "hidden" : ""}`}>
       <div className="container header-content">
         <div className="header-left">
           <img className="logo" src="/assets/img/tripy.png" width="200px" />
@@ -112,9 +109,11 @@ function Header() {
           </div>
           {error && <p className="login-error">{error}</p>}
         </div>
+        <MessageModal />
+        <SendMessage />
       </div>
       {/* {loading && <Loading />} */}
-    </header>
+    </div>
   );
 }
 

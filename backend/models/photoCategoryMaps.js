@@ -11,15 +11,14 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
+    
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
+        createdAt: true,
+        updatedAt: false,
         modelName: "PhotoCategoryMap",
         paranoid: false,
         charset: "utf8",

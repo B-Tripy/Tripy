@@ -1,10 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
-
+import socket from "../socket";
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 // 공통 인스턴스 설정
+// axios.defaults.baseURL = "http://192.168.45.200:5000";
+// axios.defaults.withCredentials = true; // 쿠키 전송 허용 필수!
 const instance = axios.create({
   withCredentials: true, // 모든 요청에 쿠키 포함
 });
@@ -42,6 +44,7 @@ export const useAuthStore = create(
           });
           // 로그인 응답에 user 객체가 있다고 가정
           set({ user: res.data.user, loading: false });
+          socket.connect();
           return { success: true };
         } catch (e) {
           const msg = e?.response?.data?.error || "로그인에 실패했습니다.";

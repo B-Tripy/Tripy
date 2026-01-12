@@ -23,15 +23,14 @@ module.exports = class Destinations extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
+    
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
+        createdAt: true,
+        updatedAt: false,
         modelName: "Destination",
         paranoid: false,
         charset: "utf8",

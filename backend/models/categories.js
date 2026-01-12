@@ -11,15 +11,14 @@ module.exports = class Categories extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
+    
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
+        createdAt: true,
+        updatedAt: false,
         modelName: "Category",
         paranoid: false,
         charset: "utf8",
@@ -28,7 +27,6 @@ module.exports = class Categories extends Sequelize.Model {
     );
   }
   static associate(db) {
-
     db.Category.hasMany(db.PhotoCategoryMap);
   }
 };

@@ -46,7 +46,7 @@ body {
 
 /* 컨테이너 */
 .container {
-  width: min(var(--container-w), calc(100% - 32px));
+  width: min(var(--container-w), calc(100% - 16px));
   margin: 0 auto;
   padding-top: 150px;
   padding-bottom: 10px;
@@ -78,9 +78,10 @@ button:active {
   position: fixed;
   top: 0;
   width: 100%;
+  z-index: 10;
 
   /* background-color: white; */
-  color: white;
+  color: black;
   transition: transform 0.3s ease-in-out;
   z-index: 1;
 }
@@ -93,6 +94,9 @@ button:active {
   justify-content: space-between;
   gap: 16px;
   padding: 22px 0;
+  background-color: white;
+  position: relative;
+  width: 1300px;
 }
 .header-left {
   flex-direction: row;
@@ -196,7 +200,17 @@ button:active {
   border-radius: 10px;
   background: #88ac73;
 }
-
+.messageModal {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  transition: 0.7s ease-in-out;
+}
+.messageModal.show {
+  bottom: -90%;
+  right: 0;
+}
 /* ---------- Board ---------- */
 .board {
   padding-top: 8px;
@@ -372,54 +386,6 @@ button:active {
   text-align: center;
   color: var(--muted);
   padding: 18px 0;
-}
-/*----------Navigator------------*/
-
-.MainNav ul {
-  list-style: none; /* 불릿 제거 */
-  padding-left: 0; /* 기본 들여쓰기 제거 */
-  margin: 0; /* 필요시 margin도 제거 */
-  padding: 0;
-  display: flex;
-  position: relative;
-  z-index: 2;
-  /* background-color: black; */
-  color: black;
-}
-.MainNav ul li {
-  display: block;
-  padding: 8px;
-  margin: 0 10px;
-  position: relative;
-  text-align: center;
-  font-size: 1.2rem;
-}
-.MainNav ul li:active {
-  transform: translateY(1px);
-}
-.MainNav ul li.check {
-  background-color: #88ac73;
-  /* opacity: 0.2; */
-  border-radius: 12px;
-  color: black;
-}
-.MainNav ul li::before {
-  content: "";
-  width: 0%;
-  position: absolute;
-  background-color: #88ac73;
-  bottom: 1px;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0.2;
-  transition: 0.4s;
-  /* display: inline-block; */
-}
-.MainNav ul li:hover::before {
-  height: 45px;
-  width: 105%;
-  border-radius: 12px;
-  opacity: 0.2;
 }
 
 /* ---------- Footer ---------- */
