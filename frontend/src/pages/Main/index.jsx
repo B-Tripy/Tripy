@@ -1,14 +1,14 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import Pagination from "../../components/common/pagination/PagiNation";
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import Pagination from "../../components/common/pagination/PagiNation"
 const Main = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const PlanPage = () => {
-    navigate("/plan");
-  };
+    navigate("/plan")
+  }
   const AlbumPage = () => {
-    navigate("/album");
-  };
+    navigate("/album")
+  }
   // 데이터 (여행 목록)
   const recentTrips = [
     {
@@ -67,7 +67,7 @@ const Main = () => {
       date: "2024년 10월 15일 ~ 10월 20일",
       imgUrl: "./assets/img/tripy.png",
     },
-  ];
+  ]
 
   // ★ 스타일 객체 정의 (CSS를 자바스크립트 객체로 변환)
   const styles = {
@@ -211,7 +211,7 @@ const Main = () => {
       fontSize: "0.875rem",
       color: "#6b7280",
     },
-  };
+  }
 
   return (
     <div style={styles.container}>
@@ -347,7 +347,7 @@ const Main = () => {
       </section>
       <Pagination />
     </div>
-  );
-};
+  )
+}
 
-export default Main;
+export default Main
