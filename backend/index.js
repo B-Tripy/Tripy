@@ -49,14 +49,15 @@ const allowedOrigins = [
   "http://192.168.45.168:8081", // 안드로이드/기타 기기 접속 주소
   "http://192.168.10.56:8081",
   "http://192.168.10.10:8081",
+  "http://192.168.10.10:5173",
 ]
 
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    credentials: true,
-  },
-})
+// const io = new Server(server, {
+//   cors: {
+//     origin: allowedOrigins,
+//     credentials: true,
+//   },
+// })
 
 app.use(
   cors({
@@ -125,14 +126,14 @@ app.use("/api/recommend", recommendRouter)
 
 // app.use("/api/chat", chatRouter);
 
-const wrap = (middleware) => (socket, next) =>
-  middleware(socket.request, {}, next)
+// const wrap = (middleware) => (socket, next) =>
+//   middleware(socket.request, {}, next)
 
-io.use(wrap(sessionMiddleware))
-io.use(wrap(passport.initialize()))
-io.use(wrap(passport.session()))
+// io.use(wrap(sessionMiddleware))
+// io.use(wrap(passport.initialize()))
+// io.use(wrap(passport.session()))
 
-registerSocketHandlers(io)
+// registerSocketHandlers(io)
 
 // 기본 라우트
 app.get("/api", (req, res) => {
