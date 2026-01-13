@@ -45,7 +45,10 @@ const Review = () => {
     fetchPosts();
   }, [reset]);
   const inviteMember = (tripId, tripTitle) => {
-    setValue({ tripId, tripTitle });
+    setValue({ tripId, tripTitle, own: true });
+  };
+  const withdrawMember = (tripId, tripTitle) => {
+    setValue({ tripId, tripTitle, own: false });
   };
   // ★ 스타일 객체 (제공해주신 디자인 적용)
   const styles = {
@@ -176,7 +179,7 @@ const Review = () => {
                 </button>
               }
 
-              <button onClick={() => inviteMember(post.id, post.title)}>
+              <button onClick={() => withdrawMember(post.id, post.title)}>
                 멤버탈퇴
               </button>
 

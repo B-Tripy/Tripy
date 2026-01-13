@@ -3,9 +3,10 @@ module.exports = class UserTrips extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        OwnerId: {
-          type: Sequelize.INTEGER,
-          allowNull: true,
+        Owner: {
+          type: Sequelize.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
         },
       },
       {

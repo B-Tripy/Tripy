@@ -25,24 +25,23 @@ const MessageModal = () => {
   if (!latestMessage) return null;
 
   const confirm = async () => {
-    // clearLatest();
+ 
     try {
       const res = await axios.post("/api/companion", {
         tripId: latestMessage.tripId,
         userId: user.id,
       });
-      setReset(res.data.success);
+      nextMessage();
+      setReset(res.data.success); //Review화면 갱신
       console.log("res.data", res.data, "messages", messages);
     } catch (e) {
       console.error(e);
     }
   };
-
+  
   const hold = () => {
     nextMessage();
-    // messages.pop();
-    // alert(messages);
-    // clearLatest();
+
   };
 
   return (
@@ -83,7 +82,7 @@ const MessageModal = () => {
             color: "tomato",
           }}
         >
-          {messages.length - 1}
+          {messages.length}
         </div>
       </div>
     </div>

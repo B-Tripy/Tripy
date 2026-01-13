@@ -51,51 +51,63 @@ export default function SendMessage() {
           {value.tripTitle}
         </b>
         <span> </span>
-        동행 요청
+        {value.own ? "동행 요청" : "동행 취소"}
       </h4>
-      <div
-        className="inputs"
-        style={{
-          minHeight: "200px",
-          width: "100%",
-          // display: "flex",
-          // justifyContent: "center",
-          // alignItems: "flex-start",
-          // background: "yellow",
-        }}
-      >
-        <input
+      {value.own ? (
+        <div
+          className="inputs"
           style={{
-            padding: "5px",
-            borderRadius: "8px",
-            border: "none",
-            paddingLeft: ".7rem",
-            // background: "transparent",
-            // borderBottom: "1px solid white",
-            // color: "white",
+            minHeight: "200px",
+            width: "100%",
           }}
-          placeholder="받는 유저 Email"
-          value={toUserEmail}
-          onChange={(e) => setToUserEmail(e.target.value)}
-        />
-        <input type="checkbox" style={{ margin: "10px" }}></input>
-        {/* <input
+        >
+          <input
+            style={{
+              padding: "5px",
+              borderRadius: "8px",
+              border: "none",
+              paddingLeft: ".7rem",
+              // background: "transparent",
+              // borderBottom: "1px solid white",
+              // color: "white",
+            }}
+            placeholder="받는 유저 Email"
+            value={toUserEmail}
+            onChange={(e) => setToUserEmail(e.target.value)}
+          />
+          <label>
+            <input type="checkbox" style={{ margin: "10px" }}></input>
+            확인
+          </label>
+        </div>
+      ) : (
+        <div
+          className="inputs"
           style={{
-            padding: "5px",
-            borderRadius: "4px",
-            border: "none",
-            paddingLeft: ".7rem",
+            minHeight: "200px",
+            width: "100%",
           }}
-          placeholder="받는 유저 Email"
-          value={toUserEmail}
-          onChange={(e) => setToUserEmail(e.target.value)}
-        /> */}
-        {/* <input
-          placeholder="메시지 내용"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        /> */}
-      </div>
+        >
+          <input
+            style={{
+              padding: "5px",
+              borderRadius: "8px",
+              border: "none",
+              paddingLeft: ".7rem",
+              // background: "transparent",
+              // borderBottom: "1px solid white",
+              // color: "white",
+            }}
+            placeholder="받는 유저 Email"
+            value={toUserEmail}
+            onChange={(e) => setToUserEmail(e.target.value)}
+          />
+          <label>
+            <input type="checkbox" style={{ margin: "10px" }}></input>
+            확인
+          </label>
+        </div>
+      )}
 
       <div
         className="button"
