@@ -4,6 +4,8 @@ import Login from "./auth/Login";
 import Join from "./auth/Join";
 import Navigation from "./nav/MainNav";
 import MessageModal from "./modals/MessageModal";
+import SendMessage from "./modals/SendMessage";
+import SetClose from "./modals/SetClose";
 
 // import Loading from "./Loading";
 
@@ -108,9 +110,10 @@ function Header() {
             {user ? "" : select ? "회원가입" : "로그인"}
           </div>
           {error && <p className="login-error">{error}</p>}
+          <SetClose />
         </div>
         <MessageModal />
-        
+        <SendMessage />
       </div>
       {/* {loading && <Loading />} */}
     </div>

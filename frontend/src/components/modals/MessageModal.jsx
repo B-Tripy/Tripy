@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useMessageStore } from "../../store/messageStore";
 import { useAuthStore } from "../../store/authStore";
-import styles from "./MessageModal.module.css";
+import styles from "./MessageModal.module.scss";
+import { Reset } from "../../context/ValueContext";
 import axios from "axios";
 
 const MessageModal = () => {
   const { user } = useAuthStore();
-  const { messages, latestMessage, clearLatest } = useMessageStore();
+  const { nextMessage, messages, latestMessage, clearLatest } =
+    useMessageStore();
   const [visible, setVisible] = useState(false);
+  const { setReset } = useContext(Reset);
 
   useEffect(() => {
     if (latestMessage) {
@@ -22,12 +25,13 @@ const MessageModal = () => {
   if (!latestMessage) return null;
 
   const confirm = async () => {
-    clearLatest();
+    // clearLatest();
     try {
       const res = await axios.post("/api/companion", {
         tripId: latestMessage.tripId,
         userId: user.id,
       });
+      setReset(res.data.success);
       console.log("res.data", res.data, "messages", messages);
     } catch (e) {
       console.error(e);
@@ -35,7 +39,10 @@ const MessageModal = () => {
   };
 
   const hold = () => {
-    clearLatest();
+    nextMessage();
+    // messages.pop();
+    // alert(messages);
+    // clearLatest();
   };
 
   return (
@@ -51,6 +58,32 @@ const MessageModal = () => {
             <button onClick={confirm}>수락</button>
             <button onClick={hold}>보류</button>
           </div>
+        </div>
+      </div>
+      <div
+        style={{
+          width: "50px",
+          height: "50px",
+          position: "absolute",
+          right: 0,
+          top: 0,
+          borderRadius: "50%",
+          background: "green",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          // lineHeight: 2,
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            fontWeight: "bold",
+            fontSize: "3rem",
+            color: "tomato",
+          }}
+        >
+          {messages.length - 1}
         </div>
       </div>
     </div>

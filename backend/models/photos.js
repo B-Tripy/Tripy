@@ -16,11 +16,11 @@ module.exports = class Photos extends Sequelize.Model {
           allowNull: false,
         },
         latitude: {
-          type: Sequelize.FLOAT(10, 3),
+          type: Sequelize.FLOAT(9, 3),
           allowNull: true,
         },
-        longtitude: {
-          type: Sequelize.FLOAT(10, 3),
+        longitude: {
+          type: Sequelize.FLOAT(9, 3),
           allowNull: true,
         },
         address: {
