@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useAuthStore } from "./store/authStore"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
+import Chatbot from "./components/Chatbot"
 import Main from "./pages/Main"
 import Plan from "./pages/Plan"
 import Recommend from "./pages/Recommend"
@@ -67,6 +68,7 @@ function App() {
             </main>
           </Reset.Provider>
         </ValueContext.Provider>
+        <Chatbot />
         <Footer />
       </div>
     </BrowserRouter>
