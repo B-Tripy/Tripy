@@ -1,13 +1,16 @@
 import { useState, useEffect, useContext } from "react";
 import socket from "../../socket";
 import { ValueContext } from "../../context/ValueContext";
-
+import axios from "axios";
+import { Reset } from "../../context/ValueContext";
+import { useAuthStore } from "../../store/authStore";
 export default function SendMessage() {
   const [toUserEmail, setToUserEmail] = useState("");
   const [text, setText] = useState("");
-  // const { users } = useAuthStore(); // 검색이 허용된  user들 가져오기
+  const { user } = useAuthStore(); // 검색이 허용된  user들 가져오기
   const [visible, setVisible] = useState(false);
   const { value } = useContext(ValueContext);
+  const { setReset } = useContext(Reset);
   useEffect(() => {
     // delivery_status 이벤트는 컴포넌트가 마운트될 때 한 번만 등록
     socket.on("delivery_status", (status) => {
@@ -30,7 +33,8 @@ export default function SendMessage() {
     } else {
       setVisible(false);
     }
-  }, [value.tripTitle]);
+    // setValue({ tripId: 0, tripTitle: "", own: true });
+  }, [value]);
   const sendMessage = () => {
     console.log("emit 실행:", toUserEmail, value.tripId, value.tripTitle, text);
     socket.emit("send_to_user", {
@@ -39,6 +43,20 @@ export default function SendMessage() {
       tripTitle: value.tripTitle,
       text,
     });
+  };
+  const withdraw = async () => {
+    console.log("user", user.id);
+    try {
+      const res = await axios.post("/api/companion/withdraw", {
+        tripId: value.tripId,
+        userId: user.id,
+      });
+
+      setReset(res.data.success); //Review화면 갱신
+      console.log("res.data", res.data, "messages", messages);
+    } catch (e) {
+      console.error(e);
+    }
   };
   const closeForm = () => {
     setVisible(false);
@@ -88,7 +106,7 @@ export default function SendMessage() {
             width: "100%",
           }}
         >
-          <input
+          {/* <input
             style={{
               padding: "5px",
               borderRadius: "8px",
@@ -105,7 +123,7 @@ export default function SendMessage() {
           <label>
             <input type="checkbox" style={{ margin: "10px" }}></input>
             확인
-          </label>
+          </label> */}
         </div>
       )}
 
@@ -113,7 +131,13 @@ export default function SendMessage() {
         className="button"
         style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
       >
-        <button onClick={sendMessage}>보내기</button>
+        {value.own ? (
+          <button onClick={sendMessage}>{value.own ? "보내기" : "확인"}</button>
+        ) : (
+          <button onClick={() => withdraw()}>
+            {value.own ? "보내기" : "확인"}
+          </button>
+        )}
         <button onClick={closeForm}>닫기</button>
       </div>
     </div>

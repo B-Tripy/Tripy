@@ -111,7 +111,11 @@ function Header() {
               />
             )}
           </div>
-          <div className="authSelector" onClick={() => setSelect(!select)}>
+          <div
+            className="authSelector"
+            onClick={() => setSelect(!select)}
+            style={{ color: "white" }}
+          >
             {user ? "" : select ? "회원가입" : "로그인"}
           </div>
           {error && <p className="login-error">{error}</p>}

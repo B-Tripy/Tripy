@@ -173,16 +173,26 @@ const Review = () => {
                   </p>
                 </div>
               </div>
-              {
-                <button onClick={() => inviteMember(post.id, post.title)}>
+
+              <div style={{ display: "relative" }}>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    inviteMember(post.id, post.title);
+                  }}
+                >
                   멤버초대
                 </button>
-              }
 
-              <button onClick={() => withdrawMember(post.id, post.title)}>
-                멤버탈퇴
-              </button>
-
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    withdrawMember(post.id, post.title);
+                  }}
+                >
+                  멤버탈퇴
+                </button>
+              </div>
               {/* <SendMessage tripId={post.id} tripTitle={post.title} /> */}
               <i
                 className="fa-solid fa-chevron-right"

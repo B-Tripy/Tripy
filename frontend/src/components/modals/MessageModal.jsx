@@ -20,12 +20,11 @@ const MessageModal = () => {
     } else {
       setVisible(false);
     }
-  }, [latestMessage]);
+  }, [messages]);
 
   if (!latestMessage) return null;
 
   const confirm = async () => {
- 
     try {
       const res = await axios.post("/api/companion", {
         tripId: latestMessage.tripId,
@@ -38,10 +37,9 @@ const MessageModal = () => {
       console.error(e);
     }
   };
-  
+
   const hold = () => {
     nextMessage();
-
   };
 
   return (
@@ -53,7 +51,10 @@ const MessageModal = () => {
             <b>보낸사람:</b> {latestMessage.fromUserEmail}
           </p>
           <p>{latestMessage.tripTitle}</p>
-          <div className={styles.buttons}>
+          <div
+            className="button"
+            style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
+          >
             <button onClick={confirm}>수락</button>
             <button onClick={hold}>보류</button>
           </div>
