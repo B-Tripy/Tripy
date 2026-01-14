@@ -85,34 +85,35 @@ export default function SendMessage() {
 
       {value.own ? (
         Array.isArray(users) &&
-        users.map((member) => {
-          member.id === user.id && (
-            <div
-              key={user.id} // map 사용 시 key 필수
-              className="inputs"
-              style={{
-                minHeight: "200px",
-                width: "100%",
-              }}
-            >
-              <input
+        users.map(
+          (member) =>
+            member.id !== user.id && (
+              <div
+                key={user.id} // map 사용 시 key 필수
+                className="inputs"
                 style={{
-                  padding: "5px",
-                  borderRadius: "8px",
-                  border: "none",
-                  paddingLeft: ".7rem",
+                  minHeight: "200px",
+                  width: "100%",
                 }}
-                placeholder="받는 유저 Email"
-                value={member.email}
-                // onChange={(e) => setToUserEmail(e.target.value)}
-              />
-              <label>
-                <input type="checkbox" style={{ margin: "10px" }} />
-                확인
-              </label>
-            </div>
-          );
-        })
+              >
+                <input
+                  style={{
+                    padding: "5px",
+                    borderRadius: "8px",
+                    border: "none",
+                    paddingLeft: ".7rem",
+                  }}
+                  placeholder="받는 유저 Email"
+                  value={member.email}
+                  // onChange={(e) => setToUserEmail(e.target.value)}
+                />
+                <label>
+                  <input type="checkbox" style={{ margin: "10px" }} />
+                  확인/체크하면 배열에 넣고 보내기하면 promise.all사용 해 볼 것
+                </label>
+              </div>
+            )
+        )
       ) : (
         <div
           className="inputs"

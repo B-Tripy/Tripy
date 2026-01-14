@@ -181,7 +181,7 @@ const Review = () => {
                 </div>
               </div>
 
-              <div style={{ display: "relative" }}>
+              <div style={{ marginLeft: "auto" }}>
                 {post.owner === 1 && (
                   <button
                     onClick={(e) => {

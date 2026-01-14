@@ -45,13 +45,16 @@ async function getUsers() {
 
   return rows;
 }
-async function toggle(userId, checked) {
-  console.log(userId);
-  value = checked === 1 ? 0 : 1;
-  await pool.query("UDATE USERS SET search=? where id=?"), [value, userId];
+async function toggleAction(userId, checked) {
+  console.log(userId, checked);
+  value = checked === false ? 0 : 1;
+  const [rows] = await pool.query("UPDATE USERS SET search=? where id=?", [
+    value,
+    userId,
+  ]);
   if (!rows || rows.length === 0) return null;
-
-  return rows;
+  // console.log(rows);
+  return rows[0];
 }
 module.exports = {
   findUserByCredentials,
@@ -59,5 +62,5 @@ module.exports = {
   findUserByEmail,
   createUser,
   getUsers,
-  toggle,
+  toggleAction,
 };

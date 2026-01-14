@@ -1,20 +1,35 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 const SetClose = ({ userId }) => {
-  const [close, setClose] = useState(false);
+  const [pickUser, setPickUser] = useState([]);
 
-  const toggle = async (e) => {
-    const checked = e.target.checked;
-    setClose(checked);
-
-    await axios.post("/api/users/toggle", { userId, toggle: e.target.checked });
+  const fetchUsers = async () => {
+    const users = await axios.get("/api/users/getUsers");
+    console.log(users.data.users);
+    setPickUser(users.data?.users?.map((user) => user.id) ?? []);
   };
 
+  const getUsers = async (e) => {
+    await axios.post("/api/users/toggle", {
+      userId,
+      toggle: e.target.checked,
+    });
+    await fetchUsers();
+  };
+  useEffect(() => {
+    setTimeout(() => {
+      fetchUsers();
+    }, 0);
+  }, []);
   return (
     <div>
       {/* {userId} */}
       <label>
-        <input type="checkbox" checked={close} onChange={toggle} />
+        <input
+          type="checkbox"
+          checked={pickUser.includes(userId)}
+          onChange={getUsers}
+        />
         검색 허용
       </label>
     </div>
