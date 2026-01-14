@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router";
-import styles from "./MainNav.module.scss";
+import { Link } from "react-router-dom";
+// import styles from "./MainNav.module.scss";
 
 const MainNav = () => {
-  const [select, setSelect] = useState("home");
+  const [select, setSelect] = useState("Home");
   return (
-    <div className={styles.MainNav}>
+    <div className="MainNav">
       <ul>
         <Link to="/">
           <li

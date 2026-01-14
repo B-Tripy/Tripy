@@ -1,15 +1,21 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "../store/authStore";
+
+import { useNavigate } from "react-router-dom";
+
 import Login from "./auth/Login";
 import Join from "./auth/Join";
 import Navigation from "./nav/MainNav";
 import MessageModal from "./modals/MessageModal";
 import SendMessage from "./modals/SendMessage";
+import SetClose from "./modals/SetClose";
+
 // import Loading from "./Loading";
 
 function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +64,7 @@ function Header() {
       setNickname("");
       setEmail("");
       setPassword("");
+      navigate("/");
       // fetchPosts();
     }
   };
@@ -104,10 +111,15 @@ function Header() {
               />
             )}
           </div>
-          <div className="authSelector" onClick={() => setSelect(!select)}>
+          <div
+            className="authSelector"
+            onClick={() => setSelect(!select)}
+            style={{ color: "white" }}
+          >
             {user ? "" : select ? "회원가입" : "로그인"}
           </div>
           {error && <p className="login-error">{error}</p>}
+          <SetClose />
         </div>
         <MessageModal />
         <SendMessage />

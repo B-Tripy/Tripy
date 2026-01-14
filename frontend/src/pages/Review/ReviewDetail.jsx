@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 import axios from "axios"
 
+
 const API_URL = import.meta.env.VITE_API_URL || "/api"
 const instance = axios.create({ withCredentials: true })
 function ReviewDetail() {
