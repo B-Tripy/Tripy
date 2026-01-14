@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { useAuthStore } from "./store/authStore"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import Home from "./pages/Main"
+import Main from "./pages/Main"
 import { Routes, Route } from "react-router"
 import Plan from "./pages/Plan"
 import Recommend from "./pages/Recommend"
@@ -43,7 +43,8 @@ function App() {
       <Header />
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Main />} />
+          <Route path="/main" element={<Main />} />
           <Route path="/plan" element={<Plan />} />
           <Route path="/recommend" element={<Recommend />} />
           <Route path="/album" element={<Album />} />

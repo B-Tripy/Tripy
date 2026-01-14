@@ -2,6 +2,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import PageNation from "../../components/common/pagination/PagiNation"
 import { useNavigate } from "react-router-dom"
+import { useAuthStore } from "../../store/authStore"
 
 const API_URL = import.meta.env.VITE_API_URL || "/api"
 // 오타 수정: widthCredentials -> withCredentials
@@ -33,11 +34,14 @@ const Review = () => {
       setLoading(false)
     }
   }
-
+  const { user } = useAuthStore()
   useEffect(() => {
-    fetchPosts()
-  }, [])
-
+    if (user) {
+      fetchPosts()
+    } else {
+      setPosts([]) // 로그아웃 되면 게시글 목록 초기화
+    }
+  }, [user])
   // ★ 스타일 객체 (제공해주신 디자인 적용)
   const styles = {
     container: {
