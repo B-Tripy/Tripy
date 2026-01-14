@@ -37,9 +37,27 @@ async function createUser(nickname, email, password) {
     password,
   ]);
 }
+async function getUsers() {
+  const [rows] = await pool.query(
+    "SELECT id,nickname,email FROM users WHERE search=1;"
+  );
+  if (!rows || rows.length === 0) return null;
+
+  return rows;
+}
+async function toggle(userId, checked) {
+  console.log(userId);
+  value = checked === 1 ? 0 : 1;
+  await pool.query("UDATE USERS SET search=? where id=?"), [value, userId];
+  if (!rows || rows.length === 0) return null;
+
+  return rows;
+}
 module.exports = {
   findUserByCredentials,
   findUserById,
   findUserByEmail,
   createUser,
+  getUsers,
+  toggle,
 };

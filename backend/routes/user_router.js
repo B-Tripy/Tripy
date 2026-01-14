@@ -1,6 +1,11 @@
 // server/routes/users.js
 const express = require("express");
-const { findUserByEmail, createUser, getUsers } = require("../db/user_db");
+const {
+  findUserByEmail,
+  createUser,
+  getUsers,
+  toggle,
+} = require("../db/user_db");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const passport = require("passport");
@@ -121,8 +126,19 @@ router.get("/getUsers", async (req, res) => {
   try {
     const result = await getUsers();
     console.log(result);
-    return res.status(200).json({ success: "OK", message: result });
+    return res.status(200).json({ success: "OK", users: result });
   } catch (e) {}
+});
+router.get("/toggle", async (req, res) => {
+  const { userId, toggle } = req.body;
+  console.log("userId", userId, "toggle", toggle);
+  try {
+    const result = await toggle(userId, toggle);
+    console.log(result);
+    return res.status(200).json({ success: "OK" });
+  } catch (e) {
+    e.error(e);
+  }
 });
 
 module.exports = router;

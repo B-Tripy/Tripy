@@ -1,15 +1,18 @@
 import React, { useState } from "react";
-
-const SetClose = () => {
+import axios from "axios";
+const SetClose = ({ userId }) => {
   const [close, setClose] = useState(false);
 
-  const toggle = (e) => {
+  const toggle = async (e) => {
     const checked = e.target.checked;
     setClose(checked);
+
+    await axios.post("/api/users/toggle", { userId, toggle: e.target.checked });
   };
 
   return (
     <div>
+      {/* {userId} */}
       <label>
         <input type="checkbox" checked={close} onChange={toggle} />
         검색 허용

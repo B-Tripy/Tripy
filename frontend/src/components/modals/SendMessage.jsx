@@ -6,6 +6,7 @@ import { Reset } from "../../context/ValueContext";
 import { useAuthStore } from "../../store/authStore";
 export default function SendMessage() {
   const [toUserEmail, setToUserEmail] = useState("");
+  const [users, setUsers] = useState([]);
   const [text, setText] = useState("");
   const { user } = useAuthStore(); // 검색이 허용된  user들 가져오기
   const [visible, setVisible] = useState(false);
@@ -25,10 +26,20 @@ export default function SendMessage() {
       socket.off("delivery_status"); // 언마운트 시 정리
     };
   }, []);
+  const getUsers = async () => {
+    try {
+      const users = await axios.get("/api/users/getUsers");
+      console.log(users.data.users);
+      setUsers(users.data.users);
+    } catch (e) {
+      console.error(e);
+    }
+  };
   useEffect(() => {
     if (value.tripId) {
       // 메시지가 생기면 모달을 먼저 렌더링하고
       // 다음 tick에서 show 클래스를 붙여 transition 실행
+      getUsers();
       setVisible(true);
     } else {
       setVisible(false);
@@ -65,39 +76,43 @@ export default function SendMessage() {
     <div className={`sendMessage ${visible ? "show" : ""}`}>
       <h4 style={{ fontSize: "1.2rem" }}>
         <b>
-          {/* {value.tripId}  */}
+          {/* {value.tripId} */}
           {value.tripTitle}
         </b>
         <span> </span>
         {value.own ? "동행 요청" : "동행 취소"}
       </h4>
+
       {value.own ? (
-        <div
-          className="inputs"
-          style={{
-            minHeight: "200px",
-            width: "100%",
-          }}
-        >
-          <input
-            style={{
-              padding: "5px",
-              borderRadius: "8px",
-              border: "none",
-              paddingLeft: ".7rem",
-              // background: "transparent",
-              // borderBottom: "1px solid white",
-              // color: "white",
-            }}
-            placeholder="받는 유저 Email"
-            value={toUserEmail}
-            onChange={(e) => setToUserEmail(e.target.value)}
-          />
-          <label>
-            <input type="checkbox" style={{ margin: "10px" }}></input>
-            확인
-          </label>
-        </div>
+        Array.isArray(users) &&
+        users.map((member) => {
+          member.id === user.id && (
+            <div
+              key={user.id} // map 사용 시 key 필수
+              className="inputs"
+              style={{
+                minHeight: "200px",
+                width: "100%",
+              }}
+            >
+              <input
+                style={{
+                  padding: "5px",
+                  borderRadius: "8px",
+                  border: "none",
+                  paddingLeft: ".7rem",
+                }}
+                placeholder="받는 유저 Email"
+                value={member.email}
+                // onChange={(e) => setToUserEmail(e.target.value)}
+              />
+              <label>
+                <input type="checkbox" style={{ margin: "10px" }} />
+                확인
+              </label>
+            </div>
+          );
+        })
       ) : (
         <div
           className="inputs"
@@ -106,24 +121,7 @@ export default function SendMessage() {
             width: "100%",
           }}
         >
-          {/* <input
-            style={{
-              padding: "5px",
-              borderRadius: "8px",
-              border: "none",
-              paddingLeft: ".7rem",
-              // background: "transparent",
-              // borderBottom: "1px solid white",
-              // color: "white",
-            }}
-            placeholder="받는 유저 Email"
-            value={toUserEmail}
-            onChange={(e) => setToUserEmail(e.target.value)}
-          />
-          <label>
-            <input type="checkbox" style={{ margin: "10px" }}></input>
-            확인
-          </label> */}
+          {/* 동행 취소일 때 보여줄 UI */}
         </div>
       )}
 
@@ -132,11 +130,9 @@ export default function SendMessage() {
         style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
       >
         {value.own ? (
-          <button onClick={sendMessage}>{value.own ? "보내기" : "확인"}</button>
+          <button onClick={sendMessage}>보내기</button>
         ) : (
-          <button onClick={() => withdraw()}>
-            {value.own ? "보내기" : "확인"}
-          </button>
+          <button onClick={() => withdraw()}>확인</button>
         )}
         <button onClick={closeForm}>닫기</button>
       </div>
