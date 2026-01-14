@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { Link } from "react-router";
-import styles from "./MainNav.module.scss";
+import { useState } from "react"
+import { Link } from "react-router-dom"
+// import styles from "./MainNav.module.scss";
 
 const MainNav = () => {
-  const [select, setSelect] = useState("home");
+  const [select, setSelect] = useState("Home")
   return (
-    <div className={styles.MainNav}>
+    <div className="MainNav">
       <ul>
-        <Link to="/">
+        <Link to="/main">
           <li
-            className={`${select === "Home" ? "check" : ""}`}
-            onClick={() => setSelect("Home")}
+            className={`${select === "Main" ? "check" : ""}`}
+            onClick={() => setSelect("Main")}
           >
-            Home
+            Main
           </li>
         </Link>
         <Link to="/plan">
@@ -63,9 +63,17 @@ const MainNav = () => {
             AI
           </li>
         </Link>
+        <Link to="/rag">
+          <li
+            className={`${select === "Rag" ? "check" : ""}`}
+            onClick={() => setSelect("Rag")}
+          >
+            Setting
+          </li>
+        </Link>
       </ul>
     </div>
-  );
-};
+  )
+}
 
-export default MainNav;
+export default MainNav

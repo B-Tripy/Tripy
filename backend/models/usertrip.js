@@ -1,25 +1,22 @@
 const Sequelize = require("sequelize");
-module.exports = class Themes extends Sequelize.Model {
+module.exports = class UserTrips extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        themecode: {
-          type: Sequelize.STRING(2),
+        Owner: {
+          type: Sequelize.BOOLEAN,
           allowNull: false,
+          defaultValue: false,
         },
-        createdAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
- 
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        createdAt: true,
+        createdAt: false,
         updatedAt: false,
-        modelName: "Themes",
+        modelName: "UserTrips",
+        tableName: "UserTrip",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -27,6 +24,7 @@ module.exports = class Themes extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Themes.belongsTo(db.Trips);
+    db.UserTrips.belongsTo(db.Users, { foreignKey: "UserId" });
+    db.UserTrips.belongsTo(db.Trips, { foreignKey: "TripId" });
   }
 };

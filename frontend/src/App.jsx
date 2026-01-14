@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { useEffect } from "react"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { useEffect, useState } from "react"
 import { useAuthStore } from "./store/authStore"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
-import Home from "./pages/Main"
-import { Routes, Route } from "react-router"
+import Chatbot from "./components/Chatbot"
+import Main from "./pages/Main"
 import Plan from "./pages/Plan"
 import Recommend from "./pages/Recommend"
 import Album from "./pages/Album"
@@ -13,11 +14,18 @@ import Review from "./pages/Review"
 import Loading from "./components/Loading"
 import ReviewDetail from "./pages/Review/ReviewDetail" // 리뷰상세 페이지 컴포넌트
 import AI from "./pages/AI"
+import Rag from "./pages/Rag"
 import "./App.css"
-
+import { ValueContext } from "./context/ValueContext"
+import { Reset } from "./context/ValueContext"
 function App() {
   const { user, isChecking, checkAuth } = useAuthStore()
-
+  const [value, setValue] = useState({
+    tripId: null,
+    tripTitle: null,
+    own: false,
+  })
+  const [reset, setReset] = useState(false)
   useEffect(() => {
     // 새로고침 하자마자 서버에 세션 유효성 확인
     checkAuth()
@@ -39,22 +47,31 @@ function App() {
     )
   }
   return (
-    <div className="App">
-      <Header />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/plan" element={<Plan />} />
-          <Route path="/recommend" element={<Recommend />} />
-          <Route path="/album" element={<Album />} />
-          <Route path="/theme" element={<Theme />} />
-          <Route path="/review" element={<Review />} />
-          <Route path="/review/:id" element={<ReviewDetail />} />
-          <Route path="/ai" element={<AI />} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <ValueContext.Provider value={{ value, setValue }}>
+          <Reset.Provider value={{ reset, setReset }}>
+            <Header />
+            <main>
+              <Routes>
+                <Route path="/" element={<Main />} />
+                <Route path="/main" element={<Main />} />
+                <Route path="/plan" element={<Plan />} />
+                <Route path="/recommend" element={<Recommend />} />
+                <Route path="/album" element={<Album />} />
+                <Route path="/theme" element={<Theme />} />
+                <Route path="/review" element={<Review />} />
+                <Route path="/review/:id" element={<ReviewDetail />} />
+                <Route path="/ai" element={<AI />} />
+                <Route path="/rag" element={<Rag />} />
+              </Routes>
+            </main>
+          </Reset.Provider>
+        </ValueContext.Provider>
+        <Chatbot />
+        <Footer />
+      </div>
+    </BrowserRouter>
   )
 }
 

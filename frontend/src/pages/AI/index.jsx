@@ -20,7 +20,7 @@ const Ai = () => {
     console.log(value);
     setLoading(true);
     await axios
-      .post("http://127.0.0.1:8000/ai/poem", {
+      .post("/ai/poem", {
         topic: value.topic,
         style: value.style,
       })
