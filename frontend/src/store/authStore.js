@@ -36,22 +36,27 @@ export const useAuthStore = create(
       },
 
       login: async (email, password) => {
-        set({ loading: true, error: null });
-        try {
-          const res = await instance.post(`${API_URL}/users/login`, {
-            email,
-            password,
-          });
-          // 로그인 응답에 user 객체가 있다고 가정
-          set({ user: res.data.user, loading: false });
-          socket.connect();
-          return { success: true };
-        } catch (e) {
-          const msg = e?.response?.data?.error || "로그인에 실패했습니다.";
-          set({ loading: false, error: String(msg) });
-          return { success: false };
-        }
-      },
+  set({ loading: true, error: null });
+  try {
+    const res = await instance.post(`${API_URL}/users/login`, {
+      email,
+      password,
+    });
+
+    // 🔍 로그인 API 응답 확인
+    console.log("Login response:", res.data);
+
+    // 로그인 응답에 user 객체가 있다고 가정
+    set({ user: res.data.user, loading: false });
+    socket.connect();
+    return { success: true };
+  } catch (e) {
+    const msg = e?.response?.data?.error || "로그인에 실패했습니다.";
+    set({ loading: false, error: String(msg) });
+    return { success: false };
+  }
+},
+
 
       join: async (nickname, email, password) => {
         set({ loading: true, error: null });
