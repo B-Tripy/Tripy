@@ -63,6 +63,14 @@ const MainNav = () => {
             AI
           </li>
         </Link>
+        <Link to="/rag">
+          <li
+            className={`${select === "Rag" ? "check" : ""}`}
+            onClick={() => setSelect("Rag")}
+          >
+            Setting
+          </li>
+        </Link>
       </ul>
     </div>
   )
