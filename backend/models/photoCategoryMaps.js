@@ -4,7 +4,7 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
     return super.init(
       {
         confidence_score: {
-          type: Sequelize.FLOAT(2, 1),
+          type: Sequelize.FLOAT(5, 1),
           allowNull: false,
         },
         createdAt: {

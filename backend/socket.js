@@ -18,6 +18,7 @@ function registerSocketHandlers(io) {
     if (!user || !user.email) return;
 
     const email = user.email;
+    const nick = user.nickname;
 
     // 1. 연결 시 Map에 등록 (중복 방지를 위해 Set 사용)
     if (!userSockets.has(email)) {
@@ -29,7 +30,7 @@ function registerSocketHandlers(io) {
       `✅ [연결] ${email} | 현재 소켓 수: ${userSockets.get(email).size}`
     );
 
-    socket.on("send_to_user", ({ toUserEmail, text }) => {
+    socket.on("send_to_user", ({ toUserEmail, tripId, tripTitle, text }) => {
       const targets = userSockets.get(toUserEmail);
 
       console.log(`서버에서 ${toUserEmail}로 발송 시도. 찾은 소켓:`, targets);
@@ -38,6 +39,8 @@ function registerSocketHandlers(io) {
         targets.forEach((sid) => {
           io.to(sid).emit("incoming_message", {
             fromUserEmail: email,
+            tripId: tripId,
+            tripTitle: tripTitle,
             text,
             at: Date.now(),
           });

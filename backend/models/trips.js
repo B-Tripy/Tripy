@@ -48,9 +48,10 @@ module.exports = class Trips extends Sequelize.Model {
   static associate(db) {
     db.Trip.hasMany(db.Photo);
     db.Trip.hasMany(db.EmotionsTarget);
-    db.Trip.belongsToMany(db.User, { through: "UserTrip" });
+    db.Trip.hasMany(db.UserTrip, {
+      foreignKey: "TripId",
+    });
     db.Trip.hasMany(db.Theme);
- 
   }
 };
 

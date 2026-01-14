@@ -13,6 +13,7 @@ const Theme = require("./themes");
 const PhotoCategoryMap = require("./photoCategoryMaps");
 const Category = require("./categories");
 const Bookmark = require("./bookmarks");
+const UserTrip = require("./usertrip");
 
 const db = {};
 
@@ -36,6 +37,7 @@ db.Theme = Theme;
 db.PhotoCategoryMap = PhotoCategoryMap;
 db.Category = Category;
 db.Bookmark = Bookmark;
+db.UserTrip = UserTrip;
 
 User.init(sequelize);
 Trip.init(sequelize);
@@ -48,6 +50,7 @@ Theme.init(sequelize);
 PhotoCategoryMap.init(sequelize);
 Category.init(sequelize);
 Bookmark.init(sequelize);
+UserTrip.init(sequelize);
 
 User.associate(db);
 Trip.associate(db);
@@ -60,5 +63,6 @@ Theme.associate(db);
 PhotoCategoryMap.associate(db);
 Category.associate(db);
 Bookmark.associate(db);
+UserTrip.associate(db);
 
 module.exports = db;

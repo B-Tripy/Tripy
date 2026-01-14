@@ -1,37 +1,43 @@
-import axios from "axios"
-import { useEffect, useState } from "react"
-import PageNation from "../../components/common/pagination/PagiNation"
-import { useNavigate } from "react-router-dom"
-import { useAuthStore } from "../../store/authStore"
-
-const API_URL = import.meta.env.VITE_API_URL || "/api"
+import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import PageNation from "../../components/common/pagination/PagiNation";
+import { useNavigate } from "react-router-dom";
+import SendMessage from "../../components/modals/SendMessage";
+import Loading from "../../components/Loading";
+import { useAuthStore } from "../../store/authStore";
+import { Reset } from "../../context/ValueContext";
+import { ValueContext } from "../../context/ValueContext";
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 // 오타 수정: widthCredentials -> withCredentials
 const instance = axios.create({
   withCredentials: true,
-})
-
+});
 const Review = () => {
-  const [posts, setPosts] = useState([])
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+  const { user } = useAuthStore();
+  const { setValue } = useContext(ValueContext);
+  const { reset } = useContext(Reset);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const formatDate = (dateString) => {
-    if (!dateString) return ""
-    const date = new Date(dateString)
+    if (!dateString) return "";
+    const date = new Date(dateString);
     return `${date.getFullYear()}년 ${
       date.getMonth() + 1
-    }월 ${date.getDate()}일`
-  }
+    }월 ${date.getDate()}일`;
+  };
 
   const fetchPosts = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       // 백엔드 경로에 맞게 호출 (api/review)
-      const res = await instance.get(`${API_URL}/review`)
-      setPosts(res.data)
+      const res = await instance.get(`${API_URL}/review`);
+      console.log(res.data);
+      setPosts(res.data);
     } catch (e) {
-      console.error("데이터 로딩 실패:", e)
+      console.error("데이터 로딩 실패:", e);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
   const { user } = useAuthStore()
@@ -42,6 +48,17 @@ const Review = () => {
       setPosts([]) // 로그아웃 되면 게시글 목록 초기화
     }
   }, [user])
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, [reset]);
+  const inviteMember = (tripId, tripTitle) => {
+    setValue({ tripId, tripTitle, own: true });
+  };
+  const withdrawMember = (tripId, tripTitle) => {
+    setValue({ tripId, tripTitle, own: false });
+  };
   // ★ 스타일 객체 (제공해주신 디자인 적용)
   const styles = {
     container: {
@@ -49,6 +66,8 @@ const Review = () => {
       margin: "150px auto 2.5rem auto",
       padding: "2rem",
       fontFamily: "'Noto Sans KR', sans-serif",
+      minHeight: "500px",
+      // background: "yellow",
     },
     header: {
       marginBottom: "2.5rem",
@@ -117,7 +136,7 @@ const Review = () => {
       borderRadius: "0.75rem",
       listStyle: "none",
     },
-  }
+  };
 
   return (
     <div style={styles.container}>
@@ -137,7 +156,7 @@ const Review = () => {
               key={post.id}
               style={styles.tripItem}
               onClick={() => {
-                navigate(`/review/${post.id}`)
+                navigate(`/review/${post.id}`);
               }}
             >
               <div style={styles.tripInfo}>
@@ -163,6 +182,27 @@ const Review = () => {
                   </p>
                 </div>
               </div>
+
+              <div style={{ display: "relative" }}>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    inviteMember(post.id, post.title);
+                  }}
+                >
+                  멤버초대
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    withdrawMember(post.id, post.title);
+                  }}
+                >
+                  멤버탈퇴
+                </button>
+              </div>
+              {/* <SendMessage tripId={post.id} tripTitle={post.title} /> */}
               <i
                 className="fa-solid fa-chevron-right"
                 style={{ color: "#d1d5db" }}
@@ -173,15 +213,13 @@ const Review = () => {
       </section>
 
       {/* 로딩 중일 때 표시 */}
-      {loading && (
-        <p style={{ textAlign: "center", marginTop: "1rem" }}>로딩 중...</p>
-      )}
+      {loading && <Loading />}
 
       <div style={{ marginTop: "2rem" }}>
         <PageNation />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Review
+export default Review;
