@@ -1,43 +1,43 @@
-import { useState, useEffect, useRef } from "react";
-import { useAuthStore } from "../store/authStore";
+import { useState, useEffect, useRef } from "react"
+import { useAuthStore } from "../store/authStore"
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
 
-import Login from "./auth/Login";
-import Join from "./auth/Join";
-import Navigation from "./nav/MainNav";
-import MessageModal from "./modals/MessageModal";
-import SendMessage from "./modals/SendMessage";
-import SetClose from "./modals/SetClose";
+import Login from "./auth/Login"
+import Join from "./auth/Join"
+import Navigation from "./nav/MainNav"
+import MessageModal from "./modals/MessageModal"
+import SendMessage from "./modals/SendMessage"
+import SetClose from "./modals/SetClose"
 
 // import Loading from "./Loading";
 
 function Header() {
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
-  const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(true)
+  const lastScrollY = useRef(0)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+      const currentScrollY = window.scrollY
 
       if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
         // 스크롤 내릴 때 (Down)
-        setIsVisible(false);
+        setIsVisible(false)
       } else {
         // 스크롤 올릴 때 (Up)
-        setIsVisible(true);
+        setIsVisible(true)
       }
 
-      lastScrollY.current = currentScrollY;
-    };
-    window.addEventListener("scroll", handleScroll);
+      lastScrollY.current = currentScrollY
+    }
+    window.addEventListener("scroll", handleScroll)
 
     // 컴포넌트 언마운트 시 이벤트 제거 (메모리 누수 방지)
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
   // Zustand에서 상태와 액션 가져오기
   const {
@@ -47,35 +47,35 @@ function Header() {
     logout,
     loading,
     error,
-  } = useAuthStore();
+  } = useAuthStore()
 
   // 로컬 상태 (폼 입력용)
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [nickname, setNickname] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   // const [errMessage, setErrMessage] = useState(true);
-  const [select, setSelect] = useState(true);
+  const [select, setSelect] = useState(true)
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    const result = await authLogin(email, password);
+    e.preventDefault()
+    const result = await authLogin(email, password)
 
     if (result?.success) {
-      setNickname("");
-      setEmail("");
-      setPassword("");
-      navigate("/");
+      setNickname("")
+      setEmail("")
+      setPassword("")
+      navigate("/")
       // fetchPosts();
     }
-  };
+  }
 
   const handleJoin = async () => {
-    await authJoin(nickname, email, password);
-  };
+    await authJoin(nickname, email, password)
+  }
   const handleLogout = () => {
-    logout();
+    logout()
     // logoutList();
-  };
+  }
 
   return (
     <div className={`header ${!isVisible ? "hidden" : ""}`}>
@@ -114,7 +114,7 @@ function Header() {
           <div
             className="authSelector"
             onClick={() => setSelect(!select)}
-            style={{ color: "white" }}
+            //style={{ color: "white" }}
           >
             {user ? "" : select ? "회원가입" : "로그인"}
           </div>
@@ -126,7 +126,7 @@ function Header() {
       </div>
       {/* {loading && <Loading />} */}
     </div>
-  );
+  )
 }
 
-export default Header;
+export default Header

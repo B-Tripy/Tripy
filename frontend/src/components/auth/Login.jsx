@@ -14,7 +14,7 @@ const Login = ({
       <button
         onClick={handleLogout}
         className="btn-logout"
-        style={{ color: "white" }}
+        // style={{ color: "white" }}
       >
         로그아웃
       </button>
@@ -41,7 +41,7 @@ const Login = ({
         {loading ? "로그인 중..." : "LOGIN"}
       </button>
     </form>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
