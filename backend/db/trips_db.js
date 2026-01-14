@@ -28,7 +28,8 @@ async function getPostsByIdAll(UserId) {
   try {
     // usertrip 테이블과 trips 테이블을 조인하여 한 번에 가져옵니다.
     const sql = `
-      SELECT t.* FROM trips t
+      SELECT t.*, ut.owner 
+      FROM trips t
       JOIN usertrip ut ON t.id = ut.TripId
       WHERE ut.UserId = ?
     `

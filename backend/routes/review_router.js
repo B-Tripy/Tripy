@@ -26,6 +26,7 @@ router.get("/", requireAuth, async (req, res) => {
 router.get("/:id", requireAuth, async (req, res) => {
   try {
     const tripId = req.params.id
+    const owner = req.params.owner
     const userId = req.user.id // 본인의 게시글인지 확인하기 위해 필요할 수 있음
 
     // DB에서 tripId로 조회
