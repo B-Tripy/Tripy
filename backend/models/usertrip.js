@@ -15,7 +15,7 @@ module.exports = class UserTrips extends Sequelize.Model {
         underscored: false,
         createdAt: false,
         updatedAt: false,
-        modelName: "UserTrip",
+        modelName: "UserTrips",
         tableName: "UserTrip",
         paranoid: false,
         charset: "utf8",
@@ -24,7 +24,7 @@ module.exports = class UserTrips extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.UserTrip.belongsTo(db.User, { foreignKey: "UserId" });
-    db.UserTrip.belongsTo(db.Trip, { foreignKey: "TripId" });
+    db.UserTrips.belongsTo(db.Users, { foreignKey: "UserId" });
+    db.UserTrips.belongsTo(db.Trips, { foreignKey: "TripId" });
   }
 };

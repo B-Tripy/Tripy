@@ -9,7 +9,7 @@ module.exports = class Bookmarks extends Sequelize.Model {
       {
         sequelize,
         underscored: false,
-        modelName: "Bookmark",
+        modelName: "Bookmarks",
         createdAt: false,
         updatedAt: false,
         paranoid: false,
@@ -19,6 +19,6 @@ module.exports = class Bookmarks extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Bookmark.belongsTo(db.User);
+    db.Bookmarks.belongsTo(db.Users);
   }
 };

@@ -19,7 +19,7 @@ module.exports = class Themes extends Sequelize.Model {
         underscored: false,
         createdAt: true,
         updatedAt: false,
-        modelName: "Theme",
+        modelName: "Themes",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -27,6 +27,6 @@ module.exports = class Themes extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Theme.belongsTo(db.Trip);
+    db.Themes.belongsTo(db.Trips);
   }
 };

@@ -31,13 +31,12 @@ module.exports = class Photos extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
- 
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "Photo",
+        modelName: "Photos",
         createdAt: true,
         updatedAt: false,
         paranoid: false,
@@ -47,10 +46,10 @@ module.exports = class Photos extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Photo.hasOne(db.Post);
-    db.Photo.belongsTo(db.User);
-    db.Photo.belongsTo(db.Trip);
-    db.Photo.hasMany(db.PhotoCategoryMap);
-    db.Photo.belongsTo(db.EmotionsTarget);
+    db.Photos.hasOne(db.Posts);
+    db.Photos.belongsTo(db.Users);
+    db.Photos.belongsTo(db.Trips);
+    db.Photos.hasMany(db.PhotoCategoryMaps);
+    db.Photos.belongsTo(db.EmotionsTargets);
   }
 };
