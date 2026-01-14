@@ -19,7 +19,7 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
         underscored: false,
         createdAt: true,
         updatedAt: false,
-        modelName: "PhotoCategoryMap",
+        modelName: "PhotoCategoryMaps",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -27,7 +27,7 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.PhotoCategoryMap.belongsTo(db.Photo);
-    db.PhotoCategoryMap.belongsTo(db.Category);
+    db.PhotoCategoryMaps.belongsTo(db.Photos);
+    db.PhotoCategoryMaps.belongsTo(db.Categories);
   }
 };

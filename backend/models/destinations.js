@@ -31,7 +31,7 @@ module.exports = class Destinations extends Sequelize.Model {
         underscored: false,
         createdAt: true,
         updatedAt: false,
-        modelName: "Destination",
+        modelName: "Destinations",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
