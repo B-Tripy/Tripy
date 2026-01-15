@@ -181,24 +181,28 @@ const Review = () => {
                 </div>
               </div>
 
-              <div style={{ display: "relative" }}>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    inviteMember(post.id, post.title)
-                  }}
-                >
-                  멤버초대
-                </button>
+              <div style={{ marginLeft: "auto" }}>
+                {post.owner === 1 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      inviteMember(post.id, post.title)
+                    }}
+                  >
+                    멤버초대
+                  </button>
+                )}
 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    withdrawMember(post.id, post.title)
-                  }}
-                >
-                  멤버탈퇴
-                </button>
+                {post.owner === 0 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      withdrawMember(post.id, post.title)
+                    }}
+                  >
+                    멤버탈퇴
+                  </button>
+                )}
               </div>
               {/* <SendMessage tripId={post.id} tripTitle={post.title} /> */}
               <i

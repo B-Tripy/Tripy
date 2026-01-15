@@ -21,10 +21,6 @@ module.exports = class Users extends Sequelize.Model {
           allowNull: false,
           defaultValue: false,
         },
-        createdAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize,
@@ -40,7 +36,7 @@ module.exports = class Users extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Users.hasMany(db.UserTrips,{foreignKey:'UserId'})
+    db.Users.hasMany(db.UserTrips, { foreignKey: "UserId" });
     db.Users.hasMany(db.Posts);
     db.Users.hasMany(db.Photos);
     db.Users.hasMany(db.Bookmarks);

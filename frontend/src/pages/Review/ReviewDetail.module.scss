@@ -1,0 +1,172 @@
+.container {
+  max-width: 1280px;
+  margin: 200px auto 50px auto; // 상단 여백 확보
+  padding: 0 20px;
+  font-family: "Noto Sans KR", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  // 1. 상단 프롬프트 영역
+  .promptSection {
+    width: 100%;
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background-color: #fff;
+      resize: none;
+      font-size: 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+      &:focus {
+        outline: 2px solid #2563eb;
+      }
+    }
+  }
+
+  // 메인 컨텐츠 (중앙 에디터 + 우측 요약)
+  .mainContent {
+    display: grid;
+    grid-template-columns: 1fr 320px; // 메인 1 : 요약창 320px 고정
+    gap: 30px;
+    align-items: start;
+  }
+
+  // 2. 중앙 에디터 영역
+  .editorWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .imageList {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .imageRow {
+      display: flex;
+      gap: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #f3f4f6;
+
+      .imageBox {
+        width: 200px; // 사진 크기 고정
+        flex-shrink: 0;
+
+        img {
+          width: 100%;
+          height: 150px;
+          object-fit: cover;
+          border-radius: 6px;
+          background: #f3f4f6;
+        }
+
+        .imgName {
+          margin-top: 8px;
+          font-size: 0.85rem;
+          color: #6b7280;
+          text-align: center;
+        }
+      }
+
+      .textBox {
+        flex-grow: 1; // 텍스트 영역이 남은 공간 다 차지
+        display: flex;
+        flex-direction: column;
+
+        textarea {
+          width: 100%;
+          flex-grow: 1;
+          min-height: 150px;
+          padding: 1rem;
+          border: 1px solid #d1d5db;
+          border-radius: 6px;
+          resize: vertical;
+        }
+
+        .buttonGroup {
+          display: flex;
+          justify-content: flex-end; // 오른쪽 정렬
+          gap: 10px;
+          margin-top: 10px;
+
+          button {
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+          }
+
+          .btnBlue {
+            background: #2563eb;
+            color: white;
+            &:hover {
+              background: #1d4ed8;
+            }
+          }
+          .btnGray {
+            background: #6b7280;
+            color: white;
+            &:hover {
+              background: #4b5563;
+            }
+          }
+          .btnRed {
+            background: #ef4444;
+            color: white;
+            &:hover {
+              background: #dc2626;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 4. 우측 AI 요약 사이드바
+  .sideSummary {
+    position: sticky; // 스크롤 해도 따라오도록 설정
+    top: 100px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    height: calc(100vh - 200px); // 화면 높이에 맞춤
+    display: flex;
+    flex-direction: column;
+
+    .summaryDisplay {
+      flex-grow: 1;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #374151;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .summaryBtn {
+      width: 100%;
+      padding: 14px;
+      background: #000; // 기획안 느낌의 어두운 버튼
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+
+      &:hover {
+        background: #333;
+      }
+    }
+  }
+}

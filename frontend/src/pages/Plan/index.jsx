@@ -1,8 +1,19 @@
-import { useState } from "react"
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function Plan() {
-  const [activities, setActivities] = useState([])
-  const [people, setPeople] = useState("")
+  const location = useLocation();
+
+  const [activities, setActivities] = useState([]);
+  const [people, setPeople] = useState("");
+  const [destination, setDestination] = useState(""); // 목적지
+
+  useEffect(() => {
+    // Recommend 페이지에서 전달된 목적지가 있으면 state로 설정
+    if (location.state?.destination) {
+      setDestination(location.state.destination);
+    }
+  }, [location.state]);
 
   return (
     <div
@@ -24,9 +35,7 @@ export default function Plan() {
             필수사항<span style={{ color: "red" }}>*</span>
           </h4>
 
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-          >
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             {/* 출발지 / 목적지 */}
             <div style={{ display: "flex", gap: "16px" }}>
               <div style={{ flex: 1 }}>
@@ -35,7 +44,13 @@ export default function Plan() {
               </div>
               <div style={{ flex: 1 }}>
                 <p style={labelStyle}>목적지</p>
-                <input type="text" placeholder="목적지" style={inputStyle} />
+                <input
+                  type="text"
+                  placeholder="목적지"
+                  style={inputStyle}
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                />
               </div>
             </div>
 
@@ -43,19 +58,11 @@ export default function Plan() {
             <div style={{ display: "flex", gap: "16px" }}>
               <div style={{ flex: 1 }}>
                 <p style={labelStyle}>출발 날짜</p>
-                <input
-                  type="date"
-                  placeholder="연도-월-일"
-                  style={inputStyle}
-                />
+                <input type="date" placeholder="연도-월-일" style={inputStyle} />
               </div>
               <div style={{ flex: 1 }}>
                 <p style={labelStyle}>도착 날짜</p>
-                <input
-                  type="date"
-                  placeholder="연도-월-일"
-                  style={inputStyle}
-                />
+                <input type="date" placeholder="연도-월-일" style={inputStyle} />
               </div>
             </div>
 
@@ -63,10 +70,7 @@ export default function Plan() {
             <div>
               <p style={labelStyle}>인원</p>
               <select
-                style={{
-                  ...selectStyle,
-                  color: people ? "#333" : "#999",
-                }}
+                style={{ ...selectStyle, color: people ? "#333" : "#999" }}
                 value={people}
                 onChange={(e) => setPeople(e.target.value)}
               >
@@ -78,49 +82,43 @@ export default function Plan() {
                 <option value="5+">5명 이상</option>
               </select>
             </div>
+
             {/* 동행자 초대 */}
             <div style={{ display: "flex", gap: "16px" }}>
               <div style={{ flex: 1 }}>
                 <p style={labelStyle}>동행자 초대</p>
-                <input
-                  type="text"
-                  placeholder="아이디 검색"
-                  style={inputStyle}
-                />
+                <input type="text" placeholder="아이디 검색" style={inputStyle} />
               </div>
             </div>
+
+            {/* 선호 활동 */}
             <div>
               <p style={labelStyle}>선호 활동</p>
-
               <div style={activityGrid}>
-                {["관광", "맛집", "쇼핑", "자연", "문화", "레저"].map(
-                  (item) => {
-                    const selected = activities.includes(item)
+                {["관광", "맛집", "쇼핑", "자연", "문화", "레저"].map((item) => {
+                  const selected = activities.includes(item);
 
-                    return (
-                      <button
-                        key={item}
-                        onClick={() => {
-                          setActivities((prev) =>
-                            prev.includes(item)
-                              ? prev.filter((v) => v !== item)
-                              : [...prev, item]
-                          )
-                        }}
-                        style={{
-                          ...activityBox,
-                          backgroundColor: selected ? "#f5f5f5" : "#fff",
-                          color: selected ? "#333" : "#333",
-                          border: selected
-                            ? "1px solid #88AC73"
-                            : "1px solid #ddd",
-                        }}
-                      >
-                        {item}
-                      </button>
-                    )
-                  }
-                )}
+                  return (
+                    <button
+                      key={item}
+                      onClick={() => {
+                        setActivities((prev) =>
+                          prev.includes(item)
+                            ? prev.filter((v) => v !== item)
+                            : [...prev, item]
+                        );
+                      }}
+                      style={{
+                        ...activityBox,
+                        backgroundColor: selected ? "#f5f5f5" : "#fff",
+                        color: "#333",
+                        border: selected ? "1px solid #88AC73" : "1px solid #ddd",
+                      }}
+                    >
+                      {item}
+                    </button>
+                  );
+                })}
               </div>
               <button
                 style={generateButton}
@@ -137,28 +135,18 @@ export default function Plan() {
         <div style={cardStyle}>
           <h4 style={{ marginBottom: "20px" }}>선택사항</h4>
 
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-          >
-            {/* 음식 선호 */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div style={{ display: "flex", gap: "16px" }}>
               <div style={{ flex: 1 }}>
                 <p style={labelStyle}>음식 선호</p>
-                <input
-                  type="text"
-                  placeholder="예: 해산물, 채식 등"
-                  style={inputStyle}
-                />
+                <input type="text" placeholder="예: 해산물, 채식 등" style={inputStyle} />
               </div>
             </div>
-            {/* 연령대 */}
+
             <div>
               <p style={labelStyle}>연령대</p>
               <select
-                style={{
-                  ...selectStyle,
-                  color: people ? "#333" : "#999",
-                }}
+                style={{ ...selectStyle, color: people ? "#333" : "#999" }}
                 value={people}
                 onChange={(e) => setPeople(e.target.value)}
               >
@@ -169,18 +157,14 @@ export default function Plan() {
                 <option value="50+">50대 이상</option>
               </select>
             </div>
-            {/* 여행 목적 */}
+
             <div style={{ display: "flex", gap: "16px" }}>
               <div style={{ flex: 1 }}>
                 <p style={labelStyle}>여행 목적</p>
-                <input
-                  type="text"
-                  placeholder="예: 가족 여행, 신혼 여행 등"
-                  style={inputStyle}
-                />
+                <input type="text" placeholder="예: 가족 여행, 신혼 여행 등" style={inputStyle} />
               </div>
             </div>
-            {/* 추가 요구사항 */}
+
             <div style={{ display: "flex", gap: "16px" }}>
               <div style={{ flex: 1 }}>
                 <p style={labelStyle}>추가 요구사항</p>
@@ -204,15 +188,14 @@ export default function Plan() {
               minHeight: "360px",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center", // 세로 가운데
-              alignItems: "center", // 가로 가운데
+              justifyContent: "center",
+              alignItems: "center",
               textAlign: "center",
               color: "#888",
               fontSize: "13px",
               lineHeight: "1.6",
             }}
           >
-            {" "}
             <div
               style={{
                 width: "64px",
@@ -233,23 +216,22 @@ export default function Plan() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 /* ===== styles ===== */
-
 const cardStyle = {
   background: "#fff",
   borderRadius: "8px",
   padding: "24px",
   width: "28%",
   boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-}
+};
 
 const labelStyle = {
   marginBottom: "6px",
   fontSize: "14px",
-}
+};
 
 const inputStyle = {
   width: "100%",
@@ -260,7 +242,7 @@ const inputStyle = {
   display: "flex",
   alignItems: "center",
   color: "#333",
-}
+};
 
 const writeStyle = {
   width: "100%",
@@ -271,7 +253,7 @@ const writeStyle = {
   color: "#333",
   fontSize: "14px",
   boxSizing: "border-box",
-}
+};
 
 const selectStyle = {
   height: "40px",
@@ -279,20 +261,20 @@ const selectStyle = {
   borderRadius: "6px",
   border: "1px solid #ddd",
   padding: "0 12px",
-}
+};
 
 const activityGrid = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
   gap: "12px",
-}
+};
 
 const activityBox = {
   height: "40px",
   borderRadius: "6px",
   fontSize: "14px",
   cursor: "pointer",
-}
+};
 
 const generateButton = {
   width: "100%",
@@ -305,4 +287,4 @@ const generateButton = {
   border: "none",
   cursor: "pointer",
   marginTop: "20px",
-}
+};

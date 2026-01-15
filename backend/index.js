@@ -52,6 +52,7 @@ const allowedOrigins = [
   "http://192.168.45.168:8081", // 안드로이드/기타 기기 접속 주소
   "http://192.168.10.56:8081",
   "http://192.168.10.10:8081",
+  "http://192.168.10.68:8081",
   "http://192.168.10.10:5173",
 ]
 
@@ -98,7 +99,7 @@ const sessionMiddleware = session({
 
 // 필수 미들웨어들
 app.use(express.static(path.join(__dirname, "public")))
-app.use("/img", express.static(path.join(__dirname, "uploads")))
+app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(process.env.COOKIE_SECRET))
@@ -117,6 +118,8 @@ app.use("/api/review", reviewRouter)
 // 사용자 라우터 연결
 app.use("/api/users", userRouter)
 app.use("/api/upload", uploadRouter)
+// 앨범 라우터 연결
+app.use("/api/album", albumRouter)
 
 //앨범 라우터 연결
 app.use("/api/album", albumRouter)

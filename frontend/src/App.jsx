@@ -12,8 +12,9 @@ import Album from "./pages/Album"
 import Theme from "./pages/Theme"
 import Review from "./pages/Review"
 import Loading from "./components/Loading"
-import ReviewDetail from "./pages/Review/ReviewDetail" // 리뷰상세 페이지 컴포넌트
 import AI from "./pages/AI"
+import Temp from "./pages/Temp"
+import ReviewDetail from "./pages/Review/ReviewDetail" // 리뷰상세 페이지 컴포넌트
 import Rag from "./pages/Rag"
 import "./App.css"
 import { ValueContext } from "./context/ValueContext"
@@ -63,6 +64,7 @@ function App() {
                 <Route path="/review" element={<Review />} />
                 <Route path="/review/:id" element={<ReviewDetail />} />
                 <Route path="/ai" element={<AI />} />
+                <Route path="/temp" element={<Temp />} />
                 <Route path="/rag" element={<Rag />} />
                 <Route path="/chatbot" element={<Chatbot />} />
               </Routes>

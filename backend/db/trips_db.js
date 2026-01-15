@@ -12,8 +12,19 @@ async function getPostById(id) {
       return null
     }
 
-    console.log("조회된 데이터:", rows[0])
-    return rows[0]
+    const post = posts[0]
+
+    const [photos] = await pool.query(
+      "SELECT id, url, photo FROM photos WHERE TripId = ? ORDER BY id ASC",
+      [id]
+    )
+
+    const result = {
+      ...post,
+      images: photos,
+    }
+
+    return result
   } catch (error) {
     console.error("DB 조회 중 에러 발생:", error)
     throw error
@@ -44,8 +55,36 @@ async function getPostsByIdAll(UserId) {
 }
 
 /**
- * 사용자 ID로 여행 상태별 카운트 조회
+ * 사진 설명(post) 저장/수정 함수 (추가됨)
  */
+async function savePhotoDescription(photoId, userId, content) {
+  try {
+    // 1. 해당 사진에 대해 이미 작성된 글이 있는지 확인
+    const [rows] = await pool.query("SELECT id FROM posts WHERE PhotoId = ?", [
+      photoId,
+    ])
+
+    if (rows.length > 0) {
+      // 2-1. 이미 있으면 UPDATE
+      await pool.query("UPDATE posts SET post = ? WHERE PhotoId = ?", [
+        content,
+        photoId,
+      ])
+      return { message: "Updated", id: rows[0].id }
+    } else {
+      // 2-2. 없으면 INSERT (points 컬럼 기본값 0 추가)
+      const [result] = await pool.query(
+        "INSERT INTO posts (post, UserId, PhotoId, points, createdAt) VALUES (?, ?, ?, 0, NOW())",
+        [content, userId, photoId]
+      )
+      return { message: "Created", id: result.insertId }
+    }
+  } catch (error) {
+    console.error("사진 설명 저장 중 에러:", error)
+    throw error
+  }
+}
+
 async function getTripCountById(UserId) {
   const queryStr = `
     SELECT 
@@ -71,4 +110,5 @@ module.exports = {
   getPostById,
   getPostsByIdAll,
   getTripCountById,
+  savePhotoDescription,
 }
