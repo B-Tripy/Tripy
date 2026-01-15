@@ -23,7 +23,11 @@ module.exports = class Trips extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
+        start_date: {
+          type: Sequelize.DATE,
+          defaultValue: Sequelize.NOW,
+        },
+        end_date: {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
@@ -32,6 +36,8 @@ module.exports = class Trips extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
+        createdAt: true,
+        updatedAt: false,
         modelName: "Trip",
         paranoid: false,
         charset: "utf8",
@@ -40,10 +46,12 @@ module.exports = class Trips extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Trip.hasMany(db.Photo);
-    db.Trip.hasMany(db.EmotionsTarget);
-    db.Trip.belongsToMany(db.User, { through: "UserTrip" });
-    db.Trip.hasMany(db.Theme);
+    db.Trips.hasMany(db.Photos);
+    db.Trips.hasMany(db.EmotionsTargets);
+    db.Trips.hasMany(db.UserTrips, {
+      foreignKey: "TripId",
+    });
+    db.Trips.hasMany(db.Themes);
   }
 };
 

@@ -16,16 +16,14 @@ module.exports = class EmotionsTargets extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "EmotionsTarget",
+        createdAt: true,
+        updatedAt: false,
+        modelName: "EmotionsTargets",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -33,7 +31,7 @@ module.exports = class EmotionsTargets extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.EmotionsTarget.belongsTo(db.Trip);
-    db.EmotionsTarget.belongsTo(db.Photo);
+    db.EmotionsTargets.belongsTo(db.Trips);
+    db.EmotionsTargets.belongsTo(db.Photos);
   }
 };

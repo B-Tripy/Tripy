@@ -1,10 +1,15 @@
 // server/routes/users.js
 const express = require("express");
-const { findUserByEmail, createUser } = require("../db/user_db");
+const {
+  findUserByEmail,
+  createUser,
+  getUsers,
+  toggleAction,
+} = require("../db/user_db");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const passport = require("passport");
-const { User } = require("../models");
+const { Users } = require("../models");
 
 // POST /api/users/login - 로그인
 router.post("/login", (req, res, next) => {
@@ -37,6 +42,10 @@ router.post("/login", (req, res, next) => {
           }
 
           // 최종 성공 응답
+          console.log(req.session);
+          req.session.userId = user.id;
+          req.session.nickname = user.nickname;
+          req.session.email = user.email;
           return res.status(200).json({
             message: "로그인 성공",
             user: {
@@ -81,14 +90,14 @@ router.post("/join", async (req, res) => {
   }
   try {
     // const user = await User.findOne({ where: { email } });
-    const user = await User.findOne({ where: { email } });
+    const user = await Users.findOne({ where: { email } });
     if (user) {
       return res.status(401).json({ error: "이미 등록된 유저명 입니다." });
     }
     const hash = await bcrypt.hash(password, 12);
     // console.log(hash);
     // await createUser(nickname, email, hash);
-    await User.create({ nickname, email, password: hash });
+    await Users.create({ nickname, email, password: hash });
     return res.status(200).json({ message: "회원가입 성공" });
   } catch (e) {
     console.error(e);
@@ -111,5 +120,7 @@ router.post("/logout", (req, res) => {
     return res.json({ success: true, message: "로그아웃 되었습니다." });
   });
 });
+// GET /api/users/logout - 로그아웃
+
 
 module.exports = router;

@@ -1,11 +1,12 @@
-import React from "react";
+import React from "react"
 
 function Footer() {
   return (
     <footer className="footer">
-      <div className="container">© 2025 간단 게시판. All rights reserved.</div>
+      <div>© 2025 간단 게시판. All rights reserved.</div>
+      //챗봇 위젯
     </footer>
-  );
+  )
 }
 
-export default Footer;
+export default Footer

@@ -1,5 +1,7 @@
 /backend/node_modules
 /frontend/node_modules
+/backend/.env
+/frontend/.env
 
 # Logs
 logs
@@ -140,3 +142,9 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+#################################################################
+
+# Python
+
+.venv/

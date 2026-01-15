@@ -11,16 +11,15 @@ module.exports = class Themes extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
+ 
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "Theme",
+        createdAt: true,
+        updatedAt: false,
+        modelName: "Themes",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -28,6 +27,6 @@ module.exports = class Themes extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Theme.belongsTo(db.Trip)
+    db.Themes.belongsTo(db.Trips);
   }
 };

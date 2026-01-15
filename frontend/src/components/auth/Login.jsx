@@ -11,7 +11,11 @@ const Login = ({
   return user ? (
     <div className="user-info">
       <strong>{user.nickname}</strong>님 환영합니다!
-      <button onClick={handleLogout} className="btn-logout">
+      <button
+        onClick={handleLogout}
+        className="btn-logout"
+        // style={{ color: "white" }}
+      >
         로그아웃
       </button>
     </div>
@@ -37,7 +41,7 @@ const Login = ({
         {loading ? "로그인 중..." : "LOGIN"}
       </button>
     </form>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

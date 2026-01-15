@@ -1,11 +1,42 @@
-import { useState } from "react";
-import { useAuthStore } from "../store/authStore";
-import Login from "./auth/Login";
-import Join from "./auth/Join";
-import Navigation from "./nav/MainNav";
+import { useState, useEffect, useRef } from "react"
+import { useAuthStore } from "../store/authStore"
+import { useNavigate } from "react-router-dom"
+import Login from "./auth/Login"
+import Join from "./auth/Join"
+import Navigation from "./nav/MainNav"
+import MessageModal from "./modals/MessageModal"
+import SendMessage from "./modals/SendMessage"
+import SetClose from "./modals/SetClose"
+
 // import Loading from "./Loading";
 
 function Header() {
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+        // 스크롤 내릴 때 (Down)
+        setIsVisible(false);
+      } else {
+        // 스크롤 올릴 때 (Up)
+        setIsVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    // 컴포넌트 언마운트 시 이벤트 제거 (메모리 누수 방지)
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   // Zustand에서 상태와 액션 가져오기
   const {
     user,
@@ -31,6 +62,7 @@ function Header() {
       setNickname("");
       setEmail("");
       setPassword("");
+      navigate("/");
       // fetchPosts();
     }
   };
@@ -42,14 +74,9 @@ function Header() {
     logout();
     // logoutList();
   };
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setErrMessage(false);
-  //   }, 3000);
-  // }, [error]);
 
   return (
-    <header className="header">
+    <div className={`header ${!isVisible ? "hidden" : ""}`}>
       <div className="container header-content">
         <div className="header-left">
           <img className="logo" src="/assets/img/tripy.png" width="200px" />
@@ -82,14 +109,21 @@ function Header() {
               />
             )}
           </div>
-          <div className="authSelector" onClick={() => setSelect(!select)}>
+          <div
+            className="authSelector"
+            onClick={() => setSelect(!select)}
+            //style={{ color: "white" }}
+          >
             {user ? "" : select ? "회원가입" : "로그인"}
           </div>
           {error && <p className="login-error">{error}</p>}
+          {user && <SetClose userId={user.id} />}
         </div>
+        <MessageModal />
+        <SendMessage />
       </div>
       {/* {loading && <Loading />} */}
-    </header>
+    </div>
   );
 }
 

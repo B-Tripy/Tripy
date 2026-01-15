@@ -7,6 +7,12 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "http://localhost:5000",
+        // target: import.meta.env.VITE_BACKEND_URL,
+        changeOrigin: true,
+      },
+      "/ai": {
+        target: "http://localhost:8000",
+        // target: import.meta.env.VITE_BACKEND_URL,
         changeOrigin: true,
       },
     },

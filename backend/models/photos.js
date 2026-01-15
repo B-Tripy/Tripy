@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Photos extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -16,11 +16,11 @@ module.exports = class Photos extends Sequelize.Model {
           allowNull: false,
         },
         latitude: {
-          type: Sequelize.FLOAT(10, 3),
+          type: Sequelize.FLOAT(9, 6),
           allowNull: true,
         },
-        longtitude: {
-          type: Sequelize.FLOAT(10, 3),
+        longitude: {
+          type: Sequelize.FLOAT(9, 6),
           allowNull: true,
         },
         address: {
@@ -31,27 +31,25 @@ module.exports = class Photos extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "Photo",
+        modelName: "Photos",
+        createdAt: true,
+        updatedAt: false,
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
-    );
+    )
   }
   static associate(db) {
-    db.Photo.hasOne(db.Post);
-    db.Photo.belongsTo(db.User);
-    db.Photo.belongsTo(db.Trip);
-    db.Photo.hasMany(db.PhotoCategoryMap);
-    db.Photo.belongsTo(db.EmotionsTarget);
+    db.Photos.hasOne(db.Posts)
+    db.Photos.belongsTo(db.Users)
+    db.Photos.belongsTo(db.Trips)
+    db.Photos.hasMany(db.PhotoCategoryMaps)
+    db.Photos.belongsTo(db.EmotionsTargets)
   }
-};
+}

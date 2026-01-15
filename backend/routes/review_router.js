@@ -18,8 +18,9 @@ function requireAuth(req, res, next) {
 // ==================== 게시글 목록 ====================
 router.get("/", requireAuth, async (req, res) => {
   try {
-    const userId = req.user.id
+    const userId = req.user.id // 로그인된 사용자 ID
     const posts = await getPostsByIdAll(userId)
+
     return res.status(200).json(posts)
   } catch (err) {
     console.error("게시글 목록 조회 오류:", err)
@@ -27,10 +28,13 @@ router.get("/", requireAuth, async (req, res) => {
   }
 })
 
-// ==================== 게시글 상세 조회 ====================
 router.get("/:id", requireAuth, async (req, res) => {
   try {
     const tripId = req.params.id
+    const owner = req.params.owner
+    const userId = req.user.id // 본인의 게시글인지 확인하기 위해 필요할 수 있음
+
+    // DB에서 tripId로 조회
     const post = await getPostById(tripId)
 
     if (!post) {

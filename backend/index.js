@@ -5,13 +5,26 @@ const cookieParser = require("cookie-parser")
 const session = require("express-session")
 const passport = require("passport")
 const cors = require("cors")
-const boardRouter = require("./routes/board_router")
+const mainRouter = require("./routes/main_router")
+const planRouter = require("./routes/plan_router")
+const reviewRouter = require("./routes/review_router")
 const userRouter = require("./routes/user_router")
 const uploadRouter = require("./routes/upload_router")
+const albumRouter = require("./routes/album_router")
+const analysisRouter = require("./routes/analysis_router")
+const recommendRouter = require("./routes/recommend_router")
+const companionRouter = require("./routes/companion_router")
+
+const boardRouter = require("./routes/board_router")
+// const chatRouter = require("../socket");
 const passportConfig = require("./passport")
+const registerSocketHandlers = require("./socket") // 소켓 핸들러 파일
 const { RedisStore } = require("connect-redis")
 const { createClient } = require("redis")
+// const socket=require('socket')
 const redisClient = createClient()
+const http = require("http")
+const { Server } = require("socket.io")
 redisClient.connect().catch(console.error)
 
 // sequelize로 데이터베이스와 연결
@@ -28,14 +41,26 @@ sequelize
 // app.js 또는 server.js
 
 const app = express()
+const server = http.createServer(app)
+// const io = new Server(server, { cors: "*" });
 
 const allowedOrigins = [
   "http://localhost:5173", // 리액트(Vite) 로컬 개발 서버
+  "http://192.168.45.200:5173", // 우리집 pc ip
+  "http://192.168.45.223:5173", //
   "http://192.168.45.168:8081", // 안드로이드/기타 기기 접속 주소
   "http://192.168.10.56:8081",
   "http://192.168.10.10:8081",
-  "http://192.168.10.72:8081",
+  "http://192.168.10.68:8081",
+  "http://192.168.10.10:5173",
 ]
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+  },
+})
 
 app.use(
   cors({
@@ -58,8 +83,8 @@ app.set("port", process.env.PORT || 5000)
 const sessionMiddleware = session({
   store: new RedisStore({ client: redisClient, prefix: "sess:" }),
   resave: false,
-  saveUninitialized: true,
-  secret: process.env.COOKIE_SECRET,
+  saveUninitialized: false,
+  secret: process.env.COOKIE_SECRET || "PASSWORD",
   rolling: true,
   proxy: true, // 추가: 포트가 다르거나 프록시 환경일 때 쿠키 안정성 향상
   cookie: {
@@ -73,7 +98,7 @@ const sessionMiddleware = session({
 
 // 필수 미들웨어들
 app.use(express.static(path.join(__dirname, "public")))
-app.use("/img", express.static(path.join(__dirname, "uploads")))
+app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(process.env.COOKIE_SECRET))
@@ -81,11 +106,41 @@ app.use(sessionMiddleware)
 app.use(passport.initialize())
 app.use(passport.session())
 // 라우터 등록 (세션 설정 이후에!)
-// 게시판 라우터 연결
-app.use("/api/posts", boardRouter)
+app.use("/api/main", mainRouter)
+
+//플랜 라우터 연결
+app.use("/api/plan", planRouter)
+
+// 리뷰게시판 라우터 연결
+app.use("/api/review", reviewRouter)
+
 // 사용자 라우터 연결
 app.use("/api/users", userRouter)
 app.use("/api/upload", uploadRouter)
+// 앨범 라우터 연결
+app.use("/api/album", albumRouter)
+
+//앨범 라우터 연결
+app.use("/api/album", albumRouter)
+
+//분석 라우터 연결
+app.use("/api/analysis", analysisRouter)
+
+//추천 라우터 연결
+app.use("/api/recommend", recommendRouter)
+app.use("/api/companion", companionRouter)
+
+// app.use("/api/chat", chatRouter);
+
+const wrap = (middleware) => (socket, next) =>
+  middleware(socket.request, {}, next)
+
+io.use(wrap(sessionMiddleware))
+io.use(wrap(passport.initialize()))
+io.use(wrap(passport.session()))
+
+// 5. 소켓 핸들러 등록
+registerSocketHandlers(io)
 
 // 기본 라우트
 app.get("/api", (req, res) => {
@@ -98,6 +153,6 @@ app.get("/", (req, res) => {
 })
 
 const PORT = process.env.PORT || 5000
-app.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`서버 실행 중: http://localhost:${PORT}`)
 })

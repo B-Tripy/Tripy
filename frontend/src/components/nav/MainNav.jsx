@@ -1,33 +1,42 @@
 import { useState } from "react"
-import { Link } from "react-router"
+import { Link } from "react-router-dom"
+// import styles from "./MainNav.module.scss";
 
 const MainNav = () => {
-  const [select, setSelect] = useState("home")
+  const [select, setSelect] = useState("Home")
   return (
     <div className="MainNav">
       <ul>
-        <Link to="/">
+        <Link to="/main">
           <li
-            className={`${select === "Home" ? "check" : ""}`}
-            onClick={() => setSelect("Home")}
+            className={`${select === "Main" ? "check" : ""}`}
+            onClick={() => setSelect("Main")}
           >
-            Home
+            Main
           </li>
         </Link>
-        <Link to="/dash">
+        <Link to="/plan">
           <li
-            className={`${select === "Dash" ? "check" : ""}`}
-            onClick={() => setSelect("Dash")}
+            className={`${select === "Plan" ? "check" : ""}`}
+            onClick={() => setSelect("Plan")}
           >
-            DashBoard
+            Plan
           </li>
         </Link>
-        <Link to="/board">
+        <Link to="/review">
           <li
-            className={`${select === "Board" ? "check" : ""}`}
-            onClick={() => setSelect("Board")}
+            className={`${select === "Review" ? "check" : ""}`}
+            onClick={() => setSelect("Review")}
           >
-            Board
+            Review
+          </li>
+        </Link>
+        <Link to="/recommend">
+          <li
+            className={`${select === "Recommend" ? "check" : ""}`}
+            onClick={() => setSelect("Recommend")}
+          >
+            Recommend
           </li>
         </Link>
         <Link to="/album">
@@ -46,12 +55,20 @@ const MainNav = () => {
             Theme
           </li>
         </Link>
-        <Link to="/review">
+        <Link to="/ai">
           <li
-            className={`${select === "Review" ? "check" : ""}`}
-            onClick={() => setSelect("Review")}
+            className={`${select === "AI" ? "check" : ""}`}
+            onClick={() => setSelect("AI")}
           >
-            Review
+            AI
+          </li>
+        </Link>
+        <Link to="/rag">
+          <li
+            className={`${select === "Rag" ? "check" : ""}`}
+            onClick={() => setSelect("Rag")}
+          >
+            Setting
           </li>
         </Link>
       </ul>
