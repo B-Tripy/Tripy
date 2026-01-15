@@ -8,6 +8,7 @@ const cors = require("cors")
 const boardRouter = require("./routes/board_router")
 const userRouter = require("./routes/user_router")
 const uploadRouter = require("./routes/upload_router")
+const albumRouter = require("./routes/album_router")
 const passportConfig = require("./passport")
 const { RedisStore } = require("connect-redis")
 const { createClient } = require("redis")
@@ -34,6 +35,7 @@ const allowedOrigins = [
   "http://192.168.45.168:8081", // 안드로이드/기타 기기 접속 주소
   "http://192.168.10.56:8081",
   "http://192.168.10.10:8081",
+  "http://192.168.10.68:8081",
 ]
 
 app.use(
@@ -72,7 +74,7 @@ const sessionMiddleware = session({
 
 // 필수 미들웨어들
 app.use(express.static(path.join(__dirname, "public")))
-app.use("/img", express.static(path.join(__dirname, "uploads")))
+app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(process.env.COOKIE_SECRET))
@@ -85,6 +87,8 @@ app.use("/api/posts", boardRouter)
 // 사용자 라우터 연결
 app.use("/api/users", userRouter)
 app.use("/api/upload", uploadRouter)
+// 앨범 라우터 연결
+app.use("/api/album", albumRouter)
 
 // 기본 라우트
 app.get("/api", (req, res) => {

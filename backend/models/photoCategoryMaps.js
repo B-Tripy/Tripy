@@ -1,19 +1,11 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class PhotoCategoryMaps extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
         confidence_score: {
-          type: Sequelize.FLOAT(2, 1),
+          type: Sequelize.FLOAT(5, 4),
           allowNull: false,
-        },
-        createdAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
         },
       },
       {
@@ -25,10 +17,10 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
         charset: "utf8",
         collate: "utf8_general_ci",
       }
-    );
+    )
   }
   static associate(db) {
-    db.PhotoCategoryMap.belongsTo(db.Photo);
-    db.PhotoCategoryMap.belongsTo(db.Category);
+    db.PhotoCategoryMap.belongsTo(db.Photo)
+    db.PhotoCategoryMap.belongsTo(db.Category)
   }
-};
+}
