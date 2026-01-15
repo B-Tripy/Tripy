@@ -1,12 +1,13 @@
-import { useState, useEffect, useRef } from "react"
-import { useAuthStore } from "../store/authStore"
-import { useNavigate } from "react-router-dom"
-import Login from "./auth/Login"
-import Join from "./auth/Join"
-import Navigation from "./nav/MainNav"
-import MessageModal from "./modals/MessageModal"
-import SendMessage from "./modals/SendMessage"
-import SetClose from "./modals/SetClose"
+import { useState, useEffect, useRef } from "react";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
+import Login from "./auth/Login";
+import Join from "./auth/Join";
+import Navigation from "./nav/MainNav";
+import MessageModal from "./modals/MessageModal";
+import SendMessage from "./modals/SendMessage";
+import SetClose from "./modals/SetClose";
+import socket from "../socket";
 
 // import Loading from "./Loading";
 
@@ -62,7 +63,8 @@ function Header() {
       setNickname("");
       setEmail("");
       setPassword("");
-      navigate("/");
+      socket.connect();
+      navigate("/main");
       // fetchPosts();
     }
   };
@@ -71,6 +73,7 @@ function Header() {
     await authJoin(nickname, email, password);
   };
   const handleLogout = () => {
+    socket.disconnect();
     logout();
     // logoutList();
   };

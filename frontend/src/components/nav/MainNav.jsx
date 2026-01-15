@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 // import styles from "./MainNav.module.scss";
 
 const MainNav = () => {
-  const [select, setSelect] = useState("Home")
+  const [select, setSelect] = useState("Main")
   return (
     <div className="MainNav">
       <ul>
