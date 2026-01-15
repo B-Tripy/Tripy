@@ -9,6 +9,7 @@ const Album = () => {
   // 폴더를 클릭했을 때 어떤 폴더를 보고 있는지 저장 (null이면 폴더 목록 보여줌)
   const [selectedFolder, setSelectedFolder] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isAuthError, setIsAuthError] = useState(false)
   const [isError, setIsError] = useState(false)
 
   // 컴포넌트 실행 시 데이터 가져오기
@@ -18,7 +19,7 @@ const Album = () => {
 
     const fetchPhotos = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/album", {
+        const res = await axios.get("/api/album", {
           withCredentials: true,
           signal: controller.signal, // 2. axios에 시그널 연결
         })
@@ -28,6 +29,11 @@ const Album = () => {
         // 요청 취소인 경우 무시
         if (axios.isCancel(err)) return
 
+        // 401 에러(로그인 필요) 체크
+        if (err.response && err.response.status === 401) {
+          console.log("로그인이 필요합니다.")
+          setIsAuthError(true)
+        }
         // 404 에러(데이터 없음)는 에러가 아니라 '빈 목록'으로 처리
         if (err.response && err.response.status === 404) {
           console.log("데이터가 없습니다 (404). 빈 목록으로 초기화합니다.")
@@ -191,6 +197,16 @@ const Album = () => {
           사진 불러오는 중...
         </p>
       )
+
+    if (isAuthError) {
+      return (
+        <div style={styles.loginWarning}>
+          <p style={{ textAlign: "center", marginTop: "50px" }}>
+            로그인이 필요한 서비스입니다.
+          </p>
+        </div>
+      )
+    }
 
     if (isError) {
       return (

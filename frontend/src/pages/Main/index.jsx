@@ -1,75 +1,67 @@
-import React from "react"
+// import "./Main.css"
+import axios from "axios"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import PageNation from "../../components/common/pagination/PagiNation"
+import { useAuthStore } from "../../store/authStore"
+
+const API_URL = import.meta.env.VITE_API_URL || "/api"
+
+const instance = axios.create({
+  withCredentials: true,
+})
 
 const Main = () => {
-  const navigate = useNavigate()
-  const PlanPage = () => {
-    navigate("/plan")
-  }
-  const AlbumPage = () => {
-    navigate("/album")
-  }
-  // 데이터 (여행 목록)
-  const recentTrips = [
-    {
-      id: 1,
-      title: "제주도 푸른 밤",
-      location: "대한민국, 제주도",
-      date: "2024년 7월 10일 ~ 7월 14일",
-      imgUrl: "./assets/img/tripy.png",
-    },
-    {
-      id: 2,
-      title: "오사카 미식 탐방",
-      location: "일본, 오사카",
-      date: "2024년 8월 3일 ~ 8월 9일",
-      imgUrl: "./assets/img/tripy.png",
-    },
-    {
-      id: 3,
-      title: "방콕 문화 유산 탐방",
-      location: "태국, 방콕",
-      date: "2024년 9월 1일 ~ 9월 6일",
-      imgUrl: "./assets/img/tripy.png",
-    },
-    {
-      id: 4,
-      title: "파리 낭만 여행",
-      location: "프랑스, 파리",
-      date: "2024년 10월 15일 ~ 10월 20일",
-      imgUrl: "./assets/img/tripy.png",
-    },
-    {
-      id: 1,
-      title: "제주도 푸른 밤",
-      location: "대한민국, 제주도",
-      date: "2024년 7월 10일 ~ 7월 14일",
-      imgUrl: "./assets/img/tripy.png",
-    },
-    {
-      id: 2,
-      title: "오사카 미식 탐방",
-      location: "일본, 오사카",
-      date: "2024년 8월 3일 ~ 8월 9일",
-      imgUrl: "./assets/img/tripy.png",
-    },
-    {
-      id: 3,
-      title: "방콕 문화 유산 탐방",
-      location: "태국, 방콕",
-      date: "2024년 9월 1일 ~ 9월 6일",
-      imgUrl: "./assets/img/tripy.png",
-    },
-    {
-      id: 4,
-      title: "파리 낭만 여행",
-      location: "프랑스, 파리",
-      date: "2024년 10월 15일 ~ 10월 20일",
-      imgUrl: "./assets/img/tripy.png",
-    },
-  ];
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [tripCounts, setTripCounts] = useState({
+    upcoming: 0,
+    ongoing: 0,
+    completed: 0,
+  })
 
-  // ★ 스타일 객체 정의 (CSS를 자바스크립트 객체로 변환)
+  const navigate = useNavigate()
+  const { user } = useAuthStore()
+
+  // 페이지 이동 함수
+  const goToPlan = () => navigate("/plan")
+  const goToAlbum = () => navigate("/album")
+
+  const formatDate = (dateString) => {
+    if (!dateString) return ""
+    const date = new Date(dateString)
+    return `${date.getFullYear()}년 ${
+      date.getMonth() + 1
+    }월 ${date.getDate()}일`
+  }
+
+  const fetchMainData = async () => {
+    try {
+      setLoading(true)
+      const res = await instance.get(`${API_URL}/main`)
+      if (res.data.posts) {
+        setPosts(res.data.posts)
+      }
+      if (res.data.tripCount) {
+        setTripCounts(res.data.tripCount)
+      }
+    } catch (e) {
+      console.error("데이터 로딩 실패:", e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (user) {
+      fetchMainData()
+    } else {
+      setTripCounts({ upcoming: 0, ongoing: 0, completed: 0 })
+      setPosts([])
+    }
+  }, [user])
+
+  // --- 스타일 객체 (가독성을 위해 핵심 로직 아래 배치했습니다) ---
   const styles = {
     container: {
       maxWidth: "1152px",
@@ -79,26 +71,15 @@ const Main = () => {
       color: "#1f2937",
       boxSizing: "border-box",
     },
-    // 헤더 영역
-    header: {
-      marginBottom: "2.5rem",
-      marginTop: "150px",
-    },
+    header: { marginBottom: "2.5rem", marginTop: "150px" },
     title: {
       fontSize: "1.5rem",
       fontWeight: "700",
       color: "#111827",
       marginBottom: "0.25rem",
     },
-    description: {
-      color: "#6b7280",
-      marginBottom: "1.5rem",
-    },
-    buttonGroup: {
-      display: "flex",
-      gap: "0.75rem",
-    },
-    // 버튼 공통
+    description: { color: "#6b7280", marginBottom: "1.5rem" },
+    buttonGroup: { display: "flex", gap: "0.75rem" },
     btn: {
       padding: "0.625rem 1.25rem",
       borderRadius: "0.5rem",
@@ -110,28 +91,25 @@ const Main = () => {
       fontSize: "1rem",
       border: "none",
     },
-    btnPrimary: {
-      backgroundColor: "#8CBF68",
-      color: "white",
-    },
+    btnPrimary: { backgroundColor: "#8CBF68", color: "white" },
     btnSecondary: {
       backgroundColor: "white",
       border: "1px solid #d1d5db",
       color: "#374151",
     },
-    // 섹션 공통
     sectionTitle: {
       fontSize: "1.125rem",
       fontWeight: "700",
       marginBottom: "1rem",
       marginTop: "2.5rem",
     },
-    // 그리드 레이아웃
     grid: {
       display: "grid",
-      gridTemplateColumns: "repeat(3, 1fr)", // 3열 고정
+      gridTemplateColumns: "repeat(3, 1fr)",
       gap: "1.5rem",
     },
+
+    // 카드 스타일
     card: {
       backgroundColor: "white",
       padding: "1.5rem",
@@ -148,11 +126,7 @@ const Main = () => {
       justifyContent: "space-between",
       alignItems: "flex-start",
     },
-    iconBox: {
-      display: "flex",
-      alignItems: "center",
-      gap: "0.75rem",
-    },
+    iconBox: { display: "flex", alignItems: "center", gap: "0.75rem" },
     iconCircle: {
       width: "2.5rem",
       height: "2.5rem",
@@ -161,12 +135,8 @@ const Main = () => {
       alignItems: "center",
       justifyContent: "center",
     },
-    // 리스트 아이템
-    tripList: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "0.75rem",
-    },
+    // 리스트 스타일
+    tripList: { display: "flex", flexDirection: "column", gap: "0.75rem" },
     tripItem: {
       backgroundColor: "white",
       padding: "1rem",
@@ -178,11 +148,7 @@ const Main = () => {
       justifyContent: "space-between",
       cursor: "pointer",
     },
-    tripInfo: {
-      display: "flex",
-      alignItems: "center",
-      gap: "1rem",
-    },
+    tripInfo: { display: "flex", alignItems: "center", gap: "1rem" },
     tripThumb: {
       width: "4rem",
       height: "4rem",
@@ -190,16 +156,7 @@ const Main = () => {
       overflow: "hidden",
       backgroundColor: "#e5e7eb",
     },
-    img: {
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-    },
-    // 기타 유틸
-    textGreen: { color: "#8CBF68" },
-    textOrange: { color: "#fb923c" },
-    bgGreenLight: { backgroundColor: "#f0fdf4", color: "#8CBF68" },
-    bgOrangeLight: { backgroundColor: "#fff7ed", color: "#fb923c" },
+    img: { width: "100%", height: "100%", objectFit: "cover" },
     tripTitle: {
       margin: 0,
       fontSize: "1rem",
@@ -211,7 +168,54 @@ const Main = () => {
       fontSize: "0.875rem",
       color: "#6b7280",
     },
-  };
+    empty: {
+      listStyle: "none",
+      padding: "1rem",
+      textAlign: "center",
+      color: "#6b7280",
+    },
+
+    // 유틸리티 스타일
+    themes: {
+      green: {
+        text: { color: "#8CBF68" },
+        bg: { backgroundColor: "#f0fdf4", color: "#8CBF68" },
+      },
+      orange: {
+        text: { color: "#fb923c" },
+        bg: { backgroundColor: "#fff7ed", color: "#fb923c" },
+      },
+    },
+  }
+
+  // ★ [최적화 핵심] 카드 데이터 배열 정의
+  // 화면에 그릴 카드들의 정보를 배열로 관리합니다.
+  const cardData = [
+    {
+      id: "ongoing",
+      title: "진행 중인 여행",
+      count: tripCounts.ongoing,
+      desc: "현재 진행 중인 여행이 있습니다.",
+      icon: "fa-solid fa-plane",
+      theme: "green", // styles.themes.green 사용
+    },
+    {
+      id: "upcoming",
+      title: "다가오는 일정",
+      count: tripCounts.upcoming,
+      desc: "곧 시작할 여행이 있습니다.",
+      icon: "fa-regular fa-bell",
+      theme: "orange", // styles.themes.orange 사용
+    },
+    {
+      id: "completed",
+      title: "완료된 여행",
+      count: tripCounts.completed,
+      desc: "완료된 여행",
+      icon: "fa-solid fa-check", // 아이콘 통일감을 위해 변경 (원하면 fa-plane 유지 가능)
+      theme: "green",
+    },
+  ]
 
   return (
     <div style={styles.container}>
@@ -223,100 +227,55 @@ const Main = () => {
         <div style={styles.buttonGroup}>
           <button
             style={{ ...styles.btn, ...styles.btnPrimary }}
-            onClick={PlanPage}
+            onClick={goToPlan}
           >
             <i className="fa-solid fa-plus"></i> 새 여행 만들기
           </button>
           <button
             style={{ ...styles.btn, ...styles.btnSecondary }}
-            onClick={AlbumPage}
+            onClick={goToAlbum}
           >
             <i className="fa-regular fa-image"></i> 앨범 이동
           </button>
         </div>
       </header>
 
-      {/* 2. 여행 요약 (카드) */}
+      {/* 2. 여행 요약 (카드) - 최적화된 부분 */}
       <section>
         <h2 style={styles.sectionTitle}>여행 요약</h2>
         <div style={styles.grid}>
-          {/* 카드 1 */}
-          <div style={styles.card}>
-            <div style={styles.cardTop}>
-              <div style={styles.iconBox}>
-                <div style={{ ...styles.iconCircle, ...styles.bgGreenLight }}>
-                  <i className="fa-solid fa-plane"></i>
-                </div>
-                <span style={{ fontWeight: 500, color: "#4b5563" }}>
-                  진행 중인 여행
-                </span>
-              </div>
-              <span
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: 700,
-                  ...styles.textGreen,
-                }}
-              >
-                2
-              </span>
-            </div>
-            <p style={{ fontSize: "0.875rem", color: "#9ca3af", margin: 0 }}>
-              현재 진행 중인 여행이 있습니다.
-            </p>
-          </div>
+          {cardData.map((card) => {
+            const themeStyle = styles.themes[card.theme] // green or orange 스타일 가져오기
 
-          {/* 카드 2 */}
-          <div style={styles.card}>
-            <div style={styles.cardTop}>
-              <div style={styles.iconBox}>
-                <div style={{ ...styles.iconCircle, ...styles.bgOrangeLight }}>
-                  <i className="fa-regular fa-bell"></i>
+            return (
+              <div key={card.id} style={styles.card}>
+                <div style={styles.cardTop}>
+                  <div style={styles.iconBox}>
+                    <div style={{ ...styles.iconCircle, ...themeStyle.bg }}>
+                      <i className={card.icon}></i>
+                    </div>
+                    <span style={{ fontWeight: 500, color: "#4b5563" }}>
+                      {card.title}
+                    </span>
+                  </div>
+                  <span
+                    style={{
+                      fontSize: "1.5rem",
+                      fontWeight: 700,
+                      ...themeStyle.text,
+                    }}
+                  >
+                    {card.count}
+                  </span>
                 </div>
-                <span style={{ fontWeight: 500, color: "#4b5563" }}>
-                  다가오는 일정
-                </span>
+                <p
+                  style={{ fontSize: "0.875rem", color: "#9ca3af", margin: 0 }}
+                >
+                  {card.desc}
+                </p>
               </div>
-              <span
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: 700,
-                  ...styles.textOrange,
-                }}
-              >
-                3
-              </span>
-            </div>
-            <p style={{ fontSize: "0.875rem", color: "#9ca3af", margin: 0 }}>
-              곧 시작할 여행이 있습니다.
-            </p>
-          </div>
-
-          {/* 새 여행 추가 버튼 */}
-          <div style={styles.card}>
-            <div style={styles.cardTop}>
-              <div style={styles.iconBox}>
-                <div style={{ ...styles.iconCircle, ...styles.bgGreenLight }}>
-                  <i className="fa-solid fa-plane"></i>
-                </div>
-                <span style={{ fontWeight: 500, color: "#4b5563" }}>
-                  완료된 여행
-                </span>
-              </div>
-              <span
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: 700,
-                  ...styles.textGreen,
-                }}
-              >
-                2
-              </span>
-            </div>
-            <p style={{ fontSize: "0.875rem", color: "#9ca3af", margin: 0 }}>
-              완료된 여행
-            </p>
-          </div>
+            )
+          })}
         </div>
       </section>
 
@@ -324,16 +283,35 @@ const Main = () => {
       <section>
         <h2 style={styles.sectionTitle}>최근 일정</h2>
         <div style={styles.tripList}>
-          {recentTrips.map((trip) => (
-            <div key={trip.id} style={styles.tripItem}>
+          {posts.length === 0 && !loading && (
+            <div style={styles.empty}>
+              아직 게시글이 없습니다. 첫 글을 작성해보세요!
+            </div>
+          )}
+
+          {posts.map((post) => (
+            <div
+              key={post.id}
+              style={styles.tripItem}
+              onClick={() => navigate(`/review/${post.id}`)}
+            >
               <div style={styles.tripInfo}>
                 <div style={styles.tripThumb}>
-                  <img src={trip.imgUrl} alt={trip.title} style={styles.img} />
+                  <img
+                    src="/assets/img/tripy.png"
+                    alt="logo"
+                    style={styles.img}
+                  />
                 </div>
                 <div>
-                  <h3 style={styles.tripTitle}>{trip.title}</h3>
+                  <h3 style={styles.tripTitle}>{post.title}</h3>
                   <p style={styles.tripDate}>
-                    {trip.location} · {trip.date}
+                    {post.description} ·{" "}
+                    {post.start_date && post.end_date
+                      ? `${formatDate(post.start_date)} ~ ${formatDate(
+                          post.end_date
+                        )}`
+                      : new Date(post.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -345,8 +323,16 @@ const Main = () => {
           ))}
         </div>
       </section>
-    </div>
-  );
-};
 
-export default Main;
+      {loading && (
+        <p style={{ textAlign: "center", marginTop: "1rem" }}>로딩 중...</p>
+      )}
+
+      <div style={{ marginTop: "2rem" }}>
+        <PageNation />
+      </div>
+    </div>
+  )
+}
+
+export default Main

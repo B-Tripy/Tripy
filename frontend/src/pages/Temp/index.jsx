@@ -26,14 +26,10 @@ const Temp = () => {
       // 이전 결과 초기화 (새로운 요청 시 화면 깜빡임 방지)
       setResult(null)
 
-      const res = await axios.post(
-        "http://localhost:5000/api/upload",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-        }
-      )
+      const res = await axios.post("/api/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      })
 
       console.log("서버 응답:", res.data)
       setResult(res.data)
@@ -93,9 +89,6 @@ const Temp = () => {
               <h3 style={{ color: "#d32f2f" }}>⚠️ 이미 저장된 사진입니다</h3>
               <p>
                 <strong>DB 저장 ID:</strong> {result.photoId}
-              </p>
-              <p>
-                <strong>기존 분류 카테고리:</strong> {result.category}
               </p>
             </div>
           ) : (

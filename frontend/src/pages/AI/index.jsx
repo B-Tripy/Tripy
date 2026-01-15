@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import Loading from "../../components/Loading";
+import PageNation from "../../components/common/pagination/PagiNation";
 const Ai = () => {
   const [value, setValues] = useState({});
 
@@ -19,7 +20,7 @@ const Ai = () => {
     console.log(value);
     setLoading(true);
     await axios
-      .post("http://127.0.0.1:8000/ai/poem", {
+      .post("/ai/poem", {
         topic: value.topic,
         style: value.style,
       })
@@ -82,6 +83,7 @@ const Ai = () => {
       <div style={{ margin: "100px" }}>
         <textarea value={poem} rows="40" cols="40"></textarea>
       </div>
+      <PageNation />
       {loading && <Loading />}
     </div>
   );
