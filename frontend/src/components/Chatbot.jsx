@@ -1,10 +1,19 @@
 import React, { useState, useEffect, useRef } from "react"
 import "./Chatbot.css"
+import axios from "axios"
+import { useAuthStore } from "../store/authStore"
+
+const API_URL = import.meta.env.VITE_API_URL || "/api"
+
+const instance = axios.create({
+  withCredentials: true,
+})
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [input, setInput] = useState("")
-
+  // 사용자 정보 가져오기
+  const user = useAuthStore((state) => state.user)
   // 1. 대화 내역을 저장할 배열 상태 (초기 메시지 포함)
   const [messages, setMessages] = useState([
     {
@@ -25,17 +34,25 @@ const Chatbot = () => {
     scrollToBottom()
   }, [messages])
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!input.trim()) return
 
+    // 비로그인 상태일 경우 user가 null일 수 있으므로 방어 코드가 필요합니다.
+    const currentUserId = user ? user.id : "guest"
+
     // 2. 새로운 메시지 객체 생성 (사용자)
-    const newMessage = { role: "user", content: input }
+    const newUiMessage = {
+      role: "user",
+      content: input,
+    }
 
     // 3. 기존 배열에 새 메시지 추가
-    setMessages((prevMessages) => [...prevMessages, newMessage])
+    setMessages((prevMessages) => [...prevMessages, newUiMessage])
 
-    console.log("서버로 전송할 메시지:", input)
-
+    console.log("전송할 데이터:", {
+      userId: currentUserId,
+      message: input,
+    })
     // 입력창 초기화
     setInput("")
 
