@@ -64,6 +64,7 @@ function App() {
                 <Route path="/review/:id" element={<ReviewDetail />} />
                 <Route path="/ai" element={<AI />} />
                 <Route path="/rag" element={<Rag />} />
+                <Route path="/chatbot" element={<Chatbot />} />
               </Routes>
             </main>
           </Reset.Provider>

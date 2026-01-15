@@ -129,7 +129,7 @@ app.use("/api/recommend", recommendRouter)
 app.use("/api/companion", companionRouter)
 
 //챗봇 라우터 연결
-app.use("/api/chat", chatRouter)
+app.use("/api/chatbot", chatRouter)
 
 // app.use("/api/chat", chatRouter);
 

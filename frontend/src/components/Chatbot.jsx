@@ -12,6 +12,7 @@ const instance = axios.create({
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [input, setInput] = useState("")
+  const [loading, setLoading] = useState(false) // 로딩 상태 추가
   // 사용자 정보 가져오기
   const user = useAuthStore((state) => state.user)
   // 1. 대화 내역을 저장할 배열 상태 (초기 메시지 포함)
@@ -37,8 +38,9 @@ const Chatbot = () => {
   const handleSendMessage = async () => {
     if (!input.trim()) return
 
-    // 비로그인 상태일 경우 user가 null일 수 있으므로 방어 코드가 필요합니다.
-    const currentUserId = user ? user.id : "guest"
+    // state인 input을 바로 비울 것이므로, 변수에 따로 저장해둡니다.
+    const messageToSend = input
+    const currentUserId = user?.id || "guest"
 
     // 2. 새로운 메시지 객체 생성 (사용자)
     const newUiMessage = {
@@ -55,11 +57,34 @@ const Chatbot = () => {
     })
     // 입력창 초기화
     setInput("")
+    setLoading(true) // 로딩 시작
+    //  Node.js API를 호출하여 답변을 받아오기
+    try {
+      const response = await instance.post(`${API_URL}/chatbot`, {
+        userId: currentUserId,
+        response: messageToSend,
+      })
 
-    // (참고) 나중에 여기서 Node.js API를 호출하여 AI 답변을 받아오고
-    // 다시 setMessages로 답변을 추가하면 됩니다.
+      // 4. API 응답을 받아서 메시지 배열에 추가
+      const aiResponse =
+        response.data.response || "죄송합니다. 답변을 받을 수 없습니다."
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: "assistant", content: aiResponse },
+      ])
+    } catch (error) {
+      console.error("API 호출 중 오류 발생:", error)
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "죄송합니다. 서버 연결에 실패했습니다.",
+        },
+      ])
+    } finally {
+      setLoading(false) // 로딩 끝
+    }
   }
-
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       // 4. 한글 중복 입력 방지 (중요!)
