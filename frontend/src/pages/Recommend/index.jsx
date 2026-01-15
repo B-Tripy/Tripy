@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 import "./Recommend.css";
 
 const Recommend = () => {
   const { user, isChecking } = useAuthStore();
+  const navigate = useNavigate();
 
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -28,7 +30,7 @@ const Recommend = () => {
 
       try {
         const [recRes, bmRes] = await Promise.all([
-          fetch("/ai/recommend", {
+          fetch("/ai/recommend/tour", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ count: 5, userId: user.id }),
@@ -130,6 +132,13 @@ const Recommend = () => {
   };
 
   // -----------------------------
+  // Plan 페이지로 이동
+  // -----------------------------
+  const handleGoToPlan = (item) => {
+    navigate("/plan", { state: { destination: item.title } });
+  };
+
+  // -----------------------------
   // 렌더링
   // -----------------------------
   return (
@@ -179,7 +188,10 @@ const Recommend = () => {
                       : "⭐ 북마크에 추가"}
                   </button>
 
-                  <button className="btn btn-success">
+                  <button
+                    className="btn btn-success"
+                    onClick={() => handleGoToPlan(item)}
+                  >
                     🗓 이 여행으로 계획 세우기
                   </button>
                 </div>
