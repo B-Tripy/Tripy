@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useAuthStore } from "../store/authStore"
-
 import { useNavigate } from "react-router-dom"
-
 import Login from "./auth/Login"
 import Join from "./auth/Join"
 import Navigation from "./nav/MainNav"
