@@ -65,6 +65,7 @@
   border-radius: 15px;
   font-size: 14px;
   line-height: 1.4;
+  white-space: pre-wrap;
   word-wrap: break-word; /* 긴 단어 줄바꿈 */
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   position: relative;
