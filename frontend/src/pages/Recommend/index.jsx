@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../store/authStore";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/Loading";
 import "./Recommend.css";
 
 const Recommend = () => {
@@ -10,8 +11,8 @@ const Recommend = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [bookmarkMsg, setBookmarkMsg] = useState(""); 
-  const [bookmarked, setBookmarked] = useState([]); 
+  const [bookmarkMsg, setBookmarkMsg] = useState("");
+  const [bookmarked, setBookmarked] = useState([]);
 
   // -----------------------------
   // 추천 여행지 불러오기
@@ -33,7 +34,7 @@ const Recommend = () => {
           fetch("/ai/recommend/tour", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ count: 5, userId: user.id }),
+            body: JSON.stringify({ count: 3, userId: user.id }),
           }),
           fetch(`http://localhost:8000/bookmark/list?userid=${user.id}`)
         ]);
@@ -151,8 +152,6 @@ const Recommend = () => {
         </p>
       ) : isChecking ? (
         <p className="recommend-sub">로그인 상태를 확인하는 중입니다...</p>
-      ) : loading ? (
-        <p className="recommend-sub">AI 추천 여행지를 불러오는 중...</p>
       ) : error ? (
         <p className="error">{error}</p>
       ) : (
@@ -200,6 +199,11 @@ const Recommend = () => {
           </div>
         </>
       )}
+
+      {/* -----------------------------
+          로딩 오버레이
+      ----------------------------- */}
+      {loading && <Loading />}
     </div>
   );
 };
