@@ -37,30 +37,10 @@ async function createUser(nickname, email, password) {
     password,
   ]);
 }
-async function getUsers() {
-  const [rows] = await pool.query(
-    "SELECT id,nickname,email FROM users WHERE search=1;"
-  );
-  if (!rows || rows.length === 0) return null;
 
-  return rows;
-}
-async function toggleAction(userId, checked) {
-  console.log(userId, checked);
-  value = checked === false ? 0 : 1;
-  const [rows] = await pool.query("UPDATE USERS SET search=? where id=?", [
-    value,
-    userId,
-  ]);
-  if (!rows || rows.length === 0) return null;
-  // console.log(rows);
-  return rows[0];
-}
 module.exports = {
   findUserByCredentials,
   findUserById,
   findUserByEmail,
-  createUser,
-  getUsers,
-  toggleAction,
+  createUser
 };

@@ -121,25 +121,6 @@ router.post("/logout", (req, res) => {
   });
 });
 // GET /api/users/logout - 로그아웃
-router.get("/getUsers", async (req, res) => {
-  // console.log("getUsers");
-  try {
-    const result = await getUsers();
-    console.log(result);
-    return res.status(200).json({ success: "OK", users: result });
-  } catch (e) {}
-});
-router.post("/toggle", async (req, res) => {
-  console.log("aaaa");
-  const { userId, toggle } = req.body;
-  // console.log("userId", userId, "toggle", toggle);
-  try {
-    const result = await toggleAction(userId, toggle);
 
-    return res.status(200).json({ success: "OK", });
-  } catch (e) {
-    console.error(e);
-  }
-});
 
 module.exports = router;

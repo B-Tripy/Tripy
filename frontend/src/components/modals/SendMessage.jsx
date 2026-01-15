@@ -8,10 +8,19 @@ export default function SendMessage() {
   const [toUserEmail, setToUserEmail] = useState("");
   const [users, setUsers] = useState([]);
   const [text, setText] = useState("");
+  const [sendMails, setSendMails] = useState([]);
   const { user } = useAuthStore(); // 검색이 허용된  user들 가져오기
   const [visible, setVisible] = useState(false);
   const { value } = useContext(ValueContext);
   const { setReset } = useContext(Reset);
+
+  useEffect(() => {
+    socket.connect(); // autoConnect:false라서 직접 연결
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     // delivery_status 이벤트는 컴포넌트가 마운트될 때 한 번만 등록
     socket.on("delivery_status", (status) => {
@@ -28,9 +37,21 @@ export default function SendMessage() {
   }, []);
   const getUsers = async () => {
     try {
-      const users = await axios.get("/api/users/getUsers");
+      const users = await axios.get("/api/companion/getUsers");
       console.log(users.data.users);
       setUsers(users.data.users);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const getUserByEmail = async () => {
+    try {
+      const users = await axios.post("/api/companion/getUserByEmail", {
+        toUserEmail,
+      });
+      console.log(users.data.users);
+
+      setUsers([users.data.users, ...users]);
     } catch (e) {
       console.error(e);
     }
@@ -46,15 +67,40 @@ export default function SendMessage() {
     }
     // setValue({ tripId: 0, tripTitle: "", own: true });
   }, [value]);
+
   const sendMessage = () => {
-    console.log("emit 실행:", toUserEmail, value.tripId, value.tripTitle, text);
-    socket.emit("send_to_user", {
-      toUserEmail,
-      tripId: value.tripId,
-      tripTitle: value.tripTitle,
-      text,
-    });
+    const requests = sendMails.map(
+      (email) =>
+        new Promise((resolve, reject) => {
+          socket.emit(
+            "send_to_user",
+            {
+              toUserEmail: email,
+              tripId: value.tripId,
+              tripTitle: value.tripTitle,
+              text,
+            },
+            (response) => {
+              // 서버에서 ack 콜백을 보내줄 때 실행됨
+              if (response.success) {
+                resolve(response);
+              } else {
+                reject(response.error);
+              }
+            }
+          );
+        })
+    );
+
+    Promise.all(requests)
+      .then((responses) => {
+        responses.forEach((res) => console.log(res));
+      })
+      .catch((e) => {
+        console.error("하나라도 실패하면 여기로 옵니다:", e);
+      });
   };
+
   const withdraw = async () => {
     console.log("user", user.id);
     try {
@@ -82,18 +128,43 @@ export default function SendMessage() {
         <span> </span>
         {value.own ? "동행 요청" : "동행 취소"}
       </h4>
-
+      <div style={{ borderBottom: "3px solid white", paddingBottom: "1rem" }}>
+        <input
+          style={{
+            padding: "5px",
+            borderRadius: "8px",
+            border: "none",
+            paddingLeft: ".7rem",
+          }}
+          placeholder="받는 유저 Email"
+          value={toUserEmail}
+          onChange={(e) => setToUserEmail(e.target.value)}
+        />
+        <button
+          style={{ marginLeft: "2rem" }}
+          onClick={() => {
+            // getUserByEmail();
+            // alert(toUserEmail);
+            // console.log("users", ...users);
+            setUsers([{ email: toUserEmail }, ...users]);
+            setToUserEmail("");
+          }}
+        >
+          추가
+        </button>
+      </div>
       {value.own ? (
         Array.isArray(users) &&
         users.map(
-          (member) =>
+          (member, index) =>
             member.id !== user.id && (
               <div
-                key={user.id} // map 사용 시 key 필수
+                key={index} // map 사용 시 key 필수
                 className="inputs"
                 style={{
-                  minHeight: "200px",
+                  // minHeight: "200px",
                   width: "100%",
+                  marginTop: "1rem",
                 }}
               >
                 <input
@@ -105,15 +176,16 @@ export default function SendMessage() {
                   }}
                   placeholder="받는 유저 Email"
                   value={member.email}
-                  // onChange={(e) => setToUserEmail(e.target.value)}
+                  onChange={(e) => setToUserEmail(e.target.value)}
                 />
                 <label>
                   <input
                     type="checkbox"
                     style={{ margin: "10px" }}
-                    onClick={() => setToUserEmail(member.email)}
+                    onClick={() => setSendMails([member.email, ...sendMails])}
                   />
-                  확인/체크하면 배열에 넣고 보내기하면 promise.all사용 해 볼 것
+                  확인
+                  {/* 확인/체크하면 배열에 넣고 보내기하면 promise.all사용 해 볼 것 */}
                 </label>
               </div>
             )
@@ -132,7 +204,12 @@ export default function SendMessage() {
 
       <div
         className="button"
-        style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: "8px",
+          marginTop: "2rem",
+        }}
       >
         {value.own ? (
           <button onClick={sendMessage}>보내기</button>
