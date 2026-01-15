@@ -14,6 +14,7 @@ const albumRouter = require("./routes/album_router")
 const analysisRouter = require("./routes/analysis_router")
 const recommendRouter = require("./routes/recommend_router")
 const companionRouter = require("./routes/companion_router")
+const chatRouter = require("./routes/chatbot_router")
 
 const boardRouter = require("./routes/board_router")
 // const chatRouter = require("../socket");
@@ -129,6 +130,9 @@ app.use("/api/analysis", analysisRouter)
 //추천 라우터 연결
 app.use("/api/recommend", recommendRouter)
 app.use("/api/companion", companionRouter)
+
+//챗봇 라우터 연결
+app.use("/api/chatbot", chatRouter)
 
 // app.use("/api/chat", chatRouter);
 
