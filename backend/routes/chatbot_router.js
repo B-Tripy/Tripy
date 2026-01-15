@@ -23,6 +23,7 @@ const SCENARIOS = {
   mukbang: `먹방 여행은 역시 '전주 한옥마을'과 '부산 자갈치 시장'이죠! 🥘`,
   incheon: `인천 개항로 투어: 차이나타운 -> 동화마을 -> 월미도 코스입니다. 🎡`,
   gapyeong: `가평 캠핑: 아침고요수목원 -> 남이섬 -> 자라섬 캠핑장 코스입니다. ⛺`,
+  gohome: "이불 밖은 위험해요 😴 빨리 집에 가요!",
 }
 
 // ==================== 챗봇 라우터 ====================
@@ -67,6 +68,8 @@ router.post("/", requireAuth, async (req, res) => {
     aiResponse = SCENARIOS.incheon
   } else if (response.includes("가평")) {
     aiResponse = SCENARIOS.gapyeong
+  } else if (response.includes("집")) {
+    aiResponse = SCENARIOS.gohome
   }
   // 예외 처리 (이해하지 못한 경우)
   else {

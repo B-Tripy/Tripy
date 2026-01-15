@@ -11,8 +11,8 @@
 
 /* 채팅창 본체 */
 .chat-window {
-  width: 320px;
-  height: 450px;
+  width: 350px;
+  height: 570px;
   background-color: white;
   border-radius: 15px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
