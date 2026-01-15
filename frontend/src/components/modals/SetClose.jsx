@@ -25,9 +25,9 @@ const SetClose = ({ userId }) => {
     <div style={{ userSelect: "none", marginLeft: "auto" }}>
       {/* {userId} */}
       {pickUser.includes(userId) ? (
-        <img src="/public/assets/icons/toggle_on.png" width="60px" />
+        <img src="/assets/icons/toggle_on.png" width="60px" />
       ) : (
-        <img src="/public/assets/icons/toggle_off.png" width="60px" />
+        <img src="/assets/icons/toggle_off.png" width="60px" />
       )}
       <label>
         <input
