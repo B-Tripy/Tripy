@@ -16,11 +16,21 @@ router.post("/", requireAuth, async (req, res) => {
 
   console.log(`User ID: ${userId}, Message: ${response}`)
 
-  //시나리오 로직
-  const aiResponse = getBotResponse(response)
-  //AI 모델 호출, 데이터베이스 조회 등예정
+  try {
+    //await 키워드  (FastAPI 응답 대기)
+    //userId 인자 (getBotResponse(userId, response) 순서 중요)
+    const aiResponse = await getBotResponse(userId, response)
 
-  return res.json({ response: aiResponse })
+    // 정상적으로 답변을 받아오면 클라이언트에 전송
+    return res.json({ response: aiResponse })
+  } catch (error) {
+    // [수정 3] 에러 처리 추가
+    console.error("챗봇 로직 처리 중 에러 발생:", error)
+    return res.status(500).json({
+      response:
+        "죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+    })
+  }
 })
 
 module.exports = router
