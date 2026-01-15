@@ -1,7 +1,10 @@
 // chatbotLogic.js
 const SCENARIOS = require("./chatbotData")
+const axios = require("axios")
 
-const getBotResponse = (message) => {
+const FASTAPI_URL = "http://127.0.0.1:8000/chatbot/"
+
+const getBotResponse = async (userId, message) => {
   // 공백 제거 및 소문자 변환 (영어 입력 대비)
   const msg = message.trim().replace(/ /g, "")
 
@@ -21,17 +24,37 @@ const getBotResponse = (message) => {
     return SCENARIOS.course_main
   }
 
-  // === 4. 고객센터 (진입) ===
+  // === 고객센터 (진입) ===
   if (
     msg.includes("3") ||
-    msg.includes("문의") ||
+    msg.includes("고객센터") ||
     msg.includes("센터") ||
-    msg.includes("도움")
+    msg.includes("문의")
   ) {
     return SCENARIOS.support
   }
-  if (msg.includes("상담") || msg.includes("연결")) {
-    return SCENARIOS.agent_connect
+  // === AI상담원 연결 (진입) ===
+  const isAgentRequest = ["4", "ai", "상담", "연결", "도움", "AI상담원"].some(
+    (k) => msg.toLowerCase().includes(k)
+  )
+  if (isAgentRequest || !SCENARIOS[msg]) {
+    try {
+      console.log(` Node -> FastAPI 요청 보냄: ${message}`)
+
+      // ★ FastAPI로 POST 요청 전송
+      const response = await axios.post(FASTAPI_URL, {
+        message: message, // 유저 질문 전달
+        userId: userId, // 유저 ID 전달
+      })
+
+      // FastAPI가 준 답변({ result: "..." })에서 텍스트만 꺼냄
+      const aiReply = response.data.result
+
+      return ` [AI 가이드]: ${aiReply}`
+    } catch (error) {
+      console.error("❌ FastAPI 연결 실패:", error.message)
+      return "죄송합니다. 현재 AI 서버와 연결할 수 없습니다. 잠시 후 다시 시도해 주세요."
+    }
   }
 
   // === 5. 세부 시나리오 (추천) ===
