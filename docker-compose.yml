@@ -1,19 +1,18 @@
-version: '3.8'
 
 services:
   backend-node:
     build:
-      context: ./backend-node
+      context: ./backend
       dockerfile: Dockerfile
-    container_name: backend-node
+    container_name: backend
     ports:
       - "5000:5000"
     environment:
-      - DB_HOST=your-mysql-host
-      - DB_PORT=3307
-      - DB_USER=your-username
-      - DB_PASSWORD=your-password
-      - DB_NAME=your-database
+      - DB_HOST=mysql        # 서비스 이름으로 접근
+      - DB_PORT=3306         # MySQL 기본 포트
+      - DB_USER=root
+      - DB_PASSWORD=1234
+      - DB_NAME=db-trip
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     restart: unless-stopped
@@ -22,19 +21,31 @@ services:
 
   backend-fastapi:
     build:
-      context: ./backend-fastapi
+      context: ./fastapi
       dockerfile: Dockerfile
-    container_name: backend-fastapi
+    container_name: fastapi
     ports:
       - "8000:8000"
     environment:
-      - DB_HOST=your-mysql-host
-      - DB_PORT=3307
-      - DB_USER=your-username
-      - DB_PASSWORD=your-password
-      - DB_NAME=your-database
+      - DB_HOST=mysql        # 동일하게 mysql 서비스 이름 사용
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=1234
+      - DB_NAME=db-trip
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=db-trip
+    ports:
+      - "3307:3306"          # 호스트에서는 3307, 컨테이너 내부는 3306
     restart: unless-stopped
     networks:
       - app-network
@@ -58,6 +69,7 @@ services:
     depends_on:
       - backend-node
       - backend-fastapi
+      - mysql
     restart: unless-stopped
     networks:
       - app-network
