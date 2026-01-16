@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Users extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -33,16 +33,17 @@ module.exports = class Users extends Sequelize.Model {
         createdAt: true,
         updatedAt: false,
         modelName: "Users",
+        tableName: "users",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
-    );
+    )
   }
   static associate(db) {
-    db.Users.hasMany(db.UserTrips,{foreignKey:'UserId'})
-    db.Users.hasMany(db.Posts);
-    db.Users.hasMany(db.Photos);
-    db.Users.hasMany(db.Bookmarks);
+    db.Users.hasMany(db.UserTrip, { foreignKey: "UserId" })
+    db.Users.hasMany(db.Posts)
+    db.Users.hasMany(db.Photos)
+    db.Users.hasMany(db.Bookmarks)
   }
-};
+}

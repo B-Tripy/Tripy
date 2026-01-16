@@ -19,6 +19,7 @@ module.exports = class Categories extends Sequelize.Model {
         createdAt: true,
         updatedAt: false,
         modelName: "Categories",
+        tableName: "categories",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",

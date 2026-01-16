@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Posts extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -15,7 +15,6 @@ module.exports = class Posts extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-    
       },
       {
         sequelize,
@@ -24,14 +23,15 @@ module.exports = class Posts extends Sequelize.Model {
         createdAt: true,
         updatedAt: false,
         modelName: "Posts",
+        tableName: "posts",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
-    );
+    )
   }
   static associate(db) {
-    db.Posts.belongsTo(db.Photos);
-    db.Posts.belongsTo(db.Users);
+    db.Posts.belongsTo(db.Photos)
+    db.Posts.belongsTo(db.Users)
   }
-};
+}

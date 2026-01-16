@@ -52,8 +52,8 @@ async function getTripCountById(UserId) {
       COUNT(CASE WHEN t.start_date > CURDATE() THEN 1 END) AS upcoming,
       COUNT(CASE WHEN t.start_date <= CURDATE() AND t.end_date >= CURDATE() THEN 1 END) AS ongoing,
       COUNT(CASE WHEN t.end_date < CURDATE() THEN 1 END) AS completed
-    FROM UserTrip AS ut
-    JOIN Trips AS t ON ut.TripId = t.id
+    FROM usertrip AS ut
+    JOIN trips AS t ON ut.TripId = t.id
     WHERE ut.UserId = ?
   `
 

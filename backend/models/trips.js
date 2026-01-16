@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Trips extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -38,22 +38,23 @@ module.exports = class Trips extends Sequelize.Model {
         underscored: false,
         createdAt: true,
         updatedAt: false,
-        modelName: "Trip",
+        modelName: "Trips",
+        tableName: "trips",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
-    );
+    )
   }
   static associate(db) {
-    db.Trips.hasMany(db.Photos);
-    db.Trips.hasMany(db.EmotionsTargets);
-    db.Trips.hasMany(db.UserTrips, {
+    db.Trips.hasMany(db.Photos)
+    db.Trips.hasMany(db.EmotionsTargets)
+    db.Trips.hasMany(db.UserTrip, {
       foreignKey: "TripId",
-    });
-    db.Trips.hasMany(db.Themes);
+    })
+    db.Trips.hasMany(db.Themes)
   }
-};
+}
 
 // dest: {
 //   type: Sequelize.STRING(20),

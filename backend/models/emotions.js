@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Emotions extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -23,14 +23,15 @@ module.exports = class Emotions extends Sequelize.Model {
         createdAt: true,
         updatedAt: false,
         modelName: "Emotions",
+        tableName: "emotions",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
-    );
+    )
   }
   static associate(db) {
-    db.Emotions.belongsTo(db.Trips);
-    db.Emotions.belongsTo(db.Photos);
+    db.Emotions.belongsTo(db.Trips)
+    db.Emotions.belongsTo(db.Photos)
   }
-};
+}

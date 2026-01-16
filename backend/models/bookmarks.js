@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Bookmarks extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -10,15 +10,16 @@ module.exports = class Bookmarks extends Sequelize.Model {
         sequelize,
         underscored: false,
         modelName: "Bookmarks",
+        tableName: "bookmarks",
         createdAt: false,
         updatedAt: false,
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
-    );
+    )
   }
   static associate(db) {
-    db.Bookmarks.belongsTo(db.Users);
+    db.Bookmarks.belongsTo(db.Users)
   }
-};
+}

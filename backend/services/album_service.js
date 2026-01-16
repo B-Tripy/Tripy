@@ -7,7 +7,7 @@ const { sequelize } = require("../models")
 // DB 모듈 임포트
 const albumDb = require("../db/album_db")
 // AI 서버 주소
-const AI_SERVER_URL = "http://localhost:8000/album/category"
+const AI_SERVER_URL = "process.env.AI_SERVER_URL/album/category"
 
 const albumService = {
   // =================================================================

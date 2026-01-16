@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Themes extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -11,7 +11,6 @@ module.exports = class Themes extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
- 
       },
       {
         sequelize,
@@ -20,13 +19,14 @@ module.exports = class Themes extends Sequelize.Model {
         createdAt: true,
         updatedAt: false,
         modelName: "Themes",
+        tableName: "themes",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
-    );
+    )
   }
   static associate(db) {
-    db.Themes.belongsTo(db.Trips);
+    db.Themes.belongsTo(db.Trips)
   }
-};
+}
