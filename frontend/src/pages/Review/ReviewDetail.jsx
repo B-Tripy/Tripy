@@ -48,6 +48,34 @@ function ReviewDetail() {
     }
     fetchPost()
   }, [id])
+
+  useEffect(() => {
+    if (!currentUserId) return
+
+    const fetchAiPlan = async () => {
+      try {
+        // 백엔드의 Redis 조회 API 호출 (/ai/plan/select/{userId})
+        // instance는 상단에 정의된 axios 인스턴스 사용
+        const res = await instance.get(`/ai/plan/select/${currentUserId}`)
+
+        // 데이터가 있다면 (redis.lrange는 배열을 반환함)
+        if (res.data && res.data.length > 0) {
+          // Redis에 JSON 문자열로 저장되어 있으므로 파싱 필요
+          // 구조: ['{"result": "AI가 생성한 텍스트..."}']
+          const parsedData = JSON.parse(res.data[0])
+
+          if (parsedData.result) {
+            setPrompt(parsedData.result) // textarea(prompt state)에 값 주입
+          }
+        }
+      } catch (e) {
+        console.error("AI 프롬프트 불러오기 실패:", e)
+      }
+    }
+
+    fetchAiPlan()
+  }, [currentUserId])
+
   // 입력값 변경 핸들러
   const handleDescChange = (imgId, value) => {
     setDescriptions((prev) => ({ ...prev, [imgId]: value }))
@@ -130,9 +158,12 @@ function ReviewDetail() {
       {/* 1. 상단: 프롬프트 입력 영역 */}
       <header className={styles.promptSection}>
         <textarea
-          placeholder="다른 작업자가 작업한 AI 프롬프트를 붙여넣는 곳"
+          placeholder="AI가 생성한 여행 계획이 여기에 표시됩니다."
           value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
+          readOnly={true}
+          style={{
+            height: "300px",
+          }}
         />
       </header>
 
