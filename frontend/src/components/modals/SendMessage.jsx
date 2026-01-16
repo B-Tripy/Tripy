@@ -14,12 +14,12 @@ export default function SendMessage() {
   const { value } = useContext(ValueContext);
   const { setReset } = useContext(Reset);
 
-  useEffect(() => {
-    socket.connect(); // autoConnect:false라서 직접 연결
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  // useEffect(() => {
+  //   socket.connect(); // autoConnect:false라서 직접 연결
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   useEffect(() => {
     // delivery_status 이벤트는 컴포넌트가 마운트될 때 한 번만 등록
