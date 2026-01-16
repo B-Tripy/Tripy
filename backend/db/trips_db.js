@@ -12,7 +12,7 @@ async function getPostById(id) {
       return null
     }
 
-    const post = posts[0]
+    const post = rows[0]
 
     const [photos] = await pool.query(
       "SELECT id, url, photo FROM photos WHERE TripId = ? ORDER BY id ASC",
