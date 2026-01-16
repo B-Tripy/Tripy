@@ -151,11 +151,11 @@ async function updateTripDescription(tripId, summary) {
     const [result] = await pool.query(
       "UPDATE trips SET description = ? WHERE id = ?",
       [summary, tripId]
-    )
-    return result
+    );
+    return result;
   } catch (error) {
-    console.error("여행 요약 저장 중 에러:", error)
-    throw error
+    console.error("여행 요약 저장 중 에러:", error);
+    throw error;
   }
 }
 
@@ -164,9 +164,5 @@ module.exports = {
   getPostsByIdAll,
   getTripCountById,
   savePhotoDescription,
-<<<<<<< HEAD
-};
-=======
   updateTripDescription, // [중요] 여기에 꼭 추가해야 합니다!
-}
->>>>>>> master
+};
