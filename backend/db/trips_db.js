@@ -15,7 +15,16 @@ async function getPostById(id) {
     const post = rows[0];
 
     const [photos] = await pool.query(
-      "SELECT id, url, photo FROM photos WHERE TripId = ? ORDER BY id ASC",
+      `SELECT 
+        ph.id, 
+        ph.url, 
+        ph.photo, 
+        po.post AS content,    -- 이미 작성된 글 내용
+        po.UserId AS authorId  -- 글 작성자 ID (중요)
+      FROM photos ph
+      LEFT JOIN posts po ON ph.id = po.PhotoId
+      WHERE ph.TripId = ? 
+      ORDER BY ph.id ASC`,
       [id]
     );
 
@@ -91,8 +100,8 @@ async function getTripCountById(UserId) {
       COUNT(CASE WHEN t.start_date > CURDATE() THEN 1 END) AS upcoming,
       COUNT(CASE WHEN t.start_date <= CURDATE() AND t.end_date >= CURDATE() THEN 1 END) AS ongoing,
       COUNT(CASE WHEN t.end_date < CURDATE() THEN 1 END) AS completed
-    FROM UserTrip AS ut
-    JOIN Trips AS t ON ut.TripId = t.id
+    FROM usertrip AS ut
+    JOIN trips AS t ON ut.TripId = t.id
     WHERE ut.UserId = ?
   `;
 
@@ -106,9 +115,39 @@ async function getTripCountById(UserId) {
   }
 }
 
+async function savePhotoDescription(photoId, userId, content) {
+  try {
+    const [rows] = await pool.query(
+      "SELECT id, UserId FROM posts WHERE PhotoId = ?",
+      [photoId]
+    );
+
+    if (rows.length > 0) {
+      if (rows[0].UserId !== userId) {
+        throw new Error("PERMISSION_DENIED");
+      }
+      await pool.query("UPDATE posts SET post = ? WHERE PhotoId = ?", [
+        content,
+        photoId,
+      ]);
+      return { message: "Updated", id: rows[0].id };
+    } else {
+      const [result] = await pool.query(
+        "INSERT INTO posts (post, UserId, PhotoId, points, createdAt) VALUES (?, ?, ?, 0, NOW())",
+        [content, userId, photoId]
+      );
+      return { message: "Created", id: result.insertId };
+    }
+  } catch (error) {
+    if (error.message === "PERMISSION_DENIED") throw error;
+    console.error("사진 설명 저장 중 에러:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   getPostById,
   getPostsByIdAll,
-  getTripCountById,
+  getTripCountById, // 이제 정상적으로 참조됨
   savePhotoDescription,
 };

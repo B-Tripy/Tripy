@@ -74,6 +74,7 @@ function App() {
                 <Route path="/ai" element={<AI />} />
                 <Route path="/temp" element={<Temp />} />
                 <Route path="/rag" element={<Rag />} />
+                <Route path="/chatbot" element={<Chatbot />} />
               </Routes>
             </main>
           </Reset.Provider>

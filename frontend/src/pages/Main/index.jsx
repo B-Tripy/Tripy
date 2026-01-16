@@ -221,9 +221,10 @@ const Main = () => {
     <div style={styles.container}>
       {/* 1. 헤더 */}
       <header style={styles.header}>
-        <h1 style={styles.title}>환영합니다, 여행자님!</h1>
+        <h1 style={styles.title}>
+          {user ? `${user.nickname}님 환영합니다!` : "환영합니다!"}
+        </h1>
         <p style={styles.description}>오늘 어떤 여행을 계획해 볼까요?</p>
-
         <div style={styles.buttonGroup}>
           <button
             style={{ ...styles.btn, ...styles.btnPrimary }}
