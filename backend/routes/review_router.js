@@ -31,16 +31,22 @@ router.get("/", requireAuth, async (req, res) => {
 router.get("/:id", requireAuth, async (req, res) => {
   try {
     const tripId = req.params.id
-    const owner = req.params.owner
-    const userId = req.user.id // 본인의 게시글인지 확인하기 위해 필요할 수 있음
 
-    // DB에서 tripId로 조회
+    // DB 조회
     const post = await getPostById(tripId)
 
     if (!post) {
       return res.status(404).json({ error: "게시글을 찾을 수 없습니다." })
     }
-    return res.status(200).json(post)
+
+    // [수정됨] 조회된 데이터에 현재 로그인한 유저 ID를 추가해서 응답
+    // req.user.id는 requireAuth 미들웨어를 통과했다면 반드시 존재합니다.
+    const responseData = {
+      ...post,
+      currentUserId: req.user.id,
+    }
+
+    return res.status(200).json(responseData)
   } catch (err) {
     console.error("게시글 상세 조회 오류:", err)
     return res.status(500).json({ error: "서버 오류" })
@@ -49,14 +55,19 @@ router.get("/:id", requireAuth, async (req, res) => {
 
 // ==================== [수정됨] 개별 사진 설명 저장 ====================
 // 저장 버튼 클릭 시 호출됨
-// 테스트를 위해 requireAuth 제거, userId = 1 고정
-router.post("/:tripId/descriptions/:photoId", async (req, res) => {
+// 로그인 체크 미들웨어(requireAuth) 복구 필요
+router.post("/:tripId/descriptions/:photoId", requireAuth, async (req, res) => {
   try {
     const { photoId } = req.params
     const { post } = req.body
 
-    // const userId = req.user.id; // 실제 로그인 시 사용
-    const userId = 1 // 테스트용 임시 ID (DB에 id가 1인 유저가 있어야 함)
+    // [수정] 실제 로그인된 유저 ID 사용 (하드코딩 제거)
+    // req.user가 없는 경우를 대비해 안전장치 추가 (미들웨어로 처리되겠지만 이중 체크)
+    const userId = req.user ? req.user.id : null
+
+    if (!userId) {
+      return res.status(401).json({ error: "로그인이 필요합니다." })
+    }
 
     if (post === undefined) {
       return res.status(400).json({ error: "내용이 없습니다." })
@@ -67,6 +78,13 @@ router.post("/:tripId/descriptions/:photoId", async (req, res) => {
 
     return res.status(200).json({ message: "성공적으로 저장되었습니다." })
   } catch (err) {
+    // [추가] 권한 에러 처리 (다른 사람의 글을 수정하려 할 때)
+    if (err.message === "PERMISSION_DENIED") {
+      return res
+        .status(403)
+        .json({ error: "본인이 작성한 글만 수정할 수 있습니다." })
+    }
+
     console.error("개별 사진 설명 저장 오류:", err)
     return res.status(500).json({ error: "서버 오류" })
   }
