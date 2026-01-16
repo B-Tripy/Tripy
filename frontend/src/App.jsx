@@ -22,6 +22,7 @@ import { Reset } from "./context/ValueContext";
 import socket from "./socket";
 function App() {
   const { user, isChecking, checkAuth } = useAuthStore();
+
   const [value, setValue] = useState({
     tripId: null,
     tripTitle: null,

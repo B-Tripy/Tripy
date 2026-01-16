@@ -29,14 +29,25 @@ const SetClose = ({ userId }) => {
       ) : (
         <img src="/assets/icons/toggle_off.png" width="60px" />
       )}
-      <label>
+      <label
+        style={{
+          display: "inline-block",
+          width: "120px",
+          background: "transparent",
+          textAlign: "right",
+          position: "relative",
+          left: "-60px",
+          height: "25px",
+          cursor: "pointer",
+        }}
+      >
         <input
           type="checkbox"
           checked={pickUser.includes(userId)}
           onChange={getUsers}
           style={{ display: "none", userSelect: "none" }}
         />
-        {pickUser.includes(userId) ? "Public" : "Private"}
+        {pickUser.includes(userId) ? "공개" : "비 공개"}
       </label>
     </div>
   );

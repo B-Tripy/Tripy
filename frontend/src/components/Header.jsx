@@ -15,7 +15,7 @@ function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const navigate = useNavigate();
-
+  const [page, setPage] = useState("Main");
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -83,7 +83,7 @@ function Header() {
       <div className="container header-content">
         <div className="header-left">
           <img className="logo" src="/assets/img/tripy.png" width="200px" />
-          <Navigation />
+          <Navigation page={page} setPage={setPage} />
         </div>
 
         <div className="header-right">
