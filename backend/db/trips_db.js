@@ -18,15 +18,14 @@ async function getPostById(id) {
         ph.id, 
         ph.url, 
         ph.photo, 
-        po.post AS content,    -- 이미 작성된 글 내용
-        po.UserId AS authorId  -- 글 작성자 ID (중요)
+        po.post,          -- <--- 중요! 'AS content'를 지우고 'po.post'만 남기세요.
+        po.UserId AS authorId 
       FROM photos ph
       LEFT JOIN posts po ON ph.id = po.PhotoId
       WHERE ph.TripId = ? 
       ORDER BY ph.id ASC`,
       [id]
     )
-
     const result = {
       ...post,
       images: photos,
@@ -111,9 +110,24 @@ async function savePhotoDescription(photoId, userId, content) {
   }
 }
 
+async function updateTripDescription(tripId, summary) {
+  try {
+    // trips 테이블의 description 컬럼 업데이트
+    const [result] = await pool.query(
+      "UPDATE trips SET description = ? WHERE id = ?",
+      [summary, tripId]
+    )
+    return result
+  } catch (error) {
+    console.error("여행 요약 저장 중 에러:", error)
+    throw error
+  }
+}
+
 module.exports = {
   getPostById,
   getPostsByIdAll,
-  getTripCountById, // 이제 정상적으로 참조됨
+  getTripCountById,
   savePhotoDescription,
+  updateTripDescription, // [중요] 여기에 꼭 추가해야 합니다!
 }

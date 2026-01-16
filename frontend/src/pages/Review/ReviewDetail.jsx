@@ -24,16 +24,18 @@ function ReviewDetail() {
       try {
         const res = await instance.get(`${API_URL}/review/${id}`)
         setPost(res.data)
-
-        // 서버에서 응답에 포함시켜준 현재 로그인 유저 ID 저장
         setCurrentUserId(res.data.currentUserId)
 
-        // 기존 사진 설명 로드
+        // ★ 진짜 데이터가 오는지 확인해보세요 (개발자 도구 F12 -> Console 탭)
+        console.log("받아온 이미지 데이터:", res.data.images)
+
         if (res.data.images) {
           const initialDesc = {}
           res.data.images.forEach((img) => {
-            if (img.content) {
-              initialDesc[img.id] = img.content
+            // [중요 수정 포인트]
+            // 백엔드에서 'post'로 보내기로 했으므로 여기서도 'post'를 확인합니다.
+            if (img.post) {
+              initialDesc[img.id] = img.post
             }
           })
           setDescriptions(initialDesc)
@@ -46,7 +48,6 @@ function ReviewDetail() {
     }
     fetchPost()
   }, [id])
-
   // 입력값 변경 핸들러
   const handleDescChange = (imgId, value) => {
     setDescriptions((prev) => ({ ...prev, [imgId]: value }))
@@ -88,7 +89,36 @@ function ReviewDetail() {
 
   const handleAiSummary = () => {
     const allTexts = Object.values(descriptions).join(" ")
-    setAiSummary(`[AI 요약 결과]: ${allTexts.substring(0, 100)}...`)
+    const tripId = `${id}`
+
+    alert("AI 요약을 생성 중입니다... 잠시만 기다려주세요.")
+    try {
+      instance
+        .post(`/ai/review/`, {
+          post: allTexts,
+          tripId: tripId,
+        })
+        .then(async (res) => {
+          const summaryText = res.data.summary
+
+          // 1. 화면에 보여주기
+          setAiSummary(`[AI 요약 결과]: ${summaryText}`)
+
+          // 2. [추가] DB의 trips 테이블 description 컬럼에 자동 저장 요청
+          try {
+            await instance.put(`${API_URL}/review/${tripId}/description`, {
+              description: summaryText,
+            })
+            alert("AI 요약이 생성되고 저장되었습니다.")
+          } catch (saveError) {
+            console.error(saveError)
+            alert("요약은 생성되었으나 저장에 실패했습니다.")
+          }
+        })
+    } catch (e) {
+      console.error(e)
+      alert("AI 요청 실패")
+    }
   }
 
   if (loading) return <Loading />
