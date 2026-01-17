@@ -36,7 +36,13 @@ module.exports = class Users extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Users.hasMany(db.UserTrips, { foreignKey: "UserId" });
+    db.Users.belongsToMany(db.Trips, { 
+    through: usertrip, // 문자열 'UserTrips'가 아닌 모델 객체 전달
+    foreignKey: "userId", 
+    otherKey: "tripId" 
+  });
+  // UserTrips를 직접 조작해야 할 때를 위해 hasMany도 유지 가능
+  db.Users.hasMany(db.UserTrips, { foreignKey: "userId" });
     db.Users.hasMany(db.Posts);
     db.Users.hasMany(db.Photos);
     db.Users.hasMany(db.Bookmarks);

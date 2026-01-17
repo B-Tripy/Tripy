@@ -30,6 +30,7 @@ function App() {
   });
   const [reset, setReset] = useState(false);
   useEffect(() => {
+    if (socket.id) return;
     socket.connect();
     socket.on("connect", () => {
       console.log("✅ 새로고침 후 재연결 성공:", socket.id);

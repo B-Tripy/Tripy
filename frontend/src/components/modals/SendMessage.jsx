@@ -14,13 +14,6 @@ export default function SendMessage() {
   const { value } = useContext(ValueContext);
   const { setReset } = useContext(Reset);
 
-  // useEffect(() => {
-  //   socket.connect(); // autoConnect:false라서 직접 연결
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
-
   useEffect(() => {
     // delivery_status 이벤트는 컴포넌트가 마운트될 때 한 번만 등록
     socket.on("delivery_status", (status) => {
@@ -44,18 +37,7 @@ export default function SendMessage() {
       console.error(e);
     }
   };
-  const getUserByEmail = async () => {
-    try {
-      const users = await axios.post("/api/companion/getUserByEmail", {
-        toUserEmail,
-      });
-      console.log(users.data.users);
 
-      setUsers([users.data.users, ...users]);
-    } catch (e) {
-      console.error(e);
-    }
-  };
   useEffect(() => {
     if (value.tripId) {
       // 메시지가 생기면 모달을 먼저 렌더링하고
@@ -87,9 +69,9 @@ export default function SendMessage() {
               } else {
                 reject(response.error);
               }
-            }
+            },
           );
-        })
+        }),
     );
 
     Promise.all(requests)
@@ -109,8 +91,8 @@ export default function SendMessage() {
         userId: user.id,
       });
 
-      setReset(res.data.success); //Review화면 갱신
-      console.log("res.data", res.data, "messages", messages);
+      setReset(res.data); //Review화면 갱신
+      console.log("res.data", res.data);
     } catch (e) {
       console.error(e);
     }
@@ -188,7 +170,7 @@ export default function SendMessage() {
                   {/* 확인/체크하면 배열에 넣고 보내기하면 promise.all사용 해 볼 것 */}
                 </label>
               </div>
-            )
+            ),
         )
       ) : (
         <div

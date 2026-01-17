@@ -63,9 +63,12 @@ function Header() {
       setNickname("");
       setEmail("");
       setPassword("");
-      socket.connect();
+      // console.log("소켓 연결됨.");
       navigate("/main");
       // fetchPosts();
+    }
+    if (user) {
+      socket.connect();
     }
   };
 
@@ -73,8 +76,8 @@ function Header() {
     await authJoin(nickname, email, password);
   };
   const handleLogout = () => {
-    socket.disconnect();
     logout();
+    socket.disconnect();
     // logoutList();
   };
 

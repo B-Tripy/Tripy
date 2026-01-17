@@ -31,7 +31,7 @@ const MessageModal = () => {
         userId: user.id,
       });
       nextMessage();
-      setReset(res.data.success); //Review화면 갱신
+      setReset(res.data); //Review화면 갱신
       console.log("res.data", res.data, "messages", messages);
     } catch (e) {
       console.error(e);

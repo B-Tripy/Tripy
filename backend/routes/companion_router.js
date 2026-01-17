@@ -27,7 +27,8 @@ router.post("/withdraw", async (req, res, next) => {
   console.log("tripId", tripId, "userId", userId);
   try {
     const result = await withdrawtrip(userId, tripId);
-    return res.status(200).json({ success: true, message: result });
+    console.log("result", result);
+    return res.status(200).json({ success: true });
   } catch (e) {
     console.error(e);
     console.log("e", e);

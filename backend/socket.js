@@ -1,15 +1,16 @@
 const userSockets = new Map(); // email -> Set(socketId)
 
 function addUserSocket(email, socketId) {
-  if (!userSockets.has(email)) userSockets.set(email, new Set());
-  userSockets.get(email).add(socketId);
+  if (!userSockets.has(email.toLowerCase().trim()))
+    userSockets.set(email.toLowerCase().trim(), new Set());
+  userSockets.get(email.toLowerCase().trim()).add(socketId);
 }
 
 function removeUserSocket(email, socketId) {
-  if (!userSockets.has(email)) return;
-  const set = userSockets.get(email);
+  if (!userSockets.has(email.toLowerCase().trim())) return;
+  const set = userSockets.get(email.toLowerCase().trim());
   set.delete(socketId);
-  if (set.size === 0) userSockets.delete(email);
+  if (set.size === 0) userSockets.delete(email.toLowerCase().trim());
 }
 
 function registerSocketHandlers(io) {
@@ -21,16 +22,16 @@ function registerSocketHandlers(io) {
     const nick = user.nickname;
 
     // 1. 연결 시 Map에 등록 (중복 방지를 위해 Set 사용)
-    if (!userSockets.has(email)) {
-      userSockets.set(email, new Set());
-    }
-    userSockets.get(email).add(socket.id);
+    addUserSocket(email, socket.id);
+
+    console.log("현재 접속자 목록:", Array.from(userSockets.keys()));
 
     console.log(
-      `✅ [연결] ${email} | 현재 소켓 수: ${userSockets.get(email).size}`
+      `✅ [연결] ${email} | 현재 소켓 수: ${userSockets.get(email).size}`,
     );
 
     socket.on("send_to_user", ({ toUserEmail, tripId, tripTitle, text }) => {
+      if (!toUserEmail) return console.log("대상 이메일이 없습니다.");
       const targets = userSockets.get(toUserEmail);
 
       console.log(`서버에서 ${toUserEmail}로 발송 시도. 찾은 소켓:`, targets);
@@ -52,14 +53,11 @@ function registerSocketHandlers(io) {
 
     // 2. 연결 해제 시 정확히 제거
     socket.on("disconnect", () => {
-      const sids = userSockets.get(email);
-      if (sids) {
-        sids.delete(socket.id);
-        if (sids.size === 0) {
-          userSockets.delete(email);
-        }
-      }
-      console.log(`Logout: ${email}, 남은 소켓: ${sids ? sids.size : 0}`);
+      removeUserSocket(email, socket.id);
+      const remainCount = userSockets.has(email)
+        ? userSockets.get(email).size
+        : 0;
+      console.log(`Logout: ${email}, 남은 소켓: ${remainCount}`);
     });
   });
 }

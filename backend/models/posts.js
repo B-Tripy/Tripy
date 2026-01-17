@@ -15,7 +15,10 @@ module.exports = class Posts extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-    
+        photoId: {
+          type: Sequelize.INTEGER,
+          unique: true, // 이 설정이 있어야 실제 DB에 Unique 제약조건이 생성됩니다.
+        },
       },
       {
         sequelize,
@@ -31,7 +34,8 @@ module.exports = class Posts extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Posts.belongsTo(db.Photos);
+    db.Posts.belongsTo(db.Photos, { foreignKey: "photoId", unique: true });
+
     db.Posts.belongsTo(db.Users);
   }
 };

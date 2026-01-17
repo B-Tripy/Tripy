@@ -20,11 +20,11 @@ module.exports = class UserTrips extends Sequelize.Model {
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
+      },
     );
   }
   static associate(db) {
-    db.UserTrips.belongsTo(db.Users, { foreignKey: "UserId" });
-    db.UserTrips.belongsTo(db.Trips, { foreignKey: "TripId" });
+    db.UserTrips.belongsTo(db.Users, { foreignKey: "userId", targetKey: "id" });
+    db.UserTrips.belongsTo(db.Trips, { foreignKey: "tripId", targetKey: "id" });
   }
 };
