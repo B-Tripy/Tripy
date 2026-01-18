@@ -54,6 +54,7 @@ const allowedOrigins = [
   "http://192.168.10.10:8081",
   "http://192.168.10.68:8081",
   "http://192.168.10.10:5173",
+  "http://192.168.45.66:19000",
 ];
 
 const io = new Server(server, {
