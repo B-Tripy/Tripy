@@ -1,8 +1,15 @@
-const Sequelize = require("sequelize");
-module.exports = class Trips extends Sequelize.Model {
-  static init(sequelize) {
-    return super.init(
+"use strict";
+
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable(
+      "trips",
       {
+        id: {
+          type: Sequelize.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+        },
         title: {
           type: Sequelize.STRING(50),
           allowNull: false,
@@ -21,40 +28,29 @@ module.exports = class Trips extends Sequelize.Model {
         },
         createdAt: {
           type: Sequelize.DATE,
+          allowNull: false,
           defaultValue: Sequelize.NOW,
         },
         start_date: {
           type: Sequelize.DATE,
+          allowNull: false,
           defaultValue: Sequelize.NOW,
         },
         end_date: {
           type: Sequelize.DATE,
+          allowNull: false,
           defaultValue: Sequelize.NOW,
         },
+        // updatedAt은 모델에서 false로 설정했으므로 제외
       },
       {
-        sequelize,
-        timestamps: true,
-        underscored: false,
-        createdAt: true,
-        updatedAt: false,
-        modelName: "Trips",
-        tableName: "trips",
-        paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
       },
     );
-  }
-  static associate(db) {
-    db.Trips.belongsToMany(db.Users, {
-      through: db.UserTrips, // 문자열 'UserTrips'가 아닌 모델 객체 전달
-      foreignKey: "tripId",
-      otherKey: "userId",
-    });
-    db.Trips.hasMany(db.Photos, { foreignKey: "tripId" });
-    db.Trips.hasMany(db.EmotionsTargets, { foreignKey: "tripId" });
+  },
 
-    db.Trips.hasMany(db.Themes, { foreignKey: "tripId" });
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("trips");
+  },
 };

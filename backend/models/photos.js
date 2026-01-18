@@ -37,20 +37,39 @@ module.exports = class Photos extends Sequelize.Model {
         timestamps: true,
         underscored: false,
         modelName: "Photos",
+        tableName: "photos",
         createdAt: true,
         updatedAt: false,
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
+      },
     );
   }
   static associate(db) {
-    db.Photos.hasOne(db.Posts, { foreignKey: "photoId" });
+    db.Photos.hasMany(db.PhotoCategoryMaps, { foreignKey: "photoId" });
+    db.Photos.hasOne(db.Posts, {
+      foreignKey: "photoId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
 
-    db.Photos.belongsTo(db.Users);
-    db.Photos.belongsTo(db.Trips);
-    db.Photos.hasMany(db.PhotoCategoryMaps);
-    db.Photos.belongsTo(db.EmotionsTargets);
+    db.Photos.belongsTo(db.Users, {
+      foreignKey: "userId",
+      onDelete: "CASCADE", // 유저 삭제 시 해당 유저의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
+
+    db.Photos.belongsTo(db.Trips, {
+      foreignKey: "tripId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+
+    db.Photos.belongsTo(db.EmotionsTargets, {
+      foreignKey: "photoId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   }
 };

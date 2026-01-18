@@ -74,7 +74,7 @@ app.use(
       }
     },
     credentials: true, // 세션/쿠키를 사용하므로 필수!
-  })
+  }),
 );
 passportConfig();
 

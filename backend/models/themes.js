@@ -11,7 +11,6 @@ module.exports = class Themes extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
- 
       },
       {
         sequelize,
@@ -20,13 +19,18 @@ module.exports = class Themes extends Sequelize.Model {
         createdAt: true,
         updatedAt: false,
         modelName: "Themes",
+        tableName: "themes",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
+      },
     );
   }
   static associate(db) {
-    db.Themes.belongsTo(db.Trips);
+    db.Themes.belongsTo(db.Trips, {
+      foreignKey: "tripId",
+      onDelete: "CASCADE", // 유저 삭제 시 해당 유저의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
   }
 };
