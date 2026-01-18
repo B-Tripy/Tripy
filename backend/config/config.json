@@ -3,7 +3,7 @@
     "username": "root",
     "password": "1234",
     "database": "trip-db",
-    "port": "3306",
+    "port": "3309",
     "host": "tripy_mysql",
     "dialect": "mysql",
     "logging": true
