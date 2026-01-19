@@ -16,7 +16,7 @@ module.exports = class UserTrips extends Sequelize.Model {
         createdAt: false,
         updatedAt: false,
         modelName: "UserTrips",
-        tableName: "UserTrip",
+        tableName: "usertrip",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -24,7 +24,15 @@ module.exports = class UserTrips extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.UserTrips.belongsTo(db.Users, { foreignKey: "UserId" });
-    db.UserTrips.belongsTo(db.Trips, { foreignKey: "TripId" });
+    db.UserTrips.belongsTo(db.Users, {
+      foreignKey: "userId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+    db.UserTrips.belongsTo(db.Trips, {
+      foreignKey: "tripId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   }
 };

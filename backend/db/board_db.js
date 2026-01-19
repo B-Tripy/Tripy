@@ -1,17 +1,15 @@
 // server/db_layer/board_db.js
 
-const pool = require("./db");
+const pool = require("./db")
 
 /**
  * 모든 게시글 조회 (최신순)
  * 반환: posts[]
  */
 async function getAllPosts() {
-  const [rows] = await pool.query(
-    "SELECT * FROM trips ORDER BY createdAt DESC"
-  );
-  console.log(rows);
-  return rows;
+  const [rows] = await pool.query("SELECT * FROM trips ORDER BY createdAt DESC")
+  console.log(rows)
+  return rows
 }
 
 /**
@@ -20,10 +18,10 @@ async function getAllPosts() {
  */
 async function createPost(title, content, user_id) {
   const [result] = await pool.query(
-    "INSERT INTO trip (title, content, user_id) VALUES (?, ?, ?)",
+    "INSERT INTO trips (title, content, user_id) VALUES (?, ?, ?)",
     [title, content, user_id]
-  );
-  return result.insertId;
+  )
+  return result.insertId
 }
 
 /**
@@ -31,10 +29,10 @@ async function createPost(title, content, user_id) {
  * 반환: post 또는 null
  */
 async function getPostById(id) {
-  const [rows] = await pool.query("SELECT * FROM trip WHERE id = ?", [id]);
-  console.log(rows[0]);
-  if (!rows || rows.length === 0) return null;
-  return rows[0];
+  const [rows] = await pool.query("SELECT * FROM trips WHERE id = ?", [id])
+  console.log(rows[0])
+  if (!rows || rows.length === 0) return null
+  return rows[0]
 }
 
 /**
@@ -42,8 +40,8 @@ async function getPostById(id) {
  * 반환: affectedRows
  */
 async function deletePostById(id) {
-  const [result] = await pool.query("DELETE FROM trip WHERE id = ?", [id]);
-  return result.affectedRows || 0;
+  const [result] = await pool.query("DELETE FROM trips WHERE id = ?", [id])
+  return result.affectedRows || 0
 }
 
 module.exports = {
@@ -51,4 +49,4 @@ module.exports = {
   createPost,
   getPostById,
   deletePostById,
-};
+}

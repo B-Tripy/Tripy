@@ -2,7 +2,8 @@ const mysql = require("mysql2/promise");
 
 const pool = mysql.createPool({
   // host: "http://192.168.10.56",
-  host: process.env.HOST||"localhost",
+  // host: process.env.HOST || "tripy_mysql",
+  host: process.env.HOST || "localhost",
   port: 3307,
   user: "root",
   password: "1234", // 본인 MySQL 비밀번호로 변경

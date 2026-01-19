@@ -4,7 +4,7 @@ import { useAuthStore } from "../../store/authStore";
 import styles from "./MessageModal.module.scss";
 import { Reset } from "../../context/ValueContext";
 import axios from "axios";
-
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 const MessageModal = () => {
   const { user } = useAuthStore();
   const { nextMessage, messages, latestMessage, clearLatest } =
@@ -26,12 +26,12 @@ const MessageModal = () => {
 
   const confirm = async () => {
     try {
-      const res = await axios.post("/api/companion", {
+      const res = await axios.post(`${API_URL}/companion`, {
         tripId: latestMessage.tripId,
         userId: user.id,
       });
       nextMessage();
-      setReset(res.data.success); //Review화면 갱신
+      setReset(res.data); //Review화면 갱신
       console.log("res.data", res.data, "messages", messages);
     } catch (e) {
       console.error(e);

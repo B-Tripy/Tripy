@@ -1,65 +1,65 @@
 // import "./Main.css"
-import axios from "axios"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import PageNation from "../../components/common/pagination/PagiNation"
-import { useAuthStore } from "../../store/authStore"
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PageNation from "../../components/common/pagination/PagiNation";
+import { useAuthStore } from "../../store/authStore";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api"
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 const instance = axios.create({
   withCredentials: true,
-})
+});
 
 const Main = () => {
-  const [posts, setPosts] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [tripCounts, setTripCounts] = useState({
     upcoming: 0,
     ongoing: 0,
     completed: 0,
-  })
+  });
 
-  const navigate = useNavigate()
-  const { user } = useAuthStore()
+  const navigate = useNavigate();
+  const { user } = useAuthStore();
 
   // 페이지 이동 함수
-  const goToPlan = () => navigate("/plan")
-  const goToAlbum = () => navigate("/album")
+  const goToPlan = () => navigate("/plan");
+  const goToAlbum = () => navigate("/album");
 
   const formatDate = (dateString) => {
-    if (!dateString) return ""
-    const date = new Date(dateString)
+    if (!dateString) return "";
+    const date = new Date(dateString);
     return `${date.getFullYear()}년 ${
       date.getMonth() + 1
-    }월 ${date.getDate()}일`
-  }
+    }월 ${date.getDate()}일`;
+  };
 
   const fetchMainData = async () => {
     try {
-      setLoading(true)
-      const res = await instance.get(`${API_URL}/main`)
+      setLoading(true);
+      const res = await instance.get(`${API_URL}/main`);
       if (res.data.posts) {
-        setPosts(res.data.posts)
+        setPosts(res.data.posts);
       }
       if (res.data.tripCount) {
-        setTripCounts(res.data.tripCount)
+        setTripCounts(res.data.tripCount);
       }
     } catch (e) {
-      console.error("데이터 로딩 실패:", e)
+      console.error("데이터 로딩 실패:", e);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (user) {
-      fetchMainData()
+      fetchMainData();
     } else {
-      setTripCounts({ upcoming: 0, ongoing: 0, completed: 0 })
-      setPosts([])
+      setTripCounts({ upcoming: 0, ongoing: 0, completed: 0 });
+      setPosts([]);
     }
-  }, [user])
+  }, [user]);
 
   // --- 스타일 객체 (가독성을 위해 핵심 로직 아래 배치했습니다) ---
   const styles = {
@@ -186,7 +186,7 @@ const Main = () => {
         bg: { backgroundColor: "#fff7ed", color: "#fb923c" },
       },
     },
-  }
+  };
 
   // ★ [최적화 핵심] 카드 데이터 배열 정의
   // 화면에 그릴 카드들의 정보를 배열로 관리합니다.
@@ -215,7 +215,7 @@ const Main = () => {
       icon: "fa-solid fa-check", // 아이콘 통일감을 위해 변경 (원하면 fa-plane 유지 가능)
       theme: "green",
     },
-  ]
+  ];
 
   return (
     <div style={styles.container}>
@@ -246,7 +246,7 @@ const Main = () => {
         <h2 style={styles.sectionTitle}>여행 요약</h2>
         <div style={styles.grid}>
           {cardData.map((card) => {
-            const themeStyle = styles.themes[card.theme] // green or orange 스타일 가져오기
+            const themeStyle = styles.themes[card.theme]; // green or orange 스타일 가져오기
 
             return (
               <div key={card.id} style={styles.card}>
@@ -275,7 +275,7 @@ const Main = () => {
                   {card.desc}
                 </p>
               </div>
-            )
+            );
           })}
         </div>
       </section>
@@ -333,7 +333,7 @@ const Main = () => {
         <PageNation />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Main
+export default Main;
