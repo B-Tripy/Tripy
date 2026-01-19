@@ -130,8 +130,8 @@ const albumService = {
 
       return {
         id: photo.id,
-        // url: `${process.env.BASE_URL}/${photo.url}`,
-        url: `/img/${photo.url}`,
+        url: `/img/${photo.photo}`,
+        // url: `/img/${photo.url}`,
         date: new Date(photo.takenAt).toISOString().split("T")[0],
         location: photo.address || "위치 정보 없음",
         category: maps[0]?.Category?.category || "기타",
