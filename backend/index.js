@@ -5,6 +5,14 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const passport = require("passport");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
+
+// Redis 관련
+const { createClient } = require("redis");
+const { RedisStore } = require("connect-redis");
+
+// 라우터 임포트
 const mainRouter = require("./routes/main_router");
 const planRouter = require("./routes/plan_router");
 const reviewRouter = require("./routes/review_router");
@@ -16,28 +24,20 @@ const recommendRouter = require("./routes/recommend_router");
 const companionRouter = require("./routes/companion_router");
 const chatRouter = require("./routes/chatbot_router");
 const boardRouter = require("./routes/board_router");
+
+// 설정 및 소켓 핸들러
 const passportConfig = require("./passport");
 const registerSocketHandlers = require("./socket"); // 소켓 핸들러 파일
-const { RedisStore } = require("connect-redis");
-const { createClient } = require("redis");
-
-const http = require("http");
-const { Server } = require("socket.io");
-
-// sequelize로 데이터베이스와 연결
 const { sequelize } = require("./models");
 
 const app = express();
 const server = http.createServer(app);
 
 // 1. Redis 클라이언트 생성 (Docker 환경 변수 적용)
-// const redisClient = createClient({
-//   url: `redis://${process.env.REDIS_HOST || "tripy_redis"}:${
-//     process.env.REDIS_PORT || 6379
-//   }`,
-// });
 const redisClient = createClient({
-  url: process.env.REDIS,
+  url: `redis://${process.env.REDIS_HOST || "tripy_redis"}:${
+    process.env.REDIS_PORT || 6379
+  }`,
 });
 
 redisClient.on("connect", () => console.log("Redis 연결 성공"));
@@ -45,18 +45,23 @@ redisClient.on("error", (err) => console.error("Redis 연결 에러:", err));
 
 redisClient.connect().catch(console.error);
 
-// 2. MySQL 연결 (sequelize)
+// // 2. MySQL 연결 (sequelize)
 // sequelize
 //   .sync({ alter: true })
 //   .then(() => {
-//     console.log(`데이터베이스 연결 성공 (Host: ${process.env.DB_HOST})`);
+//     console.log(`데이터베이스 연결 성공 (Host: ${process.env.DB_HOST})`)
 //   })
 //   .catch((e) => {
-//     console.error("데이터베이스 연결 실패:", e);
-//   });
+//     console.error("데이터베이스 연결 실패:", e)
+//   })
 
 // 3. CORS 설정 (Nginx 포트 추가)
-const allowedOrigins = [process.env.VITE, process.env.NGINX, process.env.EXPO];
+const allowedOrigins = [
+  process.env.VITE,
+  process.env.NGINX,
+  process.env.EXPO,
+  "http://localhost:5173",
+];
 
 const io = new Server(server, {
   cors: {
@@ -102,7 +107,7 @@ const sessionMiddleware = session({
 
 // 필수 미들웨어들
 app.use(express.static(path.join(__dirname, "public")));
-app.use("/img", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -137,8 +142,6 @@ app.use("/api/companion", companionRouter);
 //챗봇 라우터 연결
 app.use("/api/chatbot", chatRouter);
 
-// app.use("/api/chat", chatRouter);
-
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next);
 
@@ -146,7 +149,7 @@ io.use(wrap(sessionMiddleware));
 io.use(wrap(passport.initialize()));
 io.use(wrap(passport.session()));
 
-// 5. 소켓 핸들러 등록
+// 소켓 핸들러 등록
 registerSocketHandlers(io);
 
 // 기본 라우트

@@ -7,9 +7,8 @@ const { sequelize } = require("../models");
 // DB 모듈 임포트
 const albumDb = require("../db/album_db");
 // AI 서버 주소
-// const AI_SERVER_URL = "http://localhost:8000/album/category";
-// require("dotenv").config();
-// const AI_SERVER_URL = "http://localhost:8000/album/category";  // 로컬 시 주소
+require("dotenv").config();
+// const AI_SERVER_URL = "http://localhost:8000/album/category";  // 로컬 개발 시 주소
 const AI_SERVER_URL = `${process.env.AI_SERVER_URL}/album/category`; // Docker
 
 const albumService = {
@@ -130,8 +129,7 @@ const albumService = {
 
       return {
         id: photo.id,
-        // url: `${process.env.BASE_URL}/${photo.url}`,
-        url: `/img/${photo.url}`,
+        url: `${process.env.BASE_URL}/${photo.url}`,
         date: new Date(photo.takenAt).toISOString().split("T")[0],
         location: photo.address || "위치 정보 없음",
         category: maps[0]?.Category?.category || "기타",

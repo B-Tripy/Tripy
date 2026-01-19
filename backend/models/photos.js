@@ -66,7 +66,7 @@ module.exports = class Photos extends Sequelize.Model {
       onUpdate: "CASCADE",
     });
 
-    db.Photos.belongsTo(db.EmotionsTargets, {
+    db.Photos.hasMany(db.EmotionsTargets, {
       foreignKey: "photoId",
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
