@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import Login from "./auth/Login";
@@ -7,6 +7,7 @@ import Navigation from "./nav/MainNav";
 import MessageModal from "./modals/MessageModal";
 import SendMessage from "./modals/SendMessage";
 import SetClose from "./modals/SetClose";
+import { Pages } from "../context/ValueContext";
 import socket from "../socket";
 
 // import Loading from "./Loading";
@@ -15,7 +16,8 @@ function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const navigate = useNavigate();
-  const [page, setPage] = useState("Main");
+  const { setPage } = useContext(Pages);
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -65,6 +67,7 @@ function Header() {
       setPassword("");
       // console.log("소켓 연결됨.");
       navigate("/main");
+      setPage("Main");
       // fetchPosts();
     }
     if (user) {
@@ -78,6 +81,8 @@ function Header() {
   const handleLogout = () => {
     logout();
     socket.disconnect();
+    navigate("/main");
+    setPage("Main");
     // logoutList();
   };
 
@@ -86,7 +91,7 @@ function Header() {
       <div className="container header-content">
         <div className="header-left">
           <img className="logo" src="/assets/img/tripy.png" width="200px" />
-          <Navigation page={page} setPage={setPage} />
+          <Navigation />
         </div>
 
         <div className="header-right">

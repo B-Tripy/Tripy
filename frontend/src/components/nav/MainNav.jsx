@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { Pages } from "../../context/ValueContext";
 // import styles from "./MainNav.module.scss";
 
-const MainNav = ({ page, setPage }) => {
+const MainNav = () => {
+  const { page, setPage } = useContext(Pages);
   return (
     <div className="MainNav">
       <ul>
@@ -54,14 +56,14 @@ const MainNav = ({ page, setPage }) => {
             Theme
           </li>
         </Link>
-        <Link to="/ai">
+        {/* <Link to="/ai">
           <li
             className={`${page === "AI" ? "check" : ""}`}
             onClick={() => setPage("AI")}
           >
             AI
           </li>
-        </Link>
+        </Link> */}
         <Link to="/rag">
           <li
             className={`${page === "Rag" ? "check" : ""}`}
