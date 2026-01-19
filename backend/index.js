@@ -30,14 +30,14 @@ redisClient.connect().catch(console.error);
 
 // sequelize로 데이터베이스와 연결
 const { sequelize } = require("./models");
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log("데이터베이스 연결 성공");
-  })
-  .catch((e) => {
-    console.error(e);
-  });
+// sequelize
+//   .sync({ force: false })
+//   .then(() => {
+//     console.log("데이터베이스 연결 성공");
+//   })
+//   .catch((e) => {
+//     console.error(e);
+//   });
 
 // app.js 또는 server.js
 
@@ -54,7 +54,7 @@ const allowedOrigins = [
   "http://192.168.10.10:8081",
   "http://192.168.10.68:8081",
   "http://192.168.10.10:5173",
-  "http://192.168.45.66:19000",
+  "http://192.168.10.82:19000",
 ];
 
 const io = new Server(server, {
@@ -75,7 +75,7 @@ app.use(
       }
     },
     credentials: true, // 세션/쿠키를 사용하므로 필수!
-  }),
+  })
 );
 passportConfig();
 

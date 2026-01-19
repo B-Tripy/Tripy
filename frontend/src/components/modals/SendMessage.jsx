@@ -69,9 +69,9 @@ export default function SendMessage() {
               } else {
                 reject(response.error);
               }
-            },
+            }
           );
-        }),
+        })
     );
 
     Promise.all(requests)
@@ -110,31 +110,33 @@ export default function SendMessage() {
         <span> </span>
         {value.own ? "동행 요청" : "동행 취소"}
       </h4>
-      <div style={{ borderBottom: "3px solid white", paddingBottom: "1rem" }}>
-        <input
-          style={{
-            padding: "5px",
-            borderRadius: "8px",
-            border: "none",
-            paddingLeft: ".7rem",
-          }}
-          placeholder="받는 유저 Email"
-          value={toUserEmail}
-          onChange={(e) => setToUserEmail(e.target.value)}
-        />
-        <button
-          style={{ marginLeft: "2rem" }}
-          onClick={() => {
-            // getUserByEmail();
-            // alert(toUserEmail);
-            // console.log("users", ...users);
-            setUsers([{ email: toUserEmail }, ...users]);
-            setToUserEmail("");
-          }}
-        >
-          추가
-        </button>
-      </div>
+      {value.own && (
+        <div style={{ borderBottom: "3px solid white", paddingBottom: "1rem" }}>
+          <input
+            style={{
+              padding: "5px",
+              borderRadius: "8px",
+              border: "none",
+              paddingLeft: ".7rem",
+            }}
+            placeholder="받는 유저 Email"
+            value={toUserEmail}
+            onChange={(e) => setToUserEmail(e.target.value)}
+          />
+          <button
+            style={{ marginLeft: "2rem" }}
+            onClick={() => {
+              // getUserByEmail();
+              // alert(toUserEmail);
+              // console.log("users", ...users);
+              setUsers([{ email: toUserEmail }, ...users]);
+              setToUserEmail("");
+            }}
+          >
+            추가
+          </button>
+        </div>
+      )}
       {value.own ? (
         Array.isArray(users) &&
         users.map(
@@ -170,13 +172,13 @@ export default function SendMessage() {
                   {/* 확인/체크하면 배열에 넣고 보내기하면 promise.all사용 해 볼 것 */}
                 </label>
               </div>
-            ),
+            )
         )
       ) : (
         <div
           className="inputs"
           style={{
-            minHeight: "200px",
+            // minHeight: "20px",
             width: "100%",
           }}
         >
