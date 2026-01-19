@@ -1,68 +1,68 @@
-import React, { useState, useEffect } from "react"
-import axios from "axios"
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 const Album = () => {
   // photos 상태(state)를 사용
-  const [photos, setPhotos] = useState([])
+  const [photos, setPhotos] = useState([]);
   // 현재 어떤 탭이 선택되었는지 저장하는 상태 (기본값: '전체')
-  const [activeTab, setActiveTab] = useState("전체")
+  const [activeTab, setActiveTab] = useState("전체");
   // 폴더를 클릭했을 때 어떤 폴더를 보고 있는지 저장 (null이면 폴더 목록 보여줌)
-  const [selectedFolder, setSelectedFolder] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthError, setIsAuthError] = useState(false)
-  const [isError, setIsError] = useState(false)
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthError, setIsAuthError] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   // 컴포넌트 실행 시 데이터 가져오기
   useEffect(() => {
     // 1. 요청 취소를 위한 컨트롤러 생성
-    const controller = new AbortController()
+    const controller = new AbortController();
 
     const fetchPhotos = async () => {
       try {
-        const res = await axios.get("/api/album", {
+        const res = await axios.get(`${API_URL}/album`, {
           withCredentials: true,
           signal: controller.signal, // 2. axios에 시그널 연결
-        })
-        console.log("가져온 사진 데이터:", res.data)
-        setPhotos(res.data)
+        });
+        console.log("가져온 사진 데이터:", res.data);
+        setPhotos(res.data);
       } catch (err) {
         // 요청 취소인 경우 무시
-        if (axios.isCancel(err)) return
+        if (axios.isCancel(err)) return;
 
         // 401 에러(로그인 필요) 체크
         if (err.response && err.response.status === 401) {
-          console.log("로그인이 필요합니다.")
-          setIsAuthError(true)
+          console.log("로그인이 필요합니다.");
+          setIsAuthError(true);
         }
         // 404 에러(데이터 없음)는 에러가 아니라 '빈 목록'으로 처리
         if (err.response && err.response.status === 404) {
-          console.log("데이터가 없습니다 (404). 빈 목록으로 초기화합니다.")
-          setPhotos([]) // 빈 배열로 설정
-          setIsError(false) // 에러 아님
+          console.log("데이터가 없습니다 (404). 빈 목록으로 초기화합니다.");
+          setPhotos([]); // 빈 배열로 설정
+          setIsError(false); // 에러 아님
         } else {
           // 진짜 에러(500 서버 오류, 네트워크 오류 등)인 경우만 에러 처리
-          console.error("사진 로드 실패:", err)
+          console.error("사진 로드 실패:", err);
           // alert("사진 로드 실패")
-          setIsError(true) // 에러 상태를 true로 변경
+          setIsError(true); // 에러 상태를 true로 변경
         }
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchPhotos()
+    fetchPhotos();
 
     // 4. 클린업 함수: 컴포넌트가 다시 렌더링되거나 사라질 때 이전 요청 취소
     return () => {
-      controller.abort()
-    }
-  }, []) // 빈 배열 --> 처음 한 번만 실행
+      controller.abort();
+    };
+  }, []); // 빈 배열 --> 처음 한 번만 실행
 
   // 탭이 바뀌면 선택된 폴더 초기화 (폴더 목록으로 돌아가기)
   const handleTabChange = (tabName) => {
-    setActiveTab(tabName)
-    setSelectedFolder(null)
-  }
+    setActiveTab(tabName);
+    setSelectedFolder(null);
+  };
 
   const styles = {
     container: {
@@ -160,10 +160,10 @@ const Album = () => {
       fontSize: "1.2rem",
       fontWeight: "bold",
     },
-  }
+  };
 
   // 탭 목록 데이터
-  const tabs = ["전체", "날짜", "위치", "카테고리"]
+  const tabs = ["전체", "날짜", "위치", "카테고리"];
 
   // ====================
 
@@ -174,20 +174,20 @@ const Album = () => {
   // 1. 현재 탭 기준 데이터 그룹화 함수
   const getGroupedData = () => {
     // 키(key) 결정: 날짜 or 위치 or 카테고리
-    let key = ""
-    if (activeTab === "날짜") key = "date"
-    else if (activeTab === "위치") key = "location"
-    else if (activeTab === "카테고리") key = "category"
+    let key = "";
+    if (activeTab === "날짜") key = "date";
+    else if (activeTab === "위치") key = "location";
+    else if (activeTab === "카테고리") key = "category";
 
     // 해당 키로 그룹핑 (예: { "서울": [사진1, 사진2], "부산": [사진3] })
-    const groups = {}
+    const groups = {};
     photos.forEach((photo) => {
-      const value = photo[key] || "미분류" // null 방지
-      if (!groups[value]) groups[value] = []
-      groups[value].push(photo)
-    })
-    return groups
-  }
+      const value = photo[key] || "미분류"; // null 방지
+      if (!groups[value]) groups[value] = [];
+      groups[value].push(photo);
+    });
+    return groups;
+  };
 
   // 2. 화면 렌더링 결정 로직
   const renderContent = () => {
@@ -196,7 +196,7 @@ const Album = () => {
         <p style={{ textAlign: "center", marginTop: "50px" }}>
           사진 불러오는 중...
         </p>
-      )
+      );
 
     if (isAuthError) {
       return (
@@ -205,7 +205,7 @@ const Album = () => {
             로그인이 필요한 서비스입니다.
           </p>
         </div>
-      )
+      );
     }
 
     if (isError) {
@@ -213,7 +213,7 @@ const Album = () => {
         <p style={{ textAlign: "center", marginTop: "50px", color: "red" }}>
           사진을 불러오지 못했습니다.
         </p>
-      )
+      );
     }
 
     if (photos.length === 0)
@@ -221,29 +221,29 @@ const Album = () => {
         <p style={{ textAlign: "center", marginTop: "50px" }}>
           아직 업로드된 사진이 없습니다.
         </p>
-      )
+      );
 
     // CASE A: '전체' 탭일 때 -> 무조건 모든 사진 보여줌
     if (activeTab === "전체") {
+      console.log("photos", photos);
       return (
         <div style={styles.photoGrid}>
           {photos.map((photo) => (
             <div key={photo.id} style={styles.photoItem}>
-              <img src={photo.url} alt={photo.title} style={styles.photoImg} />
+              <img src={photo.url} alt="" style={styles.photoImg} />
             </div>
           ))}
         </div>
-      )
+      );
     }
 
     // CASE B: '날짜/위치/카테고리' 탭인데, 아직 폴더를 안 눌렀을 때 -> 폴더 목록 보여줌
     if (selectedFolder === null) {
-      const groupedData = getGroupedData() // 그룹 데이터 가져오기
-      const groupKeys = Object.keys(groupedData) // ["서울", "부산", "제주"] 등
+      const groupedData = getGroupedData(); // 그룹 데이터 가져오기
+      const groupKeys = Object.keys(groupedData); // ["서울", "부산", "제주"] 등
 
       // 데이터가 하나도 없으면 안내 문구
-      if (groupKeys.length === 0) return <p>분류된 결과가 없습니다.</p>
-
+      if (groupKeys.length === 0) return <p>분류된 결과가 없습니다.</p>;
       return (
         <div style={styles.folderGrid}>
           {groupKeys.map((groupName) => (
@@ -260,16 +260,16 @@ const Album = () => {
             </div>
           ))}
         </div>
-      )
+      );
     }
 
     // CASE C: 폴더를 눌러서 상세 보기 중일 때 -> 해당 폴더의 사진들 보여줌
     const filteredPhotos = photos.filter((p) => {
-      if (activeTab === "날짜") return p.date === selectedFolder
-      if (activeTab === "위치") return p.location === selectedFolder
-      if (activeTab === "카테고리") return p.category === selectedFolder
-      return false
-    })
+      if (activeTab === "날짜") return p.date === selectedFolder;
+      if (activeTab === "위치") return p.location === selectedFolder;
+      if (activeTab === "카테고리") return p.category === selectedFolder;
+      return false;
+    });
 
     return (
       <div>
@@ -290,13 +290,13 @@ const Album = () => {
         <div style={styles.photoGrid}>
           {filteredPhotos.map((photo) => (
             <div key={photo.id} style={styles.photoItem}>
-              <img src={photo.url} alt={photo.title} style={styles.photoImg} />
+              <img src={photo.url} alt="" style={styles.photoImg} />
             </div>
           ))}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div style={styles.container}>
@@ -322,7 +322,7 @@ const Album = () => {
       {/* 실제 내용 렌더링 */}
       {renderContent()}
     </div>
-  )
-}
+  );
+};
 
-export default Album
+export default Album;

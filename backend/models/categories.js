@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize")
+const Sequelize = require("sequelize");
 module.exports = class Categories extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -23,10 +23,10 @@ module.exports = class Categories extends Sequelize.Model {
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
-    )
+      },
+    );
   }
   static associate(db) {
-    db.Categories.hasMany(db.PhotoCategoryMaps)
+    db.Categories.hasMany(db.PhotoCategoryMaps, { foreignKey: "categoryId" });
   }
-}
+};

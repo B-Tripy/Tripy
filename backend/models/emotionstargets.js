@@ -24,7 +24,7 @@ module.exports = class EmotionsTargets extends Sequelize.Model {
         createdAt: true,
         updatedAt: false,
         modelName: "EmotionsTargets",
-        tableName: "emotionstargets",
+        tableName: "emotionsTargets",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -32,7 +32,15 @@ module.exports = class EmotionsTargets extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.EmotionsTargets.belongsTo(db.Trips);
-    db.EmotionsTargets.belongsTo(db.Photos);
+    db.EmotionsTargets.belongsTo(db.Trips, {
+      foreignKey: "tripId",
+      onDelete: "CASCADE", // photo 삭제 시 해당 유저의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
+    db.EmotionsTargets.belongsTo(db.Photos, {
+      foreignKey: "photoId",
+      onDelete: "CASCADE", // photo삭제 시 해당 유저의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
   }
 };

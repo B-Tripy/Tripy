@@ -1,6 +1,11 @@
 // server/routes/users.js
 const express = require("express");
-const { findUserByEmail, createUser, getUsers } = require("../db/user_db");
+const {
+  findUserByEmail,
+  createUser,
+  getUsers,
+  toggleAction,
+} = require("../db/user_db");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const passport = require("passport");
@@ -116,13 +121,5 @@ router.post("/logout", (req, res) => {
   });
 });
 // GET /api/users/logout - 로그아웃
-router.get("/getUsers", async (req, res) => {
-  console.log("getUsers");
-  try {
-    const result = await getUsers();
-    console.log(result);
-    return res.status(200).json({ success: "OK", message: result });
-  } catch (e) {}
-});
 
 module.exports = router;
