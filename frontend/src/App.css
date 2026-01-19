@@ -63,7 +63,9 @@ button {
   border: 1px solid var(--border);
   background: #fff;
   border-radius: 10px;
-  transition: background 0.15s ease, border-color 0.15s ease,
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
     transform 0.05s ease;
 }
 button:active {
@@ -80,7 +82,6 @@ button:active {
   width: 100%;
   z-index: 10;
 
-  /* background-color: white; */
   color: black;
   transition: transform 0.3s ease-in-out;
   z-index: 1;
@@ -263,7 +264,9 @@ button:active {
   z-index: 0;
 
   opacity: 0; /* 투명하게 */
-  transition: transform 0.7s ease-in-out, opacity 0.7s ease-in-out;
+  transition:
+    transform 0.7s ease-in-out,
+    opacity 0.7s ease-in-out;
 }
 
 .messageModal.show {
@@ -279,10 +282,12 @@ button:active {
   bottom: 0; /* header 바로 밑 기준 */
   right: 0;
   z-index: 0;
-  transform: translateY(-100%); /* 위로 숨겨둠 */
+  transform: translateY(-200%); /* 위로 숨겨둠 */
 
   opacity: 0; /* 투명하게 */
-  transition: transform 0.7s ease-in-out, opacity 0.7s ease-in-out;
+  transition:
+    transform 0.7s ease-in-out,
+    opacity 0.7s ease-in-out;
 }
 
 .sendMessage.show {
