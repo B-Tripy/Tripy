@@ -3,10 +3,10 @@
     "username": "root",
     "password": "1234",
     "database": "trip-db",
-    "port": "3307",
-    "host": "localhost",
+    "port": "3309",
+    "host": "tripy_mysql",
     "dialect": "mysql",
-    "logging": false
+    "logging": true
   },
   "test": {
     "username": "root",
@@ -19,8 +19,9 @@
     "username": "root",
     "password": "1234",
     "database": "trip-db",
-    "port": "3307",
-    "host": "localhost",
-    "dialect": "mysql"
+    "port": "3306",
+    "host": "tripy_mysql",
+    "dialect": "mysql",
+    "logging": false
   }
 }

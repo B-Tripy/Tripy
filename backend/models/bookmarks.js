@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Bookmarks extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -10,12 +10,17 @@ module.exports = class Bookmarks extends Sequelize.Model {
         sequelize,
         underscored: false,
         modelName: "Bookmarks",
+<<<<<<< HEAD
         tableName:'bookmarks',
+=======
+        tableName: "bookmarks",
+>>>>>>> hdy
         createdAt: false,
         updatedAt: false,
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
+<<<<<<< HEAD
       },
     );
   }
@@ -25,5 +30,12 @@ module.exports = class Bookmarks extends Sequelize.Model {
       onDelete: "CASCADE", // 유저 삭제 시 해당 유저의 게시글도 삭제
       onUpdate: "CASCADE",
     });
+=======
+      }
+    )
   }
-};
+  static associate(db) {
+    db.Bookmarks.belongsTo(db.Users)
+>>>>>>> hdy
+  }
+}
