@@ -19,11 +19,7 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
         createdAt: true,
         updatedAt: false,
         modelName: "PhotoCategoryMaps",
-<<<<<<< HEAD
         tableName: "photoCategoryMaps",
-=======
-        tableName: "photocategorymaps",
->>>>>>> hdy
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
@@ -31,7 +27,6 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
     );
   }
   static associate(db) {
-<<<<<<< HEAD
     db.PhotoCategoryMaps.belongsTo(db.Photos, {
       foreignKey: "photoId",
       onDelete: "CASCADE", // photo 삭제 시 해당 Map의 게시글도 삭제
@@ -42,9 +37,5 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
       onDelete: "CASCADE", // 카테고리 삭제 시 해당 Map의 게시글도 삭제
       onUpdate: "CASCADE",
     });
-=======
-    db.PhotoCategoryMaps.belongsTo(db.Photos);
-    db.PhotoCategoryMaps.belongsTo(db.Categories);
->>>>>>> hdy
   }
 };

@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize")
+const Sequelize = require("sequelize");
 module.exports = class UserTrips extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -15,17 +15,12 @@ module.exports = class UserTrips extends Sequelize.Model {
         underscored: false,
         createdAt: false,
         updatedAt: false,
-<<<<<<< HEAD
         modelName: "UserTrips",
-=======
-        modelName: "UserTrip",
->>>>>>> hdy
         tableName: "usertrip",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-<<<<<<< HEAD
-      },
+      }
     );
   }
   static associate(db) {
@@ -39,13 +34,5 @@ module.exports = class UserTrips extends Sequelize.Model {
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     });
-=======
-      }
-    )
   }
-  static associate(db) {
-    db.UserTrip.belongsTo(db.Users, { foreignKey: "UserId" })
-    db.UserTrip.belongsTo(db.Trips, { foreignKey: "TripId" })
->>>>>>> hdy
-  }
-}
+};

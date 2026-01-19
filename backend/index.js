@@ -46,10 +46,13 @@ const server = http.createServer(app);
 // const io = new Server(server, { cors: "*" });
 
 // 1. Redis 클라이언트 생성 (Docker 환경 변수 적용)
+// const redisClient = createClient({
+//   url: `redis://${process.env.REDIS_HOST || "tripy_redis"}:${
+//     process.env.REDIS_PORT || 6379
+//   }`,
+// });
 const redisClient = createClient({
-  url: `redis://${process.env.REDIS_HOST || "tripy_redis"}:${
-    process.env.REDIS_PORT || 6379
-  }`,
+  url: `redis://localhost:6379`,
 });
 
 redisClient.on("connect", () => console.log("Redis 연결 성공"));

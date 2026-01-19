@@ -15,14 +15,11 @@ module.exports = class Posts extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-<<<<<<< HEAD
         photoId: {
           type: Sequelize.INTEGER,
           allowNull: false,
           unique: true, // 이 설정이 있어야 실제 DB에 Unique 제약조건이 생성됩니다.
         },
-=======
->>>>>>> hdy
       },
       {
         sequelize,
@@ -34,7 +31,6 @@ module.exports = class Posts extends Sequelize.Model {
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-<<<<<<< HEAD
       },
     );
   }
@@ -50,13 +46,5 @@ module.exports = class Posts extends Sequelize.Model {
       onDelete: "CASCADE", // 유저 삭제 시 해당 유저의 게시글도 삭제
       onUpdate: "CASCADE",
     });
-=======
-      }
-    )
-  }
-  static associate(db) {
-    db.Posts.belongsTo(db.Photos)
-    db.Posts.belongsTo(db.Users)
->>>>>>> hdy
   }
 }

@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 const SetClose = ({ userId }) => {
   const [pickUser, setPickUser] = useState([]);
 
   const fetchUsers = async () => {
-    const users = await axios.get("/api/companion/getUsers");
+    const users = await axios.get(`${API_URL}/companion/getUsers`);
     console.log(users.data.users);
     setPickUser(users.data?.users?.map((user) => user.id) ?? []);
   };
 
   const getUsers = async (e) => {
-    await axios.post("/api/companion/toggle", {
+    await axios.post(`${API_URL}/companion/toggle`, {
       userId,
       toggle: e.target.checked,
     });

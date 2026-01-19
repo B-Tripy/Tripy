@@ -23,7 +23,6 @@ module.exports = class Themes extends Sequelize.Model {
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-<<<<<<< HEAD
       },
     );
   }
@@ -33,12 +32,5 @@ module.exports = class Themes extends Sequelize.Model {
       onDelete: "CASCADE", // 유저 삭제 시 해당 유저의 게시글도 삭제
       onUpdate: "CASCADE",
     });
-=======
-      }
-    )
-  }
-  static associate(db) {
-    db.Themes.belongsTo(db.Trips)
->>>>>>> hdy
   }
 }

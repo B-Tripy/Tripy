@@ -24,11 +24,7 @@ module.exports = class EmotionsTargets extends Sequelize.Model {
         createdAt: true,
         updatedAt: false,
         modelName: "EmotionsTargets",
-<<<<<<< HEAD
         tableName: "emotionsTargets",
-=======
-        tableName: "emotionstargets",
->>>>>>> hdy
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",

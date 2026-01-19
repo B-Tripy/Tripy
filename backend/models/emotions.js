@@ -27,7 +27,6 @@ module.exports = class Emotions extends Sequelize.Model {
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-<<<<<<< HEAD
       },
     );
   }
@@ -42,13 +41,5 @@ module.exports = class Emotions extends Sequelize.Model {
       onDelete: "CASCADE", // 유저 삭제 시 해당 유저의 게시글도 삭제
       onUpdate: "CASCADE",
     });
-=======
-      }
-    )
-  }
-  static associate(db) {
-    db.Emotions.belongsTo(db.Trips)
-    db.Emotions.belongsTo(db.Photos)
->>>>>>> hdy
   }
 }

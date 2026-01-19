@@ -4,6 +4,7 @@ import { ValueContext } from "../../context/ValueContext";
 import axios from "axios";
 import { Reset } from "../../context/ValueContext";
 import { useAuthStore } from "../../store/authStore";
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 export default function SendMessage() {
   const [toUserEmail, setToUserEmail] = useState("");
   const [users, setUsers] = useState([]);
@@ -30,7 +31,7 @@ export default function SendMessage() {
   }, []);
   const getUsers = async () => {
     try {
-      const users = await axios.get("/api/companion/getUsers");
+      const users = await axios.get(`${API_URL}/companion/getUsers`);
       console.log(users.data.users);
       setUsers(users.data.users);
     } catch (e) {
@@ -86,7 +87,7 @@ export default function SendMessage() {
   const withdraw = async () => {
     console.log("user", user.id);
     try {
-      const res = await axios.post("/api/companion/withdraw", {
+      const res = await axios.post(`${API_URL}/companion/withdraw`, {
         tripId: value.tripId,
         userId: user.id,
       });
