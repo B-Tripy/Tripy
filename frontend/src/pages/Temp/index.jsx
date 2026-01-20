@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+// const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 const Temp = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -14,6 +14,7 @@ const Temp = () => {
 
   // 2. 서버 전송 핸들러
   const handleUpload = async () => {
+    // console.log(API_URL);
     if (!selectedFile) {
       alert("사진을 먼저 선택해주세요!");
       return;
@@ -27,10 +28,14 @@ const Temp = () => {
       // 이전 결과 초기화 (새로운 요청 시 화면 깜빡임 방지)
       setResult(null);
 
-      const res = await axios.post(`${API_URL}/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/api/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+          withCredentials: true,
+        },
+      );
 
       console.log("서버 응답:", res.data);
       setResult(res.data);
