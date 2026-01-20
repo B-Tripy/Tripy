@@ -1,22 +1,45 @@
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import axios from "axios"
-
+import Loading from "../../components/Loading"
+import styles from "./ReviewDetail.module.scss"
 
 const API_URL = import.meta.env.VITE_API_URL || "/api"
 const instance = axios.create({ withCredentials: true })
+
 function ReviewDetail() {
   const { id } = useParams()
+  const navigate = useNavigate()
+
   const [post, setPost] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [currentUserId, setCurrentUserId] = useState(null)
+  const [prompt, setPrompt] = useState("")
+  const [descriptions, setDescriptions] = useState({})
+  const [aiSummary, setAiSummary] = useState("")
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const res = await instance.get(`${API_URL}/review/${id}`)
         setPost(res.data)
+        setCurrentUserId(res.data.currentUserId)
+
+        if (res.data.plan) {
+          setPrompt(res.data.plan)
+        }
+
+        if (res.data.images) {
+          const initialDesc = {}
+          res.data.images.forEach((img) => {
+            if (img.post) {
+              initialDesc[img.id] = img.post
+            }
+          })
+          setDescriptions(initialDesc)
+        }
       } catch (e) {
-        console.error("상세 데이터 로딩 실패:", e)
+        console.error("로딩 실패:", e)
       } finally {
         setLoading(false)
       }
@@ -24,55 +47,159 @@ function ReviewDetail() {
     fetchPost()
   }, [id])
 
-  const styles = {
-    container: {
-      maxWidth: "1152px",
-      margin: "150px auto 2.5rem auto",
-      padding: "2rem",
-      fontFamily: "'Noto Sans KR', sans-serif",
-    },
-    contentBox: {
-      backgroundColor: "white",
-      padding: "2rem",
-      borderRadius: "1rem",
-      border: "1px solid #f3f4f6",
-      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-    },
-    title: { fontSize: "2rem", marginBottom: "1rem", color: "#111827" },
-    meta: {
-      color: "#6b7280",
-      marginBottom: "2rem",
-      borderBottom: "1px solid #eee",
-      paddingBottom: "1rem",
-    },
-    description: { fontSize: "1.1rem", lineHeight: "1.6", color: "#374151" },
+  const handleDescChange = (imgId, value) => {
+    setDescriptions((prev) => ({ ...prev, [imgId]: value }))
   }
 
-  if (loading) return <div style={styles.container}>로딩 중...</div>
+  const handleSaveIndividual = async (imgId) => {
+    try {
+      await instance.post(`${API_URL}/review/${id}/descriptions/${imgId}`, {
+        post: descriptions[imgId] || "",
+      })
+      alert("내용이 성공적으로 업데이트되었습니다.")
+    } catch (e) {
+      if (e.response?.status === 403) {
+        alert("본인이 작성한 글만 수정할 수 있습니다.")
+      } else {
+        alert("저장/수정 실패")
+      }
+    }
+  }
+
+  const handleEdit = (imgId) => {
+    handleSaveIndividual(imgId)
+  }
+
+  const handleDelete = (imgId) => {
+    if (window.confirm("설명을 삭제하시겠습니까?")) {
+      setDescriptions((prev) => {
+        const newDesc = { ...prev }
+        delete newDesc[imgId]
+        return newDesc
+      })
+    }
+  }
+
+  const handleAiSummary = () => {
+    const allTexts = Object.values(descriptions).join(" ")
+    const tripId = `${id}`
+
+    alert("AI 요약을 생성 중입니다... 잠시만 기다려주세요.")
+    try {
+      instance
+        .post(`/ai/review/`, {
+          post: allTexts,
+          tripId: tripId,
+        })
+        .then(async (res) => {
+          const summaryText = res.data.summary
+          setAiSummary(`[AI 요약 결과]: ${summaryText}`)
+          try {
+            await instance.put(`${API_URL}/review/${tripId}/description`, {
+              description: summaryText,
+            })
+            alert("AI 요약이 생성되고 저장되었습니다.")
+          } catch (saveError) {
+            console.error(saveError)
+            alert("요약은 생성되었으나 저장에 실패했습니다.")
+          }
+        })
+    } catch (e) {
+      console.error(e)
+      alert("AI 요청 실패")
+    }
+  }
+
+  if (loading) return <Loading />
   if (!post)
-    return <div style={styles.container}>게시글을 찾을 수 없습니다.</div>
+    return <div className={styles.container}>게시글을 찾을 수 없습니다.</div>
 
   return (
-    <div style={styles.container}>
-      <div style={styles.contentBox}>
-        <h2 style={styles.title}>{post.title}</h2>
-        <div style={styles.meta}>
-          <span>
-            일정: {post.start_date.split("T")[0]} ~{" "}
-            {post.end_date.split("T")[0]}
-          </span>
-          <span style={{ marginLeft: "1rem" }}>
-            작성일: {new Date(post.createdAt).toLocaleDateString()}
-          </span>
-        </div>
-        <div style={styles.description}>
-          <p>{post.description}</p>
-          {/* DB에 저장된 다른 필드(score 등)가 있다면 여기에 추가 */}
-          <div style={{ marginTop: "20px", color: "#f59e0b" }}>
-            평점: {"⭐".repeat(post.score || 0)}
+    <div className={styles.container}>
+      {/* 기존 header 제거하고 main 안으로 통합 */}
+
+      <main className={styles.mainContent}>
+        {/* 1. 좌측: 프롬프트 영역 (사이드바 형태로 변경) */}
+        <aside className={styles.promptSection}>
+          <div className={styles.sidebarTitle}>AI 여행 계획</div>
+          <textarea
+            placeholder="AI가 생성한 여행 계획이 여기에 표시됩니다."
+            value={prompt}
+            readOnly={true}
+            // 인라인 height 삭제 -> CSS에서 제어
+          />
+        </aside>
+
+        {/* 2. 중앙: 이미지 리스트 */}
+        <section className={styles.editorWrapper}>
+          <div className={styles.imageList}>
+            {post.images?.map((img, index) => {
+              const imageUrl = img.url
+                ? img.url.startsWith("http")
+                  ? img.url
+                  : `${API_URL}/${img.url.replace(/\\/g, "/")}`
+                : ""
+              const isMyPost = !img.authorId || img.authorId === currentUserId
+
+              return (
+                <div key={img.id || index} className={styles.imageRow}>
+                  <div className={styles.imageBox}>
+                    <img src={imageUrl} alt={`리뷰 이미지 ${index}`} />
+                  </div>
+
+                  <div className={styles.textBox}>
+                    <textarea
+                      placeholder={
+                        isMyPost
+                          ? "사진 설명을 입력하세요."
+                          : "다른 사용자가 작성한 글입니다."
+                      }
+                      value={descriptions[img.id] || ""}
+                      onChange={(e) => handleDescChange(img.id, e.target.value)}
+                      readOnly={!isMyPost}
+                      className={!isMyPost ? styles.readOnlyTextarea : ""}
+                    />
+
+                    {isMyPost && (
+                      <div className={styles.buttonGroup}>
+                        <button
+                          className={styles.btnBlue}
+                          onClick={() => handleSaveIndividual(img.id)}
+                        >
+                          저장
+                        </button>
+                        <button
+                          className={styles.btnGray}
+                          onClick={() => handleEdit(img.id)}
+                        >
+                          수정
+                        </button>
+                        <button
+                          className={styles.btnRed}
+                          onClick={() => handleDelete(img.id)}
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
           </div>
-        </div>
-      </div>
+        </section>
+
+        {/* 3. 우측: AI 요약 영역 */}
+        <aside className={styles.sideSummary}>
+          <div className={styles.sidebarTitle}>AI 요약 결과</div>
+          <div className={styles.summaryDisplay}>
+            {aiSummary || "이미지 설명을 기반으로 요약이 생성됩니다."}
+          </div>
+          <button className={styles.summaryBtn} onClick={handleAiSummary}>
+            요약 버튼
+          </button>
+        </aside>
+      </main>
     </div>
   )
 }

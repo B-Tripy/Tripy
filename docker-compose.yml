@@ -10,7 +10,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "80:80" # 윈도우에서 테스트 시에는 "8080"으로, AWS EC2 리눅스 배포 시에는 "80"으로 할 것
+      - "8080:80" # 윈도우에서 테스트 시에는 "8080"으로, AWS EC2 리눅스 배포 시에는 "80"으로 할 것
     networks:
       - tripyserver
 

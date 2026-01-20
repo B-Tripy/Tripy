@@ -22,9 +22,8 @@ const albumRouter = require("./routes/album_router")
 const analysisRouter = require("./routes/analysis_router")
 const recommendRouter = require("./routes/recommend_router")
 const companionRouter = require("./routes/companion_router")
+const chatRouter = require("./routes/chatbot_router")
 const boardRouter = require("./routes/board_router")
-// const socket=require('socket')
-// const chatRouter = require("../socket");
 
 // 설정 및 소켓 핸들러
 const passportConfig = require("./passport")
@@ -46,27 +45,22 @@ redisClient.on("error", (err) => console.error("Redis 연결 에러:", err))
 
 redisClient.connect().catch(console.error)
 
-// 2. MySQL 연결 (sequelize)
-sequelize
-  .sync({ alter: true })
-  .then(() => {
-    console.log(`데이터베이스 연결 성공 (Host: ${process.env.DB_HOST})`)
-  })
-  .catch((e) => {
-    console.error("데이터베이스 연결 실패:", e)
-  })
+// // 2. MySQL 연결 (sequelize)
+// sequelize
+//   .sync({ alter: true })
+//   .then(() => {
+//     console.log(`데이터베이스 연결 성공 (Host: ${process.env.DB_HOST})`)
+//   })
+//   .catch((e) => {
+//     console.error("데이터베이스 연결 실패:", e)
+//   })
 
 // 3. CORS 설정 (Nginx 포트 추가)
 const allowedOrigins = [
-  "http://localhost:5173", // 리액트(Vite) 로컬 개발 서버
-  "http://localhost:8080", // Nginx 도커 포트
-  "http://192.168.45.200:5173", // 우리집 pc ip
-  "http://192.168.45.223:5173", //
-  "http://192.168.45.168:8081", // 안드로이드/기타 기기 접속 주소
-  "http://192.168.10.56:8081",
-  "http://192.168.10.10:8081",
-  "http://192.168.10.68:8081",
-  "http://192.168.10.10:5173",
+  process.env.VITE,
+  process.env.NGINX,
+  process.env.EXPO,
+  "http://localhost:5173",
 ]
 
 const io = new Server(server, {
@@ -145,7 +139,8 @@ app.use("/api/analysis", analysisRouter)
 app.use("/api/recommend", recommendRouter)
 app.use("/api/companion", companionRouter)
 
-// app.use("/api/chat", chatRouter);
+//챗봇 라우터 연결
+app.use("/api/chatbot", chatRouter)
 
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next)

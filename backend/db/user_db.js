@@ -37,9 +37,10 @@ async function createUser(nickname, email, password) {
     password,
   ])
 }
+
 module.exports = {
   findUserByCredentials,
   findUserById,
   findUserByEmail,
-  createUser,
-}
+  createUser
+};

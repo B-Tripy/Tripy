@@ -8,7 +8,7 @@ const { sequelize } = require("../models");
 const albumDb = require("../db/album_db");
 // AI 서버 주소
 require("dotenv").config();
-// const AI_SERVER_URL = "http://localhost:8000/album/category";  // 로컬 시 주소
+// const AI_SERVER_URL = "http://localhost:8000/album/category";  // 로컬 개발 시 주소
 const AI_SERVER_URL = `${process.env.AI_SERVER_URL}/album/category`; // Docker
 
 const albumService = {
@@ -78,7 +78,7 @@ const albumService = {
       // 5. Photo 저장 (트랜잭션 객체 t 전달)
       newPhoto = await albumDb.createPhoto(
         {
-          UserId: userId,
+          userId: userId,
           photo: finalFilename,
           url: finalPath,
           takenAt: takenAt || new Date(),
@@ -93,8 +93,8 @@ const albumService = {
       const validCategories = aiResults.filter((r) => r.score >= 0.3);
       if (validCategories.length > 0) {
         const mapData = validCategories.map((item) => ({
-          PhotoId: newPhoto.id,
-          CategoryId: item.category_id,
+          photoId: newPhoto.id,
+          categoryId: item.category_id,
           confidence_score: item.score,
         }));
         // (트랜잭션 객체 t 전달)

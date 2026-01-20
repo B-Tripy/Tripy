@@ -1,84 +1,84 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef } from "react";
 import {
   Upload,
   FileText,
   CheckCircle,
   AlertCircle,
   Loader2,
-} from "lucide-react"
-import axios from "axios"
-import { motion, AnimatePresence } from "framer-motion"
+} from "lucide-react";
+import axios from "axios";
+import { motion, AnimatePresence } from "framer-motion";
 
-const API_URL = "http://localhost:8000"
+const AI_URL = import.meta.env.VITE_AI_URL;
 
 export default function FileUpload({ onUploadSuccess }) {
-  const [isDragging, setIsDragging] = useState(false)
-  const [uploadStatus, setUploadStatus] = useState("idle") // idle, uploading, success, error
-  const [message, setMessage] = useState("")
-  const fileInputRef = useRef(null)
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState("idle"); // idle, uploading, success, error
+  const [message, setMessage] = useState("");
+  const fileInputRef = useRef(null);
 
   const handleDragOver = (e) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
   const handleDragLeave = () => {
-    setIsDragging(false)
-  }
+    setIsDragging(false);
+  };
 
   const handleDrop = (e) => {
-    e.preventDefault()
-    setIsDragging(false)
-    const files = e.dataTransfer.files
+    e.preventDefault();
+    setIsDragging(false);
+    const files = e.dataTransfer.files;
     if (files.length > 0) {
-      handleFileUpload(files)
+      handleFileUpload(files);
     }
-  }
+  };
 
   const handleFileUpload = async (files) => {
     // Validation loop
-    const validFiles = []
+    const validFiles = [];
     for (let i = 0; i < files.length; i++) {
       if (
         files[i].type === "application/pdf" ||
         files[i].type === "text/plain"
       ) {
-        validFiles.push(files[i])
+        validFiles.push(files[i]);
       }
     }
 
     if (validFiles.length === 0) {
-      setUploadStatus("error")
-      setMessage("PDF 및 TXT 파일만 허용됩니다.")
-      return
+      setUploadStatus("error");
+      setMessage("PDF 및 TXT 파일만 허용됩니다.");
+      return;
     }
 
-    setUploadStatus("uploading")
-    setMessage(`${validFiles.length}개 파일 업로드 중...`)
+    setUploadStatus("uploading");
+    setMessage(`${validFiles.length}개 파일 업로드 중...`);
 
-    const formData = new FormData()
+    const formData = new FormData();
     validFiles.forEach((file) => {
-      formData.append("files", file)
-    })
+      formData.append("files", file);
+    });
 
     try {
-      const response = await axios.post(`${API_URL}/plan/upload`, formData, {
+      const response = await axios.post(`${AI_URL}/plan/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
-      console.log("======================")
-      console.log(response.data)
-      console.log("======================")
-      setUploadStatus("success")
+      });
+      console.log("======================");
+      console.log(response.data);
+      console.log("======================");
+      setUploadStatus("success");
       setMessage(
-        `${response.data.processed_files.length}개 파일에서 총 ${response.data.total_chunks}개 청크가 성공적으로 처리되었습니다.`
-      )
-      if (onUploadSuccess) onUploadSuccess()
+        `${response.data.processed_files.length}개 파일에서 총 ${response.data.total_chunks}개 청크가 성공적으로 처리되었습니다.`,
+      );
+      if (onUploadSuccess) onUploadSuccess();
     } catch (error) {
-      console.error(error)
-      setUploadStatus("error")
-      setMessage("업로드 실패. 백엔드가 실행 중인가요?")
+      console.error(error);
+      setUploadStatus("error");
+      setMessage("업로드 실패. 백엔드가 실행 중인가요?");
     }
-  }
+  };
 
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -168,8 +168,8 @@ export default function FileUpload({ onUploadSuccess }) {
               uploadStatus === "error"
                 ? "bg-red-500/10 border-red-500/20 text-red-600"
                 : uploadStatus === "success"
-                ? "bg-blue-500/10 border-blue-500/20 text-red-600 font-bold"
-                : "bg-surfaceHighlight border-black/5 text-textMuted"
+                  ? "bg-blue-500/10 border-blue-500/20 text-red-600 font-bold"
+                  : "bg-surfaceHighlight border-black/5 text-textMuted"
             }`}
           >
             {message}
@@ -177,5 +177,5 @@ export default function FileUpload({ onUploadSuccess }) {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-const mysql = require("mysql2/promise")
+const mysql = require("mysql2/promise");
 
 const pool = mysql.createPool({
   // host: "http://192.168.10.56",
@@ -9,6 +9,6 @@ const pool = mysql.createPool({
   database: "trip-db",
   waitForConnections: true,
   connectionLimit: 10,
-})
+});
 
-module.exports = pool
+module.exports = pool;
