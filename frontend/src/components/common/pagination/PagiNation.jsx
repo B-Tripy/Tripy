@@ -98,7 +98,7 @@ function Pagination() {
       ))}
 
       <button onClick={nextPage} disabled={currentPage === totalPages}>
-        <img src="public/assets/icons/icon-arrowRight.svg" alt="Right" />
+        <img src="../../assets/icons/icon-arrowRight.svg" alt="Right" />
       </button>
     </div>
   );

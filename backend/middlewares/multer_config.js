@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 // 3. Multer 객체 생성
 const upload = multer({
   storage: storage,
-  // (선택) 파일 크기 제한: 5MB
+  // (선택) 파일 크기 제한: 10MB
   limits: { fileSize: 10 * 1024 * 1024 },
 });
 

@@ -70,9 +70,9 @@ export default function SendMessage() {
               } else {
                 reject(response.error);
               }
-            }
+            },
           );
-        })
+        }),
     );
 
     Promise.all(requests)
@@ -173,7 +173,7 @@ export default function SendMessage() {
                   {/* 확인/체크하면 배열에 넣고 보내기하면 promise.all사용 해 볼 것 */}
                 </label>
               </div>
-            )
+            ),
         )
       ) : (
         <div

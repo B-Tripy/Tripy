@@ -329,9 +329,9 @@ const Main = () => {
         <p style={{ textAlign: "center", marginTop: "1rem" }}>로딩 중...</p>
       )}
 
-      <div style={{ marginTop: "2rem" }}>
+      {/* <div style={{ marginTop: "2rem" }}>
         <PageNation />
-      </div>
+      </div> */}
     </div>
   );
 };
