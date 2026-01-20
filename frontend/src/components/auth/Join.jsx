@@ -36,10 +36,10 @@ const Join = ({
         disabled={loading}
       />
       <button disabled={loading} onClick={handleJoin}>
-        {loading ? "회원 가입 중..." : "LOGUP"}
+        {loading ? "회원 가입 중..." : "SIGN UP"}
       </button>
     </form>
-  );
-};
+  )
+}
 
-export default Join;
+export default Join

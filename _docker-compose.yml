@@ -1,67 +1,40 @@
-version: '3.8'
+version: "3.8"
+
+name: tripyserver
 
 services:
-  backend-node:
-    build:
-      context: ./backend-node
-      dockerfile: Dockerfile
-    container_name: backend-node
-    ports:
-      - "5000:5000"
-    environment:
-      - DB_HOST=your-mysql-host
-      - DB_PORT=3307
-      - DB_USER=your-username
-      - DB_PASSWORD=your-password
-      - DB_NAME=your-database
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    restart: unless-stopped
-    networks:
-      - app-network
-
-  backend-fastapi:
-    build:
-      context: ./backend-fastapi
-      dockerfile: Dockerfile
-    container_name: backend-fastapi
-    ports:
-      - "8000:8000"
-    environment:
-      - DB_HOST=your-mysql-host
-      - DB_PORT=3307
-      - DB_USER=your-username
-      - DB_PASSWORD=your-password
-      - DB_NAME=your-database
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    restart: unless-stopped
-    networks:
-      - app-network
-
-  redis:
-    image: redis:latest
-    container_name: redis
-    ports:
-      - "6379:6379"
-    restart: unless-stopped
-    networks:
-      - app-network
-
-  nginx:
+  frontend:
+    image: mic006016/tripy-nginx:latest
+    container_name: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: nginx
     ports:
-      - "80:80"
-    depends_on:
-      - backend-node
-      - backend-fastapi
-    restart: unless-stopped
+      - "80:80" # 윈도우에서 테스트 시에는 "8080"으로, AWS EC2 리눅스 배포 시에는 "80"으로 할 것
     networks:
-      - app-network
+      - tripyserver
+
+  backend:
+    image: tripy-node
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000" # 직접 접근 테스트용 (필요 시 주석 처리 가능)
+    restart: unless-stopped
+    volumes:
+      # [내 컴퓨터 경로] : [컨테이너 내부 경로]
+      - ./backend/uploads:/app/uploads # 개발 시
+      # [EC2의 실제 경로] : [컨테이너 내부 경로]
+      # - /home/ubuntu/Tripy/backend/uploads:/app/uploads  # 배포 시
+    environment:
+      - NODE_ENV=production # 배포 시 production
+    env_file:
+      - ./backend/.env
+    networks:
+      - tripyserver
 
 networks:
-  app-network:
-    driver: bridge
+  tripyserver:
+    external: true
