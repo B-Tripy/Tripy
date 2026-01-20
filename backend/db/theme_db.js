@@ -1,5 +1,5 @@
 // server/db_layer/user_db.js
-const pool = require("./db");
+const pool = require("./db")
 
 /**
  * 1. 여행감성분석 조회
@@ -20,10 +20,10 @@ async function getTripList(userId, year) {
                      WHERE B.userId = ?
                        AND A.createdAt LIKE '%${year}%'                       
                      ORDER BY A.createdAt DESC
-                     LIMIT 5`;
-  const [rows] = await pool.query(sql_list, [userId]);
+                     LIMIT 5`
+  const [rows] = await pool.query(sql_list, [userId])
 
-  return rows;
+  return rows
 }
 // 2. 년간 여행건수 추이 라인그래프
 async function getTripTrend(userId, year) {
@@ -41,7 +41,7 @@ async function getTripTrend(userId, year) {
                                   FROM trips A INNER JOIN usertrip B 
                                     ON A.id = B.TripId 
                                   WHERE B.userId = ? 
-                                    AND B.createdAt LIKE '%${year}%') X
+                                    AND A.createdAt LIKE '%${year}%') X
                             GROUP BY X.yy, X.mm
                           UNION SELECT DATE_FORMAT(CURDATE(),'%Y') AS yy, '01' AS mm , 0 AS val    
                           UNION SELECT DATE_FORMAT(CURDATE(),'%Y') AS yy, '02' AS mm , 0 AS val    
@@ -55,12 +55,12 @@ async function getTripTrend(userId, year) {
                           UNION SELECT DATE_FORMAT(CURDATE(),'%Y') AS yy, '10' AS mm , 0 AS val    
                           UNION SELECT DATE_FORMAT(CURDATE(),'%Y') AS yy, '11' AS mm , 0 AS val
                           UNION SELECT DATE_FORMAT(CURDATE(),'%Y') AS yy, '12' AS mm , 0 AS val  ) M
-                      GROUP BY M.yy, M.mm`;
+                      GROUP BY M.yy, M.mm`
 
-  console.log("Trip Trend Params:", userId, year);
-  const [rows] = await pool.query(sql_trend, [userId], [year]);
+  console.log("Trip Trend Params:", userId, year)
+  const [rows] = await pool.query(sql_trend, [userId], [year])
 
-  return rows;
+  return rows
 }
 
 async function getTripPreferences(userId, year) {
@@ -69,10 +69,10 @@ async function getTripPreferences(userId, year) {
                               FROM themes A INNER JOIN usertrip B 
                                 ON A.TripId = B.TripId 
                             WHERE B.userId = ? 
-                              AND B.createdAt LIKE '%${year}%'
-                             GROUP BY A.themecode`;
-  const [rows] = await pool.query(sql_preferences, [userId], [year]);
-  return rows;
+                              AND A.createdAt LIKE '%${year}%'
+                             GROUP BY A.themecode`
+  const [rows] = await pool.query(sql_preferences, [userId], [year])
+  return rows
 }
 
 async function getTripSatisfaction(userId, year) {
@@ -81,9 +81,9 @@ async function getTripSatisfaction(userId, year) {
                                  , CAST(SUM(if(t1.satisfaction IN ('L','X'), 1, 0)) AS UNSIGNED) AS dissatis
                               FROM emotionstargets t1
                              WHERE t1.createdAt LIKE '%${year}%'
-                             GROUP BY t1.TripId, t1.target`;
-  const [rows] = await pool.query(sql_satisfaction, [userId], [year]);
-  return rows;
+                             GROUP BY t1.TripId, t1.target`
+  const [rows] = await pool.query(sql_satisfaction, [userId], [year])
+  return rows
 }
 
 // ML argumnets 추출
@@ -102,53 +102,53 @@ async function getMLArguments(userId, year) {
                               AND T1.createdAt LIKE '%${year}%' 
                               AND (T1.TripId, T4.themecode) NOT IN (SELECT T5.TripId, T5.themecode FROM themes T5)
                           ) M2	 		 
-                          ON M1.id = M2.CategoryId`;
+                          ON M1.id = M2.CategoryId`
 
-  const [rows] = await pool.query(sql_ml_args, [userId], [year]);
-  return rows;
+  const [rows] = await pool.query(sql_ml_args, [userId], [year])
+  return rows
 }
 
 // 2. 선호도 ML 저장
 async function saveTripPreferencesML(themecode, TripId) {
   const sql_insert = `INSERT INTO themes (themecode, createdAt, TripId) 
-                                  VALUES (?, CURRENT_TIMESTAMP, ?)`;
-  const values = [themecode, TripId];
+                                  VALUES (?, CURRENT_TIMESTAMP, ?)`
+  const values = [themecode, TripId]
 
   return new Promise((resolve, reject) => {
     pool.query(sql_insert, values, (error, results) => {
       if (error) {
-        console.error("Error inserting trip preferences ML data:", error);
-        reject(error);
+        console.error("Error inserting trip preferences ML data:", error)
+        reject(error)
       } else {
-        console.log("Trip preferences ML data inserted successfully:", results);
-        resolve(results);
+        console.log("Trip preferences ML data inserted successfully:", results)
+        resolve(results)
       }
-    });
-  });
+    })
+  })
 }
 
 const saveEmotionTargets = async (data) => {
-  const satisfy = data.satisfy;
-  const target = data.target;
-  const tripId = data.tripId;
-  const photoId = data.photoId;
+  const satisfy = data.satisfy
+  const target = data.target
+  const tripId = data.tripId
+  const photoId = data.photoId
 
-  const values = [satisfy, target, tripId, photoId];
+  const values = [satisfy, target, tripId, photoId]
 
   const sql_emotionT = `INSERT INTO emotionstargets (satisfaction, target, createdAt, TripId, PhotoId)
-							                               VALUES (?,?,CURRENT_TIMESTAMP,?,?)`;
+							                               VALUES (?,?,CURRENT_TIMESTAMP,?,?)`
   return new Promise((resolve, reject) => {
     pool.query(sql_emotionT, values, (error, results) => {
       if (error) {
-        console.error("Error inserting trip satisfy data:", error);
-        reject(error);
+        console.error("Error inserting trip satisfy data:", error)
+        reject(error)
       } else {
-        console.log("Trip satisfy data inserted successfully:", results);
-        resolve(results);
+        console.log("Trip satisfy data inserted successfully:", results)
+        resolve(results)
       }
-    });
-  });
-};
+    })
+  })
+}
 
 module.exports = {
   getTripList,
@@ -158,4 +158,4 @@ module.exports = {
   getMLArguments,
   saveTripPreferencesML,
   saveEmotionTargets,
-};
+}
