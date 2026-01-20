@@ -5,39 +5,66 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const passport = require("passport");
 const cors = require("cors");
-const boardRouter = require("./routes/board_router");
+const mainRouter = require("./routes/main_router");
+const planRouter = require("./routes/plan_router");
+const reviewRouter = require("./routes/review_router");
 const userRouter = require("./routes/user_router");
 const uploadRouter = require("./routes/upload_router");
+const albumRouter = require("./routes/album_router");
+const analysisRouter = require("./routes/analysis_router");
+const recommendRouter = require("./routes/recommend_router");
+const companionRouter = require("./routes/companion_router");
+const chatRouter = require("./routes/chatbot_router");
+const boardRouter = require("./routes/board_router");
 const passportConfig = require("./passport");
+const themeRouter = require("./routes/theme_router"); // 여행감성분석
+const registerSocketHandlers = require("./socket"); // 소켓 핸들러 파일
 const { RedisStore } = require("connect-redis");
 const { createClient } = require("redis");
-const redisClient = createClient();
-const themeRouter = require("./routes/theme_router"); // 여행감성분석
+
+const http = require("http");
+const { Server } = require("socket.io");
+
+// sequelize로 데이터베이스와 연결
+const { sequelize } = require("./models");
+
+const app = express();
+const server = http.createServer(app);
+
+// 1. Redis 클라이언트 생성 (Docker 환경 변수 적용)
+// const redisClient = createClient({
+//   url: `redis://${process.env.REDIS_HOST || "tripy_redis"}:${
+//     process.env.REDIS_PORT || 6379
+//   }`,
+// });
+const redisClient = createClient({
+  url: process.env.REDIS,
+});
+
+redisClient.on("connect", () => console.log("Redis 연결 성공"));
+redisClient.on("error", (err) => console.error("Redis 연결 에러:", err));
 
 redisClient.connect().catch(console.error);
 
-// sequelize로 데이터베이스와 연결
-// const { sequelize } = require("./models");
+// 2. MySQL 연결 (sequelize)
 // sequelize
-//   .sync({ force: false })
+//   .sync({ alter: true })
 //   .then(() => {
-//     console.log("데이터베이스 연결 성공");
+//     console.log(`데이터베이스 연결 성공 (Host: ${process.env.DB_HOST})`);
 //   })
 //   .catch((e) => {
-//     console.error(e);
+//     console.error("데이터베이스 연결 실패:", e);
 //   });
 
-// app.js 또는 server.js
+// 3. CORS 설정 (Nginx 포트 추가)
+const allowedOrigins = [process.env.VITE, process.env.NGINX, process.env.EXPO];
 
-const app = express();
-
-const allowedOrigins = [
-  "http://localhost:5173", // 리액트(Vite) 로컬 개발 서버
-  "http://192.168.45.168:8081", // 안드로이드/기타 기기 접속 주소
-  "http://192.168.10.56:8081",
-  "http://192.168.10.10:8081",
-  "http://192.168.10.23:8081",
-];
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+  },
+});
 
 app.use(
   cors({
@@ -50,8 +77,9 @@ app.use(
       }
     },
     credentials: true, // 세션/쿠키를 사용하므로 필수!
-  })
+  }),
 );
+
 passportConfig();
 
 app.set("port", process.env.PORT || 5000);
@@ -60,8 +88,8 @@ app.set("port", process.env.PORT || 5000);
 const sessionMiddleware = session({
   store: new RedisStore({ client: redisClient, prefix: "sess:" }),
   resave: false,
-  saveUninitialized: true,
-  secret: process.env.COOKIE_SECRET,
+  saveUninitialized: false,
+  secret: process.env.COOKIE_SECRET || "PASSWORD",
   rolling: true,
   proxy: true, // 추가: 포트가 다르거나 프록시 환경일 때 쿠키 안정성 향상
   cookie: {
@@ -83,13 +111,47 @@ app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 // 라우터 등록 (세션 설정 이후에!)
-// 게시판 라우터 연결
-app.use("/api/posts", boardRouter);
+app.use("/api/main", mainRouter);
+
+//플랜 라우터 연결
+app.use("/api/plan", planRouter);
+
+// 리뷰게시판 라우터 연결
+app.use("/api/review", reviewRouter);
+
 // 사용자 라우터 연결
 app.use("/api/users", userRouter);
 app.use("/api/upload", uploadRouter);
+// 앨범 라우터 연결
+app.use("/api/album", albumRouter);
+
+//앨범 라우터 연결
+app.use("/api/album", albumRouter);
+
+//분석 라우터 연결
+app.use("/api/analysis", analysisRouter);
+
+//추천 라우터 연결
+app.use("/api/recommend", recommendRouter);
+app.use("/api/companion", companionRouter);
+
+//챗봇 라우터 연결
+app.use("/api/chatbot", chatRouter);
+
 // 여행감성분석 라우터 연결
 app.use("/api/theme", themeRouter);
+
+// app.use("/api/chat", chatRouter);
+
+const wrap = (middleware) => (socket, next) =>
+  middleware(socket.request, {}, next);
+
+io.use(wrap(sessionMiddleware));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
+
+// 5. 소켓 핸들러 등록
+registerSocketHandlers(io);
 
 // 기본 라우트
 app.get("/api", (req, res) => {
@@ -102,6 +164,6 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`서버 실행 중: http://localhost:${PORT}`);
 });

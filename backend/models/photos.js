@@ -16,11 +16,11 @@ module.exports = class Photos extends Sequelize.Model {
           allowNull: false,
         },
         latitude: {
-          type: Sequelize.FLOAT(10, 3),
+          type: Sequelize.FLOAT(9, 6),
           allowNull: true,
         },
-        longtitude: {
-          type: Sequelize.FLOAT(10, 3),
+        longitude: {
+          type: Sequelize.FLOAT(9, 6),
           allowNull: true,
         },
         address: {
@@ -31,27 +31,45 @@ module.exports = class Photos extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "Photo",
+        modelName: "Photos",
+        tableName: "photos",
+        createdAt: true,
+        updatedAt: false,
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
+      },
     );
   }
   static associate(db) {
-    db.Photo.hasOne(db.Post);
-    db.Photo.belongsTo(db.User);
-    db.Photo.belongsTo(db.Trip);
-    db.Photo.hasMany(db.PhotoCategoryMap);
-    db.Photo.belongsTo(db.EmotionsTarget);
+    db.Photos.hasMany(db.PhotoCategoryMaps, { foreignKey: "photoId" });
+    db.Photos.hasOne(db.Posts, {
+      foreignKey: "photoId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+
+    db.Photos.belongsTo(db.Users, {
+      foreignKey: "userId",
+      onDelete: "CASCADE", // 유저 삭제 시 해당 유저의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
+
+    db.Photos.belongsTo(db.Trips, {
+      foreignKey: "tripId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+
+    db.Photos.belongsTo(db.EmotionsTargets, {
+      foreignKey: "photoId",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
   }
 };

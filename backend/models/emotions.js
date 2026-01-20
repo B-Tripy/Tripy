@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Emotions extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -15,24 +15,31 @@ module.exports = class Emotions extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "Emotion",
+        createdAt: true,
+        updatedAt: false,
+        modelName: "Emotions",
+        tableName: "emotions",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
+      },
     );
   }
   static associate(db) {
-    db.Emotion.belongsTo(db.Trip);
-    db.Emotion.belongsTo(db.Photo);
+    db.Emotions.belongsTo(db.Trips, {
+      foreignKey: "tripId",
+      onDelete: "CASCADE", // 유저 삭제 시 해당 유저의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
+    db.Emotions.belongsTo(db.Photos, {
+      foreignKey: "photoId",
+      onDelete: "CASCADE", // 유저 삭제 시 해당 유저의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
   }
-};
+}

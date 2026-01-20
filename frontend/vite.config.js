@@ -16,6 +16,7 @@ export default defineConfig({
         // target: import.meta.env.VITE_BACKEND_URL,
         changeOrigin: true,
       },
+      "/img": "http://localhost:5000",
     },
   },
 });

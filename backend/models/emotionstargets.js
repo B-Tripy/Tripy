@@ -16,24 +16,31 @@ module.exports = class EmotionsTargets extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "EmotionsTarget",
+        createdAt: true,
+        updatedAt: false,
+        modelName: "EmotionsTargets",
+        tableName: "emotionsTargets",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
+      },
     );
   }
   static associate(db) {
-    db.EmotionsTarget.belongsTo(db.Trip);
-    db.EmotionsTarget.belongsTo(db.Photo);
+    db.EmotionsTargets.belongsTo(db.Trips, {
+      foreignKey: "tripId",
+      onDelete: "CASCADE", // photo 삭제 시 해당 유저의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
+    db.EmotionsTargets.belongsTo(db.Photos, {
+      foreignKey: "photoId",
+      onDelete: "CASCADE", // photo삭제 시 해당 유저의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
   }
 };

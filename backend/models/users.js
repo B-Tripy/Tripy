@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const Sequelize = require("sequelize")
 module.exports = class Users extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -16,29 +16,37 @@ module.exports = class Users extends Sequelize.Model {
           type: Sequelize.STRING(200),
           allowNull: false,
         },
-        createdAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
+        search: {
+          type: Sequelize.TINYINT,
+          allowNull: false,
+          defaultValue: false,
         },
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "User",
+        createdAt: true,
+        updatedAt: false,
+        modelName: "Users",
+        tableName:"users",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
+      },
     );
   }
   static associate(db) {
-    db.User.belongsToMany(db.Trip, { through: "UserTrip" });
-    db.User.hasMany(db.Post);
-    db.User.hasMany(db.Photo);
+    db.Users.belongsToMany(db.Trips, {
+      through: db.UserTrips, // 문자열 'UserTrips'가 아닌 모델 객체 전달
+      foreignKey: "userId",
+      otherKey: "tripId",
+    });
+    // UserTrips를 직접 조작해야 할 때를 위해 hasMany도 유지 가능
+    db.Users.hasMany(db.Posts, {
+      foreignKey: "userId",
+    });
+    db.Users.hasMany(db.Photos, { foreignKey: "userId" });
+    db.Users.hasMany(db.Bookmarks, { foreignKey: "userId" });
   }
-};
+}

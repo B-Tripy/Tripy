@@ -11,24 +11,22 @@ module.exports = class Categories extends Sequelize.Model {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
-        updatedAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
       },
       {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "Category",
+        createdAt: true,
+        updatedAt: false,
+        modelName: "Categories",
+        tableName: "categories",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
+      },
     );
   }
   static associate(db) {
-
-    db.Category.hasMany(db.PhotoCategoryMap);
+    db.Categories.hasMany(db.PhotoCategoryMaps, { foreignKey: "categoryId" });
   }
 };

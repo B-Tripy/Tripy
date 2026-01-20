@@ -1,6 +1,7 @@
 /backend/node_modules
 /frontend/node_modules
 
+
 # Logs
 logs
 *.log
@@ -71,7 +72,7 @@ web_modules/
 # dotenv environment variable files
 .env
 .env.*
-!.env.example
+!.env.exam
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -144,38 +145,5 @@ vite.config.ts.timestamp-*
 #################################################################
 
 # Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
 
-# Virtual environments
-env/
-venv/
 .venv/
-
-# Build
-build/
-dist/
-*.egg-info/
-
-# Environment variables
-.env
-.env.*
-
-# Database / logs
-*.db
-*.sqlite3
-*.log
-*.pid
-
-# IDE / OS files
-.vscode/
-.idea/
-.DS_Store
-Thumbs.db
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/

@@ -4,14 +4,10 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
     return super.init(
       {
         confidence_score: {
-          type: Sequelize.FLOAT(2, 1),
+          type: Sequelize.FLOAT(5, 4),
           allowNull: false,
         },
         createdAt: {
-          type: Sequelize.DATE,
-          defaultValue: Sequelize.NOW,
-        },
-        updatedAt: {
           type: Sequelize.DATE,
           defaultValue: Sequelize.NOW,
         },
@@ -20,15 +16,26 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "PhotoCategoryMap",
+        createdAt: true,
+        updatedAt: false,
+        modelName: "PhotoCategoryMaps",
+        tableName: "photoCategoryMaps",
         paranoid: false,
         charset: "utf8",
         collate: "utf8_general_ci",
-      }
+      },
     );
   }
   static associate(db) {
-    db.PhotoCategoryMap.belongsTo(db.Photo);
-    db.PhotoCategoryMap.belongsTo(db.Category);
+    db.PhotoCategoryMaps.belongsTo(db.Photos, {
+      foreignKey: "photoId",
+      onDelete: "CASCADE", // photo 삭제 시 해당 Map의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
+    db.PhotoCategoryMaps.belongsTo(db.Categories, {
+      foreignKey: "categoryId",
+      onDelete: "CASCADE", // 카테고리 삭제 시 해당 Map의 게시글도 삭제
+      onUpdate: "CASCADE",
+    });
   }
 };

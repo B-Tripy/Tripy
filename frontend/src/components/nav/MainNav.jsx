@@ -1,65 +1,75 @@
-import { useState } from "react";
-import { Link } from "react-router";
+import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
+import { Pages } from "../../context/ValueContext";
+// import styles from "./MainNav.module.scss";
 
 const MainNav = () => {
-  const [select, setSelect] = useState("home");
+  const { page, setPage } = useContext(Pages);
   return (
     <div className="MainNav">
       <ul>
-        <Link to="/">
+        <Link to="/main">
           <li
-            className={`${select === "Home" ? "check" : ""}`}
-            onClick={() => setSelect("Home")}
+            className={`${page === "Main" ? "check" : ""}`}
+            onClick={() => setPage("Main")}
           >
-            Home
+            Main
           </li>
         </Link>
         <Link to="/plan">
           <li
-            className={`${select === "Plan" ? "check" : ""}`}
-            onClick={() => setSelect("Plan")}
+            className={`${page === "Plan" ? "check" : ""}`}
+            onClick={() => setPage("Plan")}
           >
             Plan
           </li>
         </Link>
         <Link to="/review">
           <li
-            className={`${select === "Review" ? "check" : ""}`}
-            onClick={() => setSelect("Review")}
+            className={`${page === "Review" ? "check" : ""}`}
+            onClick={() => setPage("Review")}
           >
             Review
           </li>
         </Link>
         <Link to="/recommend">
           <li
-            className={`${select === "Recommend" ? "check" : ""}`}
-            onClick={() => setSelect("Recommend")}
+            className={`${page === "Recommend" ? "check" : ""}`}
+            onClick={() => setPage("Recommend")}
           >
             Recommend
           </li>
         </Link>
         <Link to="/album">
           <li
-            className={`${select === "Album" ? "check" : ""}`}
-            onClick={() => setSelect("Album")}
+            className={`${page === "Album" ? "check" : ""}`}
+            onClick={() => setPage("Album")}
           >
             Album
           </li>
         </Link>
         <Link to="/theme">
           <li
-            className={`${select === "Theme" ? "check" : ""}`}
-            onClick={() => setSelect("Theme")}
+            className={`${page === "Theme" ? "check" : ""}`}
+            onClick={() => setPage("Theme")}
           >
             Theme
           </li>
         </Link>
-        <Link to="/ai">
+        {/* <Link to="/ai">
           <li
-            className={`${select === "AI" ? "check" : ""}`}
-            onClick={() => setSelect("AI")}
+            className={`${page === "AI" ? "check" : ""}`}
+            onClick={() => setPage("AI")}
           >
             AI
+          </li>
+        </Link> */}
+        <Link to="/rag">
+          <li
+            className={`${page === "Rag" ? "check" : ""}`}
+            onClick={() => setPage("Rag")}
+          >
+            Setting
           </li>
         </Link>
       </ul>

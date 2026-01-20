@@ -36,7 +36,7 @@ const Join = ({
         disabled={loading}
       />
       <button disabled={loading} onClick={handleJoin}>
-        {loading ? "회원 가입 중..." : "LOGUP"}
+        {loading ? "회원 가입 중..." : "SIGNUP"}
       </button>
     </form>
   );
