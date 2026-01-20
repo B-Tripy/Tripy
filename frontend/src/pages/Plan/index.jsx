@@ -7,7 +7,7 @@ import { useAuthStore } from "../../store/authStore"
 export default function Plan() {
   const { user } = useAuthStore()
   // const [email, setEmail] = useState("")
-  const user_email = user?.email
+  // const user_id = user?.id
 
   const toggleActivity = (item) => {
     setForm((prev) => ({
@@ -68,12 +68,12 @@ export default function Plan() {
   }
   const { setValue } = useContext(ValueContext)
   const [form, setForm] = useState({
-    departure: "서울",
-    destination: "제주",
+    departure: "",
+    destination: "",
     startDate: "",
     endDate: "",
-    people: "1",
-    activities: ["관광"],
+    people: "",
+    activities: [],
     food: "",
     ageGroup: "",
     purpose: "",
@@ -297,9 +297,9 @@ export default function Plan() {
               <div style={{ display: "flex", gap: "16px" }}>
                 <div style={{ flex: 1 }}>
                   <p style={labelStyle}>추가 요구사항</p>
-                  <input
-                    type="text"
-                    placeholder="특별히 고려해야 할 사항이나 원하는 활동을 자유롭게 입력해주세요"
+                  <textarea
+                    placeholder={`특별히 고려해야 할 사항이나 원하는 활동을 
+자유롭게 입력해주세요`}
                     style={writeStyle}
                     value={form.extra}
                     onChange={(e) =>
@@ -323,6 +323,8 @@ export default function Plan() {
                   fontSize: "14px",
                   lineHeight: "1.7",
                   color: "#333",
+                  overflowY: "auto", // ⭐ 스크롤
+                  flex: 1,
                 }}
               >
                 {aiResult}
@@ -331,6 +333,7 @@ export default function Plan() {
               // ✅ 처음 상태 (안내 문구)
               <div
                 style={{
+                  flex: 1,
                   height: "100%",
                   minHeight: "360px",
                   display: "flex",
@@ -372,10 +375,14 @@ export default function Plan() {
 
 const cardStyle = {
   background: "#fff",
+  height: "680px",
   borderRadius: "8px",
   padding: "24px",
   width: "28%",
   boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
 }
 
 const labelStyle = {
@@ -397,6 +404,7 @@ const writeStyle = {
   border: "1px solid #ddd",
   borderRadius: "6px",
   padding: "12px",
+  paddingTop: "130px",
 }
 
 const selectStyle = {

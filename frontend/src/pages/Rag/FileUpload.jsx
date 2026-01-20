@@ -62,7 +62,7 @@ export default function FileUpload({ onUploadSuccess }) {
     })
 
     try {
-      const response = await axios.post(`${API_URL}/plan/upload`, formData, {
+      const response = await axios.post(`${API_URL}/ai/plan/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       console.log("======================")

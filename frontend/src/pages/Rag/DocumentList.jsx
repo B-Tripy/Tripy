@@ -11,7 +11,7 @@ export default function DocumentList({ refreshTrigger }) {
   const fetchStats = async () => {
     setIsLoading(true)
     try {
-      const res = await axios.get(`${API_URL}/plan/stats`)
+      const res = await axios.get(`${API_URL}/ai/plan/stats`)
       console.log("======================")
       console.log(res.data)
       console.log("======================")
