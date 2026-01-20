@@ -169,11 +169,10 @@ const Review = () => {
                 <div>
                   <h3 style={styles.tripTitle}>{post.title}</h3>
                   <p style={styles.tripDate}>
-                    {post.description} ·{" "}
                     {
                       post.start_date && post.end_date
                         ? `${formatDate(post.start_date)} ~ ${formatDate(
-                            post.end_date
+                            post.end_date,
                           )}`
                         : new Date(post.createdAt).toLocaleDateString("ko-KR") // 날짜 데이터가 없을 때 기본값
                     }
