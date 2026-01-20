@@ -16,7 +16,13 @@ export default function DocumentList({ refreshTrigger }) {
       console.log(res.data)
       console.log("======================")
       if (res.data) {
-        setStats(res.data)
+        // res.data.sources가 없으면 빈 배열([])을 넣음
+        setStats({
+          ...res.data,
+          sources: res.data.sources || [],
+
+          //setStats(res.data)
+        })
       }
     } catch (e) {
       console.error("Failed to fetch stats", e)
