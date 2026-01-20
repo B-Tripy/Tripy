@@ -1,3 +1,4 @@
+const db = require("../models");
 const { Photos, PhotoCategoryMaps, Categories } = require("../models");
 
 const albumDb = {
@@ -32,18 +33,14 @@ const albumDb = {
   // 5. 사진 목록 조회 (카테고리 포함)
   getUserPhotos: async (userId) => {
     return await Photos.findAll({
-      where: { userId: userId },
-      order: [["createdAt", "DESC"]],
+      where: { userId }, // ✅ userId 조건 추가
       include: [
         {
-          model: PhotoCategoryMaps,
-          attributes: ["confidence_score"],
-          include: [
-            {
-              model: Categories,
-              attributes: ["category"],
-            },
-          ],
+          model: db.Categories,
+          as: "categories",
+          through: {
+            attributes: ["confidence_score", "createdAt"], // 중간 테이블 속성 가져오기
+          },
         },
       ],
     });
