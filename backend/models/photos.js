@@ -75,6 +75,7 @@ module.exports = class Photos extends Sequelize.Model {
 
     db.Photos.hasMany(db.EmotionsTargets, {
       foreignKey: "photoId",
+ 
     });
   }
 };

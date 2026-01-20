@@ -37,10 +37,9 @@ module.exports = class EmotionsTargets extends Sequelize.Model {
       onDelete: "CASCADE", // photo 삭제 시 해당 유저의 게시글도 삭제
       onUpdate: "CASCADE",
     });
-    db.EmotionsTargets.belongsTo(db.Photos, {
+    db.EmotionsTargets.hasMany(db.Photos, {
       foreignKey: "photoId",
-      onDelete: "CASCADE", // photo삭제 시 해당 유저의 게시글도 삭제
-      onUpdate: "CASCADE",
+     
     });
   }
 };
