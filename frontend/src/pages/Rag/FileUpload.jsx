@@ -62,7 +62,7 @@ export default function FileUpload({ onUploadSuccess }) {
     });
 
     try {
-      const response = await axios.post(`${AI_URL}/ai/plan/upload`, formData, {
+      const response = await axios.post(`${AI_URL}/plan/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       console.log("======================");
@@ -70,7 +70,7 @@ export default function FileUpload({ onUploadSuccess }) {
       console.log("======================");
       setUploadStatus("success");
       setMessage(
-        `${response.data.processed_files.length}개 파일에서 총 ${response.data.total_chunks}개 청크가 성공적으로 처리되었습니다.`
+        `${response.data.processed_files.length}개 파일에서 총 ${response.data.total_chunks}개 청크가 성공적으로 처리되었습니다.`,
       );
       if (onUploadSuccess) onUploadSuccess();
     } catch (error) {

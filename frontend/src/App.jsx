@@ -19,6 +19,7 @@ import Rag from "./pages/Rag";
 import "./App.css";
 import { ValueContext } from "./context/ValueContext";
 import { Reset } from "./context/ValueContext";
+import { Pages } from "./context/ValueContext";
 import socket from "./socket";
 function App() {
   const { user, isChecking, checkAuth } = useAuthStore();
@@ -29,6 +30,7 @@ function App() {
     own: false,
   });
   const [reset, setReset] = useState(false);
+  const [page, setPage] = useState("Main");
   useEffect(() => {
     if (socket.id) return;
     socket.connect();
@@ -61,23 +63,25 @@ function App() {
       <div className="App">
         <ValueContext.Provider value={{ value, setValue }}>
           <Reset.Provider value={{ reset, setReset }}>
-            <Header />
-            <main>
-              <Routes>
-                <Route path="/" element={<Main />} />
-                <Route path="/main" element={<Main />} />
-                <Route path="/plan" element={<Plan />} />
-                <Route path="/recommend" element={<Recommend />} />
-                <Route path="/album" element={<Album />} />
-                <Route path="/theme" element={<Theme />} />
-                <Route path="/review" element={<Review />} />
-                <Route path="/review/:id" element={<ReviewDetail />} />
-                <Route path="/ai" element={<AI />} />
-                <Route path="/temp" element={<Temp />} />
-                <Route path="/rag" element={<Rag />} />
-                <Route path="/chatbot" element={<Chatbot />} />
-              </Routes>
-            </main>
+            <Pages.Provider value={{ page, setPage }}>
+              <Header />
+              <main>
+                <Routes>
+                  <Route path="/" element={<Main />} />
+                  <Route path="/main" element={<Main />} />
+                  <Route path="/plan" element={<Plan />} />
+                  <Route path="/recommend" element={<Recommend />} />
+                  <Route path="/album" element={<Album />} />
+                  <Route path="/theme" element={<Theme />} />
+                  <Route path="/review" element={<Review />} />
+                  <Route path="/review/:id" element={<ReviewDetail />} />
+                  <Route path="/ai" element={<AI />} />
+                  <Route path="/temp" element={<Temp />} />
+                  <Route path="/rag" element={<Rag />} />
+                  <Route path="/chatbot" element={<Chatbot />} />
+                </Routes>
+              </main>
+            </Pages.Provider>
           </Reset.Provider>
         </ValueContext.Provider>
         <Chatbot />
