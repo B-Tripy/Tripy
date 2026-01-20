@@ -17,6 +17,7 @@ const companionRouter = require("./routes/companion_router");
 const chatRouter = require("./routes/chatbot_router");
 const boardRouter = require("./routes/board_router");
 const passportConfig = require("./passport");
+const themeRouter = require("./routes/theme_router"); // 여행감성분석
 const registerSocketHandlers = require("./socket"); // 소켓 핸들러 파일
 const { RedisStore } = require("connect-redis");
 const { createClient } = require("redis");
@@ -136,6 +137,9 @@ app.use("/api/companion", companionRouter);
 
 //챗봇 라우터 연결
 app.use("/api/chatbot", chatRouter);
+
+// 여행감성분석 라우터 연결
+app.use("/api/theme", themeRouter);
 
 // app.use("/api/chat", chatRouter);
 

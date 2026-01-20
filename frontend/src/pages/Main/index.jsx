@@ -70,6 +70,7 @@ const Main = () => {
       fontFamily: "'Noto Sans KR', sans-serif",
       color: "#1f2937",
       boxSizing: "border-box",
+      paddingTop: "80px",
     },
     header: { marginBottom: "2.5rem", marginTop: "150px" },
     title: {
@@ -307,10 +308,9 @@ const Main = () => {
                 <div>
                   <h3 style={styles.tripTitle}>{post.title}</h3>
                   <p style={styles.tripDate}>
-                    {post.description} ·{" "}
                     {post.start_date && post.end_date
                       ? `${formatDate(post.start_date)} ~ ${formatDate(
-                          post.end_date
+                          post.end_date,
                         )}`
                       : new Date(post.created_at).toLocaleDateString()}
                   </p>
