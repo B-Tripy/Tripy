@@ -23,7 +23,14 @@ const SetClose = ({ userId }) => {
     }, 0);
   }, []);
   return (
-    <div style={{ userSelect: "none", marginLeft: "auto" }}>
+    <div
+      style={{
+        userSelect: "none",
+        marginLeft: "auto",
+        position: "relative",
+        height: "100px",
+      }}
+    >
       {/* {userId} */}
       {pickUser.includes(userId) ? (
         <img src="/assets/icons/toggle_on.png" width="60px" />
@@ -35,11 +42,15 @@ const SetClose = ({ userId }) => {
           display: "inline-block",
           width: "120px",
           background: "transparent",
+          // background: "yellow",
           textAlign: "right",
-          position: "relative",
-          left: "-60px",
-          height: "25px",
+          position: "absolute",
+          top: "20px",
+
+          height: "50px",
+          lineHeight: 1.2,
           cursor: "pointer",
+          fontWeight: "bolder",
         }}
       >
         <input

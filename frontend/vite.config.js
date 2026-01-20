@@ -1,6 +1,6 @@
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
-import tailwindcss from "@tailwindcss/vite"
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -16,7 +16,7 @@ export default defineConfig({
         // target: import.meta.env.VITE_BACKEND_URL,
         changeOrigin: true,
       },
-      "/img": "http://localhost:5000",
+      "/img": "http://localhost:5000/img",
     },
   },
-})
+});

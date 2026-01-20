@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL || "/api";
+
 const Album = () => {
   // photos 상태(state)를 사용
   const [photos, setPhotos] = useState([]);
@@ -228,11 +229,17 @@ const Album = () => {
       console.log("photos", photos);
       return (
         <div style={styles.photoGrid}>
-          {photos.map((photo) => (
-            <div key={photo.id} style={styles.photoItem}>
-              <img src={photo.url} alt="" style={styles.photoImg} />
-            </div>
-          ))}
+          {photos.map((photo) => {
+            return (
+              <div key={photo.id} style={styles.photoItem}>
+                <img
+                  src={`http://localhost:5000${photo.url}`}
+                  alt=""
+                  style={styles.photoImg}
+                />
+              </div>
+            );
+          })}
         </div>
       );
     }
@@ -288,11 +295,18 @@ const Album = () => {
 
         {/* 사진 그리드 (전체 탭과 동일한 스타일 사용) */}
         <div style={styles.photoGrid}>
-          {filteredPhotos.map((photo) => (
-            <div key={photo.id} style={styles.photoItem}>
-              <img src={photo.url} alt="" style={styles.photoImg} />
-            </div>
-          ))}
+          {filteredPhotos.map((photo) => {
+            console.log("that is photo", photo);
+            return (
+              <div key={photo.id} style={styles.photoItem}>
+                <img
+                  src={`http://localhost:5000${photo.url}`}
+                  alt=""
+                  style={styles.photoImg}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     );

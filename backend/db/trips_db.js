@@ -23,16 +23,16 @@ async function getPostById(id) {
         po.UserId AS authorId 
       FROM photos ph
       LEFT JOIN posts po ON ph.id = po.PhotoId
-      WHERE ph.TripId = ? 
+      WHERE ph.tripId = ? 
       ORDER BY ph.id ASC`,
-      [id]
+      [id],
     );
 
     const result = {
       ...post,
       images: photos,
     };
-
+    console.log("result", result);
     return result;
   } catch (error) {
     console.error("DB 조회 중 에러 발생:", error);
@@ -84,7 +84,7 @@ async function savePhotoDescription(photoId, userId, content) {
       // 2-2. 없으면 INSERT (points 컬럼 기본값 0 추가)
       const [result] = await pool.query(
         "INSERT INTO posts (post, UserId, PhotoId, points, createdAt) VALUES (?, ?, ?, 0, NOW())",
-        [content, userId, photoId]
+        [content, userId, photoId],
       );
       return { message: "Created", id: result.insertId };
     }
@@ -119,7 +119,7 @@ async function savePhotoDescription(photoId, userId, content) {
   try {
     const [rows] = await pool.query(
       "SELECT id, UserId FROM posts WHERE PhotoId = ?",
-      [photoId]
+      [photoId],
     );
 
     if (rows.length > 0) {
@@ -134,7 +134,7 @@ async function savePhotoDescription(photoId, userId, content) {
     } else {
       const [result] = await pool.query(
         "INSERT INTO posts (post, UserId, PhotoId, points, createdAt) VALUES (?, ?, ?, 0, NOW())",
-        [content, userId, photoId]
+        [content, userId, photoId],
       );
       return { message: "Created", id: result.insertId };
     }
@@ -150,7 +150,7 @@ async function updateTripDescription(tripId, summary) {
     // trips 테이블의 description 컬럼 업데이트
     const [result] = await pool.query(
       "UPDATE trips SET description = ? WHERE id = ?",
-      [summary, tripId]
+      [summary, tripId],
     );
     return result;
   } catch (error) {

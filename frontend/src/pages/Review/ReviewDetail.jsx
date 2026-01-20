@@ -1,90 +1,92 @@
-import { useParams, useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
-import axios from "axios"
-import Loading from "../../components/Loading"
-import styles from "./ReviewDetail.module.scss"
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Loading from "../../components/Loading";
+import styles from "./ReviewDetail.module.scss";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api"
-const instance = axios.create({ withCredentials: true })
+const API_URL = import.meta.env.VITE_API_URL || "/img";
+const IMG_URL = import.meta.env.VITE_IMG_URL || "/img";
+const instance = axios.create({ withCredentials: true });
 
 function ReviewDetail() {
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const [post, setPost] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [currentUserId, setCurrentUserId] = useState(null)
-  const [prompt, setPrompt] = useState("")
-  const [descriptions, setDescriptions] = useState({})
-  const [aiSummary, setAiSummary] = useState("")
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [prompt, setPrompt] = useState("");
+  const [descriptions, setDescriptions] = useState({});
+  const [aiSummary, setAiSummary] = useState("");
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await instance.get(`${API_URL}/review/${id}`)
-        setPost(res.data)
-        setCurrentUserId(res.data.currentUserId)
+        const res = await instance.get(`${API_URL}/review/${id}`);
+        console.log("res", res.data.images[0].photo);
+        setPost(res.data);
+        setCurrentUserId(res.data.currentUserId);
 
         if (res.data.plan) {
-          setPrompt(res.data.plan)
+          setPrompt(res.data.plan);
         }
 
         if (res.data.images) {
-          const initialDesc = {}
+          const initialDesc = {};
           res.data.images.forEach((img) => {
             if (img.post) {
-              initialDesc[img.id] = img.post
+              initialDesc[img.id] = img.post;
             }
-          })
-          setDescriptions(initialDesc)
+          });
+          setDescriptions(initialDesc);
         }
       } catch (e) {
-        console.error("로딩 실패:", e)
+        console.error("로딩 실패:", e);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchPost()
-  }, [id])
+    };
+    fetchPost();
+  }, [id]);
 
   const handleDescChange = (imgId, value) => {
-    setDescriptions((prev) => ({ ...prev, [imgId]: value }))
-  }
+    setDescriptions((prev) => ({ ...prev, [imgId]: value }));
+  };
 
   const handleSaveIndividual = async (imgId) => {
     try {
       await instance.post(`${API_URL}/review/${id}/descriptions/${imgId}`, {
         post: descriptions[imgId] || "",
-      })
-      alert("내용이 성공적으로 업데이트되었습니다.")
+      });
+      alert("내용이 성공적으로 업데이트되었습니다.");
     } catch (e) {
       if (e.response?.status === 403) {
-        alert("본인이 작성한 글만 수정할 수 있습니다.")
+        alert("본인이 작성한 글만 수정할 수 있습니다.");
       } else {
-        alert("저장/수정 실패")
+        alert("저장/수정 실패");
       }
     }
-  }
+  };
 
   const handleEdit = (imgId) => {
-    handleSaveIndividual(imgId)
-  }
+    handleSaveIndividual(imgId);
+  };
 
   const handleDelete = (imgId) => {
     if (window.confirm("설명을 삭제하시겠습니까?")) {
       setDescriptions((prev) => {
-        const newDesc = { ...prev }
-        delete newDesc[imgId]
-        return newDesc
-      })
+        const newDesc = { ...prev };
+        delete newDesc[imgId];
+        return newDesc;
+      });
     }
-  }
+  };
 
   const handleAiSummary = () => {
-    const allTexts = Object.values(descriptions).join(" ")
-    const tripId = `${id}`
+    const allTexts = Object.values(descriptions).join(" ");
+    const tripId = `${id}`;
 
-    alert("AI 요약을 생성 중입니다... 잠시만 기다려주세요.")
+    alert("AI 요약을 생성 중입니다... 잠시만 기다려주세요.");
     try {
       instance
         .post(`/ai/review/`, {
@@ -92,27 +94,27 @@ function ReviewDetail() {
           tripId: tripId,
         })
         .then(async (res) => {
-          const summaryText = res.data.summary
-          setAiSummary(`[AI 요약 결과]: ${summaryText}`)
+          const summaryText = res.data.summary;
+          setAiSummary(`[AI 요약 결과]: ${summaryText}`);
           try {
             await instance.put(`${API_URL}/review/${tripId}/description`, {
               description: summaryText,
-            })
-            alert("AI 요약이 생성되고 저장되었습니다.")
+            });
+            alert("AI 요약이 생성되고 저장되었습니다.");
           } catch (saveError) {
-            console.error(saveError)
-            alert("요약은 생성되었으나 저장에 실패했습니다.")
+            console.error(saveError);
+            alert("요약은 생성되었으나 저장에 실패했습니다.");
           }
-        })
+        });
     } catch (e) {
-      console.error(e)
-      alert("AI 요청 실패")
+      console.error(e);
+      alert("AI 요청 실패");
     }
-  }
+  };
 
-  if (loading) return <Loading />
+  if (loading) return <Loading />;
   if (!post)
-    return <div className={styles.container}>게시글을 찾을 수 없습니다.</div>
+    return <div className={styles.container}>게시글을 찾을 수 없습니다.</div>;
 
   return (
     <div className={styles.container}>
@@ -134,12 +136,12 @@ function ReviewDetail() {
         <section className={styles.editorWrapper}>
           <div className={styles.imageList}>
             {post.images?.map((img, index) => {
-              const imageUrl = img.url
+              const imageUrl = img.photo
                 ? img.url.startsWith("http")
                   ? img.url
-                  : `${API_URL}/${img.url.replace(/\\/g, "/")}`
-                : ""
-              const isMyPost = !img.authorId || img.authorId === currentUserId
+                  : `${IMG_URL}/${img.photo.replace(/\\/g, "/")}`
+                : "";
+              const isMyPost = !img.authorId || img.authorId === currentUserId;
 
               return (
                 <div key={img.id || index} className={styles.imageRow}>
@@ -184,7 +186,7 @@ function ReviewDetail() {
                     )}
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </section>
@@ -201,7 +203,7 @@ function ReviewDetail() {
         </aside>
       </main>
     </div>
-  )
+  );
 }
 
-export default ReviewDetail
+export default ReviewDetail;

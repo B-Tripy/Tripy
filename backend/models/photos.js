@@ -47,7 +47,14 @@ module.exports = class Photos extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Photos.hasMany(db.PhotoCategoryMaps, { foreignKey: "photoId" });
+     db.Photos.belongsToMany(db.Categories, {
+    through: db.PhotoCategoryMaps,
+    foreignKey: "photoId",
+    otherKey: "categoryId",
+    as: "categories", // alias
+  });
+
+
     db.Photos.hasOne(db.Posts, {
       foreignKey: "photoId",
       onDelete: "CASCADE",
@@ -66,10 +73,8 @@ module.exports = class Photos extends Sequelize.Model {
       onUpdate: "CASCADE",
     });
 
-    db.Photos.belongsTo(db.EmotionsTargets, {
+    db.Photos.hasMany(db.EmotionsTargets, {
       foreignKey: "photoId",
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
     });
   }
 };

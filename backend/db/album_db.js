@@ -6,7 +6,7 @@ const albumDb = {
     return await Photos.findOne({
       where: {
         takenAt: takenAt,
-        UserId: userId,
+        userId: userId,
       },
       include: [{ model: PhotoCategoryMaps, include: [Categories] }],
     });
@@ -32,7 +32,7 @@ const albumDb = {
   // 5. 사진 목록 조회 (카테고리 포함)
   getUserPhotos: async (userId) => {
     return await Photos.findAll({
-      where: { UserId: userId },
+      where: { userId: userId },
       order: [["createdAt", "DESC"]],
       include: [
         {

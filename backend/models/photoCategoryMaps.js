@@ -29,13 +29,11 @@ module.exports = class PhotoCategoryMaps extends Sequelize.Model {
   static associate(db) {
     db.PhotoCategoryMaps.belongsTo(db.Photos, {
       foreignKey: "photoId",
-      onDelete: "CASCADE", // photo 삭제 시 해당 Map의 게시글도 삭제
-      onUpdate: "CASCADE",
+      as: "photo",
     });
     db.PhotoCategoryMaps.belongsTo(db.Categories, {
       foreignKey: "categoryId",
-      onDelete: "CASCADE", // 카테고리 삭제 시 해당 Map의 게시글도 삭제
-      onUpdate: "CASCADE",
+      as: "category",
     });
   }
 };

@@ -27,6 +27,12 @@ module.exports = class Categories extends Sequelize.Model {
     );
   }
   static associate(db) {
-    db.Categories.hasMany(db.PhotoCategoryMaps, { foreignKey: "categoryId" });
+      db.Categories.belongsToMany(db.Photos, {
+    through: db.PhotoCategoryMaps,
+    foreignKey: "categoryId",
+    otherKey: "photoId",
+    as: "photos", // alias
+  });
+
   }
 };

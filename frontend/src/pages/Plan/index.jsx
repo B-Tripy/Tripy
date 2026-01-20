@@ -1,11 +1,11 @@
-import { useState } from "react"
-import axios from "axios"
-import { useContext } from "react"
-import { ValueContext } from "../../context/ValueContext"
-import { useAuthStore } from "../../store/authStore"
+import { useState } from "react";
+import axios from "axios";
+import { useContext } from "react";
+import { ValueContext } from "../../context/ValueContext";
+import { useAuthStore } from "../../store/authStore";
 
 export default function Plan() {
-  const { user } = useAuthStore()
+  const { user } = useAuthStore();
   // const [email, setEmail] = useState("")
   // const user_id = user?.id
 
@@ -15,35 +15,35 @@ export default function Plan() {
       activities: prev.activities.includes(item)
         ? prev.activities.filter((v) => v !== item)
         : [...prev.activities, item],
-    }))
-  }
+    }));
+  };
 
   const validateForm = () => {
-    if (!form.departure.trim()) return "출발지를 입력해주세요"
-    if (!form.destination.trim()) return "목적지를 입력해주세요"
-    if (!form.startDate) return "출발 날짜를 선택해주세요"
-    if (!form.endDate) return "도착 날짜를 선택해주세요"
-    if (!form.people) return "인원을 선택해주세요"
+    if (!form.departure.trim()) return "출발지를 입력해주세요";
+    if (!form.destination.trim()) return "목적지를 입력해주세요";
+    if (!form.startDate) return "출발 날짜를 선택해주세요";
+    if (!form.endDate) return "도착 날짜를 선택해주세요";
+    if (!form.people) return "인원을 선택해주세요";
 
     // 날짜 검증
     if (new Date(form.startDate) > new Date(form.endDate)) {
-      return "도착 날짜는 출발 날짜 이후여야 합니다"
+      return "도착 날짜는 출발 날짜 이후여야 합니다";
     }
 
-    return null //  통과
-  }
+    return null; //  통과
+  };
 
   // const API_URL = "http://127.0.0.1:8000"
   const handleGeneratePlan = async () => {
     //  1. 폼 검증
-    const error = validateForm()
+    const error = validateForm();
     if (error) {
-      alert(error)
-      return
+      alert(error);
+      return;
     }
 
     try {
-      console.log("=============== ", user.id)
+      console.log("=============== ", user.id);
       //  2. POST body로 전송
       const res = await axios.post("/ai/plan", {
         userId: user.id,
@@ -57,16 +57,16 @@ export default function Plan() {
         ageGroup: form.ageGroup,
         purpose: form.purpose,
         extra: form.extra,
-      })
+      });
 
-      console.log("AI 결과:", res.data)
-      setAiResult(res.data.result)
+      console.log("AI 결과:", res.data);
+      setAiResult(res.data.result);
     } catch (e) {
-      console.error("AI 일정 생성 실패", e)
-      alert("AI 일정 생성 중 오류가 발생했습니다")
+      console.error("AI 일정 생성 실패", e);
+      alert("AI 일정 생성 중 오류가 발생했습니다");
     }
-  }
-  const { setValue } = useContext(ValueContext)
+  };
+  const { setValue } = useContext(ValueContext);
   const [form, setForm] = useState({
     departure: "",
     destination: "",
@@ -78,9 +78,9 @@ export default function Plan() {
     ageGroup: "",
     purpose: "",
     extra: "",
-  })
+  });
 
-  const [aiResult, setAiResult] = useState("")
+  const [aiResult, setAiResult] = useState("");
 
   return (
     <>
@@ -89,7 +89,7 @@ export default function Plan() {
           minHeight: "100vh",
           background: "#f5f5f5",
           padding: "0 32px",
-          paddingTop: "150px",
+          paddingTop: "200px",
         }}
       >
         <h1
@@ -209,7 +209,7 @@ export default function Plan() {
                 <div style={activityGrid}>
                   {["관광", "맛집", "쇼핑", "자연", "문화", "레저"].map(
                     (item) => {
-                      const selected = form.activities.includes(item)
+                      const selected = form.activities.includes(item);
 
                       return (
                         <button
@@ -225,7 +225,7 @@ export default function Plan() {
                         >
                           {item}
                         </button>
-                      )
+                      );
                     },
                   )}
                 </div>
@@ -368,7 +368,7 @@ export default function Plan() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
 /* ===== styles ===== */
@@ -383,12 +383,12 @@ const cardStyle = {
   display: "flex",
   flexDirection: "column",
   overflow: "hidden",
-}
+};
 
 const labelStyle = {
   marginBottom: "6px",
   fontSize: "14px",
-}
+};
 
 const inputStyle = {
   width: "100%",
@@ -396,7 +396,7 @@ const inputStyle = {
   border: "1px solid #ddd",
   borderRadius: "6px",
   padding: "0 12px",
-}
+};
 
 const writeStyle = {
   width: "100%",
@@ -405,7 +405,7 @@ const writeStyle = {
   borderRadius: "6px",
   padding: "12px",
   paddingTop: "130px",
-}
+};
 
 const selectStyle = {
   height: "40px",
@@ -413,20 +413,20 @@ const selectStyle = {
   borderRadius: "6px",
   border: "1px solid #ddd",
   padding: "0 12px",
-}
+};
 
 const activityGrid = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
   gap: "12px",
-}
+};
 
 const activityBox = {
   height: "40px",
   borderRadius: "6px",
   fontSize: "14px",
   cursor: "pointer",
-}
+};
 
 const generateButton = {
   width: "100%",
@@ -439,7 +439,7 @@ const generateButton = {
   border: "none",
   cursor: "pointer",
   marginTop: "20px",
-}
+};
 
 const companionButton = {
   width: "49%",
@@ -451,4 +451,4 @@ const companionButton = {
   fontSize: "14px",
   fontWeight: "600",
   cursor: "pointer",
-}
+};
