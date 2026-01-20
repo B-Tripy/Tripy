@@ -5,7 +5,6 @@ import Loading from "../../components/Loading"
 import styles from "./ReviewDetail.module.scss"
 
 const API_URL = import.meta.env.VITE_API_URL || "/api"
-const IMG_BASE_URL = "http://localhost:5000"
 const instance = axios.create({ withCredentials: true })
 
 function ReviewDetail() {
@@ -24,16 +23,17 @@ function ReviewDetail() {
       try {
         const res = await instance.get(`${API_URL}/review/${id}`)
         setPost(res.data)
-
-        // 서버에서 응답에 포함시켜준 현재 로그인 유저 ID 저장
         setCurrentUserId(res.data.currentUserId)
 
-        // 기존 사진 설명 로드
+        if (res.data.plan) {
+          setPrompt(res.data.plan)
+        }
+
         if (res.data.images) {
           const initialDesc = {}
           res.data.images.forEach((img) => {
-            if (img.content) {
-              initialDesc[img.id] = img.content
+            if (img.post) {
+              initialDesc[img.id] = img.post
             }
           })
           setDescriptions(initialDesc)
@@ -47,15 +47,12 @@ function ReviewDetail() {
     fetchPost()
   }, [id])
 
-  // 입력값 변경 핸들러
   const handleDescChange = (imgId, value) => {
     setDescriptions((prev) => ({ ...prev, [imgId]: value }))
   }
 
-  // 개별 사진 설명 저장
   const handleSaveIndividual = async (imgId) => {
     try {
-      // 입력한 descriptions[imgId] 값이 서버의 post 컬럼으로 들어갑니다.
       await instance.post(`${API_URL}/review/${id}/descriptions/${imgId}`, {
         post: descriptions[imgId] || "",
       })
@@ -69,10 +66,7 @@ function ReviewDetail() {
     }
   }
 
-  // 2. 수정 버튼 클릭 시 동작
   const handleEdit = (imgId) => {
-    // 현재 구조에서는 저장 버튼과 동일한 역할을 수행하게 하거나,
-    // 포커스를 주는 등의 UI 처리를 추가할 수 있습니다.
     handleSaveIndividual(imgId)
   }
 
@@ -88,7 +82,32 @@ function ReviewDetail() {
 
   const handleAiSummary = () => {
     const allTexts = Object.values(descriptions).join(" ")
-    setAiSummary(`[AI 요약 결과]: ${allTexts.substring(0, 100)}...`)
+    const tripId = `${id}`
+
+    alert("AI 요약을 생성 중입니다... 잠시만 기다려주세요.")
+    try {
+      instance
+        .post(`/ai/review/`, {
+          post: allTexts,
+          tripId: tripId,
+        })
+        .then(async (res) => {
+          const summaryText = res.data.summary
+          setAiSummary(`[AI 요약 결과]: ${summaryText}`)
+          try {
+            await instance.put(`${API_URL}/review/${tripId}/description`, {
+              description: summaryText,
+            })
+            alert("AI 요약이 생성되고 저장되었습니다.")
+          } catch (saveError) {
+            console.error(saveError)
+            alert("요약은 생성되었으나 저장에 실패했습니다.")
+          }
+        })
+    } catch (e) {
+      console.error(e)
+      alert("AI 요청 실패")
+    }
   }
 
   if (loading) return <Loading />
@@ -97,32 +116,34 @@ function ReviewDetail() {
 
   return (
     <div className={styles.container}>
-      {/* 1. 상단: 프롬프트 입력 영역 */}
-      <header className={styles.promptSection}>
-        <textarea
-          placeholder="다른 작업자가 작업한 AI 프롬프트를 붙여넣는 곳"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-        />
-      </header>
+      {/* 기존 header 제거하고 main 안으로 통합 */}
 
       <main className={styles.mainContent}>
-        {/* 2. 중앙: 이미지 리스트 (중복 태그 제거됨) */}
+        {/* 1. 좌측: 프롬프트 영역 (사이드바 형태로 변경) */}
+        <aside className={styles.promptSection}>
+          <div className={styles.sidebarTitle}>AI 여행 계획</div>
+          <textarea
+            placeholder="AI가 생성한 여행 계획이 여기에 표시됩니다."
+            value={prompt}
+            readOnly={true}
+            // 인라인 height 삭제 -> CSS에서 제어
+          />
+        </aside>
+
+        {/* 2. 중앙: 이미지 리스트 */}
         <section className={styles.editorWrapper}>
           <div className={styles.imageList}>
             {post.images?.map((img, index) => {
-              // 본인 확인 로직: 글이 없거나, 작성자가 나인 경우
               const imageUrl = img.url
                 ? img.url.startsWith("http")
                   ? img.url
-                  : `${IMG_BASE_URL}/${img.url.replace(/\\/g, "/")}` // /api가 아닌 5000포트로 직접 연결
+                  : `${API_URL}/${img.url.replace(/\\/g, "/")}`
                 : ""
               const isMyPost = !img.authorId || img.authorId === currentUserId
 
               return (
                 <div key={img.id || index} className={styles.imageRow}>
                   <div className={styles.imageBox}>
-                    {/* 2. src 부분을 imageUrl로 변경 */}
                     <img src={imageUrl} alt={`리뷰 이미지 ${index}`} />
                   </div>
 
@@ -139,7 +160,6 @@ function ReviewDetail() {
                       className={!isMyPost ? styles.readOnlyTextarea : ""}
                     />
 
-                    {/* 권한이 있을 때만 버튼 노출 */}
                     {isMyPost && (
                       <div className={styles.buttonGroup}>
                         <button
@@ -171,6 +191,7 @@ function ReviewDetail() {
 
         {/* 3. 우측: AI 요약 영역 */}
         <aside className={styles.sideSummary}>
+          <div className={styles.sidebarTitle}>AI 요약 결과</div>
           <div className={styles.summaryDisplay}>
             {aiSummary || "이미지 설명을 기반으로 요약이 생성됩니다."}
           </div>

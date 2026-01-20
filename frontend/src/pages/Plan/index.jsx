@@ -195,7 +195,7 @@ export default function Plan() {
                   onClick={() =>
                     setValue({
                       tripId: 999, // 임시라도 숫자만 있으면 됨
-                      tripTitle: "제주 여행",
+                      tripTitle: form.destination, // 꼭 필요합니다.
                       own: true,
                     })
                   }
@@ -226,7 +226,7 @@ export default function Plan() {
                           {item}
                         </button>
                       )
-                    }
+                    },
                   )}
                 </div>
                 <button

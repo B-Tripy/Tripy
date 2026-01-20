@@ -15,45 +15,52 @@ const analysisRouter = require("./routes/analysis_router")
 const recommendRouter = require("./routes/recommend_router")
 const companionRouter = require("./routes/companion_router")
 const chatRouter = require("./routes/chatbot_router")
-
 const boardRouter = require("./routes/board_router")
-// const chatRouter = require("../socket");
 const passportConfig = require("./passport")
 const registerSocketHandlers = require("./socket") // 소켓 핸들러 파일
 const { RedisStore } = require("connect-redis")
 const { createClient } = require("redis")
-// const socket=require('socket')
-const redisClient = createClient()
+
 const http = require("http")
 const { Server } = require("socket.io")
-redisClient.connect().catch(console.error)
 
 // sequelize로 데이터베이스와 연결
 const { sequelize } = require("./models")
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log("데이터베이스 연결 성공")
-  })
-  .catch((e) => {
-    console.error(e)
-  })
-
-// app.js 또는 server.js
 
 const app = express()
 const server = http.createServer(app)
-// const io = new Server(server, { cors: "*" });
 
+// 1. Redis 클라이언트 생성 (Docker 환경 변수 적용)
+// const redisClient = createClient({
+//   url: `redis://${process.env.REDIS_HOST || "tripy_redis"}:${
+//     process.env.REDIS_PORT || 6379
+//   }`,
+// });
+const redisClient = createClient({
+  url: process.env.REDIS,
+})
+
+redisClient.on("connect", () => console.log("Redis 연결 성공"))
+redisClient.on("error", (err) => console.error("Redis 연결 에러:", err))
+
+redisClient.connect().catch(console.error)
+
+// 2. MySQL 연결 (sequelize)
+// sequelize
+//   .sync({ alter: true })
+//   .then(() => {
+//     console.log(`데이터베이스 연결 성공 (Host: ${process.env.DB_HOST})`);
+//   })
+//   .catch((e) => {
+//     console.error("데이터베이스 연결 실패:", e);
+//   });
+
+// 3. CORS 설정 (Nginx 포트 추가)
 const allowedOrigins = [
-  "http://localhost:5173", // 리액트(Vite) 로컬 개발 서버
-  "http://192.168.45.200:5173", // 우리집 pc ip
-  "http://192.168.45.223:5173", //
-  "http://192.168.45.168:8081", // 안드로이드/기타 기기 접속 주소
-  "http://192.168.10.56:8081",
-  "http://192.168.10.10:8081",
-  "http://192.168.10.68:8081",
-  "http://192.168.10.10:5173",
+  process.env.VITE,
+  process.env.NGINX,
+  process.env.EXPO,
+  "192.168.10.32",
 ]
 
 const io = new Server(server, {
@@ -74,8 +81,9 @@ app.use(
       }
     },
     credentials: true, // 세션/쿠키를 사용하므로 필수!
-  })
+  }),
 )
+
 passportConfig()
 
 app.set("port", process.env.PORT || 5000)
@@ -99,7 +107,7 @@ const sessionMiddleware = session({
 
 // 필수 미들웨어들
 app.use(express.static(path.join(__dirname, "public")))
-app.use("/uploads", express.static(path.join(__dirname, "uploads")))
+app.use("/img", express.static(path.join(__dirname, "uploads")))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(process.env.COOKIE_SECRET))

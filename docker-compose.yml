@@ -1,7 +1,9 @@
 version: '3.8'
 
 services:
-  backend-node:
+  frontend:
+    image: tripy-nginx
+    container_name: frontend
     build:
       context: ./backend-node
       dockerfile: Dockerfile
@@ -18,9 +20,11 @@ services:
       - REDIS_PORT=6379
     restart: unless-stopped
     networks:
-      - app-network
+      - tripyserver
 
-  backend-fastapi:
+  backend:
+    image: tripy-node
+    container_name: backend
     build:
       context: ./backend-fastapi
       dockerfile: Dockerfile
@@ -36,6 +40,15 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     restart: unless-stopped
+    volumes:
+      # [내 컴퓨터 경로] : [컨테이너 내부 경로]
+      - ./backend/uploads:/app/uploads # 개발 시
+      # [EC2의 실제 경로] : [컨테이너 내부 경로]
+      # - /home/ubuntu/Tripy/backend/uploads:/app/uploads  # 배포 시
+    environment:
+      - NODE_ENV=production # 배포 시 production
+    env_file:
+      - ./backend/.env
     networks:
       - app-network
 
@@ -63,5 +76,5 @@ services:
       - app-network
 
 networks:
-  app-network:
-    driver: bridge
+  tripyserver:
+    external: true

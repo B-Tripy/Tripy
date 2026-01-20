@@ -4,6 +4,7 @@ import { ValueContext } from "../../context/ValueContext";
 import axios from "axios";
 import { Reset } from "../../context/ValueContext";
 import { useAuthStore } from "../../store/authStore";
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 export default function SendMessage() {
   const [toUserEmail, setToUserEmail] = useState("");
   const [users, setUsers] = useState([]);
@@ -13,13 +14,6 @@ export default function SendMessage() {
   const [visible, setVisible] = useState(false);
   const { value } = useContext(ValueContext);
   const { setReset } = useContext(Reset);
-
-  useEffect(() => {
-    socket.connect(); // autoConnect:false라서 직접 연결
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
 
   useEffect(() => {
     // delivery_status 이벤트는 컴포넌트가 마운트될 때 한 번만 등록
@@ -37,25 +31,14 @@ export default function SendMessage() {
   }, []);
   const getUsers = async () => {
     try {
-      const users = await axios.get("/api/companion/getUsers");
+      const users = await axios.get(`${API_URL}/companion/getUsers`);
       console.log(users.data.users);
       setUsers(users.data.users);
     } catch (e) {
       console.error(e);
     }
   };
-  const getUserByEmail = async () => {
-    try {
-      const users = await axios.post("/api/companion/getUserByEmail", {
-        toUserEmail,
-      });
-      console.log(users.data.users);
 
-      setUsers([users.data.users, ...users]);
-    } catch (e) {
-      console.error(e);
-    }
-  };
   useEffect(() => {
     if (value.tripId) {
       // 메시지가 생기면 모달을 먼저 렌더링하고
@@ -104,13 +87,13 @@ export default function SendMessage() {
   const withdraw = async () => {
     console.log("user", user.id);
     try {
-      const res = await axios.post("/api/companion/withdraw", {
+      const res = await axios.post(`${API_URL}/companion/withdraw`, {
         tripId: value.tripId,
         userId: user.id,
       });
 
-      setReset(res.data.success); //Review화면 갱신
-      console.log("res.data", res.data, "messages", messages);
+      setReset(res.data); //Review화면 갱신
+      console.log("res.data", res.data);
     } catch (e) {
       console.error(e);
     }
@@ -128,31 +111,33 @@ export default function SendMessage() {
         <span> </span>
         {value.own ? "동행 요청" : "동행 취소"}
       </h4>
-      <div style={{ borderBottom: "3px solid white", paddingBottom: "1rem" }}>
-        <input
-          style={{
-            padding: "5px",
-            borderRadius: "8px",
-            border: "none",
-            paddingLeft: ".7rem",
-          }}
-          placeholder="받는 유저 Email"
-          value={toUserEmail}
-          onChange={(e) => setToUserEmail(e.target.value)}
-        />
-        <button
-          style={{ marginLeft: "2rem" }}
-          onClick={() => {
-            // getUserByEmail();
-            // alert(toUserEmail);
-            // console.log("users", ...users);
-            setUsers([{ email: toUserEmail }, ...users]);
-            setToUserEmail("");
-          }}
-        >
-          추가
-        </button>
-      </div>
+      {value.own && (
+        <div style={{ borderBottom: "3px solid white", paddingBottom: "1rem" }}>
+          <input
+            style={{
+              padding: "5px",
+              borderRadius: "8px",
+              border: "none",
+              paddingLeft: ".7rem",
+            }}
+            placeholder="받는 유저 Email"
+            value={toUserEmail}
+            onChange={(e) => setToUserEmail(e.target.value)}
+          />
+          <button
+            style={{ marginLeft: "2rem" }}
+            onClick={() => {
+              // getUserByEmail();
+              // alert(toUserEmail);
+              // console.log("users", ...users);
+              setUsers([{ email: toUserEmail }, ...users]);
+              setToUserEmail("");
+            }}
+          >
+            추가
+          </button>
+        </div>
+      )}
       {value.own ? (
         Array.isArray(users) &&
         users.map(
@@ -194,7 +179,7 @@ export default function SendMessage() {
         <div
           className="inputs"
           style={{
-            minHeight: "200px",
+            // minHeight: "20px",
             width: "100%",
           }}
         >

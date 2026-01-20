@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import axios from "axios"
 import { FileText, Database, Trash2, RefreshCw } from "lucide-react"
 
-const API_URL = "http://localhost:8000"
+const AI_URL = import.meta.env.VITE_AI_URL
 
 export default function DocumentList({ refreshTrigger }) {
   const [stats, setStats] = useState({ count: 0, sources: [] })
@@ -36,7 +36,7 @@ export default function DocumentList({ refreshTrigger }) {
     if (!window.confirm("정말로 모든 문서를 초기화하시겠습니까?")) return
 
     try {
-      await axios.post(`${API_URL}/reset`)
+      await axios.post(`${AI_URL}/reset`)
       fetchStats()
       alert("데이터베이스가 초기화되었습니다.")
     } catch (e) {

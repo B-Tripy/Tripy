@@ -9,7 +9,7 @@ import {
 import axios from "axios"
 import { motion, AnimatePresence } from "framer-motion"
 
-const API_URL = "http://localhost:8000"
+const AI_URL = import.meta.env.VITE_AI_URL
 
 export default function FileUpload({ onUploadSuccess }) {
   const [isDragging, setIsDragging] = useState(false)
@@ -70,7 +70,7 @@ export default function FileUpload({ onUploadSuccess }) {
       console.log("======================")
       setUploadStatus("success")
       setMessage(
-        `${response.data.processed_files.length}개 파일에서 총 ${response.data.total_chunks}개 청크가 성공적으로 처리되었습니다.`
+        `${response.data.processed_files.length}개 파일에서 총 ${response.data.total_chunks}개 청크가 성공적으로 처리되었습니다.`,
       )
       if (onUploadSuccess) onUploadSuccess()
     } catch (error) {
@@ -168,8 +168,8 @@ export default function FileUpload({ onUploadSuccess }) {
               uploadStatus === "error"
                 ? "bg-red-500/10 border-red-500/20 text-red-600"
                 : uploadStatus === "success"
-                ? "bg-blue-500/10 border-blue-500/20 text-red-600 font-bold"
-                : "bg-surfaceHighlight border-black/5 text-textMuted"
+                  ? "bg-blue-500/10 border-blue-500/20 text-red-600 font-bold"
+                  : "bg-surfaceHighlight border-black/5 text-textMuted"
             }`}
           >
             {message}

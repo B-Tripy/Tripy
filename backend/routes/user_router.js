@@ -122,5 +122,4 @@ router.post("/logout", (req, res) => {
 });
 // GET /api/users/logout - 로그아웃
 
-
 module.exports = router;

@@ -1,12 +1,14 @@
-import { useState, useEffect, useRef } from "react"
-import { useAuthStore } from "../store/authStore"
-import { useNavigate } from "react-router-dom"
-import Login from "./auth/Login"
-import Join from "./auth/Join"
-import Navigation from "./nav/MainNav"
-import MessageModal from "./modals/MessageModal"
-import SendMessage from "./modals/SendMessage"
-import SetClose from "./modals/SetClose"
+import { useState, useEffect, useRef, useContext } from "react";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
+import Login from "./auth/Login";
+import Join from "./auth/Join";
+import Navigation from "./nav/MainNav";
+import MessageModal from "./modals/MessageModal";
+import SendMessage from "./modals/SendMessage";
+import SetClose from "./modals/SetClose";
+import { Pages } from "../context/ValueContext";
+import socket from "../socket";
 
 // import Loading from "./Loading";
 
@@ -14,6 +16,7 @@ function Header() {
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const navigate = useNavigate();
+  const { setPage } = useContext(Pages);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,8 +65,13 @@ function Header() {
       setNickname("");
       setEmail("");
       setPassword("");
-      navigate("/");
+      // console.log("소켓 연결됨.");
+      navigate("/main");
+      setPage("Main");
       // fetchPosts();
+    }
+    if (user) {
+      socket.connect();
     }
   };
 
@@ -72,6 +80,9 @@ function Header() {
   };
   const handleLogout = () => {
     logout();
+    socket.disconnect();
+    navigate("/main");
+    setPage("Main");
     // logoutList();
   };
 

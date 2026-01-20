@@ -4,6 +4,7 @@ const {
   getPostById,
   getPostsByIdAll,
   savePhotoDescription,
+  updateTripDescription,
 } = require("../db/trips_db")
 const router = express.Router()
 
@@ -86,6 +87,27 @@ router.post("/:tripId/descriptions/:photoId", requireAuth, async (req, res) => {
     }
 
     console.error("개별 사진 설명 저장 오류:", err)
+    return res.status(500).json({ error: "서버 오류" })
+  }
+})
+
+router.put("/:id/description", requireAuth, async (req, res) => {
+  try {
+    const tripId = req.params.id
+    const { description } = req.body
+
+    if (!description) {
+      return res.status(400).json({ error: "요약 내용이 없습니다." })
+    }
+
+    // DB 업데이트 함수 호출
+    await updateTripDescription(tripId, description)
+
+    return res
+      .status(200)
+      .json({ message: "요약이 성공적으로 저장되었습니다." })
+  } catch (err) {
+    console.error("요약 저장 오류:", err)
     return res.status(500).json({ error: "서버 오류" })
   }
 })
