@@ -1,48 +1,48 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { FileText, Database, Trash2, RefreshCw } from "lucide-react";
+import React, { useState, useEffect } from "react"
+import axios from "axios"
+import { FileText, Database, Trash2, RefreshCw } from "lucide-react"
 
-const AI_URL = import.meta.env.VITE_AI_URL;
+const AI_URL = import.meta.env.VITE_AI_URL
 
 export default function DocumentList({ refreshTrigger }) {
-  const [stats, setStats] = useState({ count: 0, sources: [] });
-  const [isLoading, setIsLoading] = useState(false);
+  const [stats, setStats] = useState({ count: 0, sources: [] })
+  const [isLoading, setIsLoading] = useState(false)
 
   const fetchStats = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const res = await axios.get(`${AI_URL}/plan/stats`);
-      console.log("======================");
-      console.log(res.data);
-      console.log("======================");
+      const res = await axios.get(`${API_URL}/ai/plan/stats`)
+      console.log("======================")
+      console.log(res.data)
+      console.log("======================")
       if (res.data) {
-        setStats(res.data);
+        setStats(res.data)
       }
     } catch (e) {
-      console.error("Failed to fetch stats", e);
+      console.error("Failed to fetch stats", e)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchStats();
+    fetchStats()
     // Poll every 5 seconds to keep list fresh
-    const interval = setInterval(fetchStats, 5000);
-    return () => clearInterval(interval);
-  }, [refreshTrigger]);
+    const interval = setInterval(fetchStats, 5000)
+    return () => clearInterval(interval)
+  }, [refreshTrigger])
 
   const handleReset = async () => {
-    if (!window.confirm("정말로 모든 문서를 초기화하시겠습니까?")) return;
+    if (!window.confirm("정말로 모든 문서를 초기화하시겠습니까?")) return
 
     try {
-      await axios.post(`${AI_URL}/reset`);
-      fetchStats();
-      alert("데이터베이스가 초기화되었습니다.");
+      await axios.post(`${AI_URL}/reset`)
+      fetchStats()
+      alert("데이터베이스가 초기화되었습니다.")
     } catch (e) {
-      alert("초기화 실패");
+      alert("초기화 실패")
     }
-  };
+  }
 
   return (
     <div className="mt-6 w-full bg-transparent p-4">
@@ -90,5 +90,5 @@ export default function DocumentList({ refreshTrigger }) {
         )}
       </div>
     </div>
-  );
+  )
 }

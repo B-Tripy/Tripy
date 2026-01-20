@@ -1,55 +1,55 @@
-import React, { useState } from "react";
-import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+import React, { useState } from "react"
+import axios from "axios"
+const API_URL = import.meta.env.VITE_API_URL || "/api"
 
 const Temp = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [result, setResult] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [result, setResult] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   // 1. 파일 선택 핸들러
   const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
-  };
+    setSelectedFile(e.target.files[0])
+  }
 
   // 2. 서버 전송 핸들러
   const handleUpload = async () => {
     if (!selectedFile) {
-      alert("사진을 먼저 선택해주세요!");
-      return;
+      alert("사진을 먼저 선택해주세요!")
+      return
     }
 
-    const formData = new FormData();
-    formData.append("file", selectedFile);
+    const formData = new FormData()
+    formData.append("file", selectedFile)
 
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       // 이전 결과 초기화 (새로운 요청 시 화면 깜빡임 방지)
-      setResult(null);
+      setResult(null)
 
       const res = await axios.post(`${API_URL}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
-      });
+      })
 
-      console.log("서버 응답:", res.data);
-      setResult(res.data);
+      console.log("서버 응답:", res.data)
+      setResult(res.data)
 
       // -------------------------------------------------------
       // [수정 포인트 1] 중복 여부에 따른 알림 분기 처리
       // -------------------------------------------------------
       if (res.data.isDuplicate) {
-        alert("⚠️ 이미 존재하는 파일입니다.");
+        alert("⚠️ 이미 존재하는 파일입니다.")
       } else {
-        alert("✅ 업로드 및 AI 분석 완료!");
+        alert("✅ 업로드 및 AI 분석 완료!")
       }
     } catch (error) {
-      console.error("에러 발생:", error);
-      alert("업로드 실패. 콘솔을 확인해주세요.");
+      console.error("에러 발생:", error)
+      alert("업로드 실패. 콘솔을 확인해주세요.")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="review container" style={{ padding: "20px" }}>
@@ -113,7 +113,7 @@ const Temp = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Temp;
+export default Temp

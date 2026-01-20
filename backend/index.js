@@ -23,6 +23,7 @@ const analysisRouter = require("./routes/analysis_router")
 const recommendRouter = require("./routes/recommend_router")
 const companionRouter = require("./routes/companion_router")
 const chatRouter = require("./routes/chatbot_router")
+const themeRouter = require("./routes/theme_router") // 여행감성분석
 const boardRouter = require("./routes/board_router")
 
 // 설정 및 소켓 핸들러
@@ -141,6 +142,9 @@ app.use("/api/companion", companionRouter)
 
 //챗봇 라우터 연결
 app.use("/api/chatbot", chatRouter)
+
+// 여행감성분석 라우터 연결
+app.use("/api/theme", themeRouter)
 
 const wrap = (middleware) => (socket, next) =>
   middleware(socket.request, {}, next)
