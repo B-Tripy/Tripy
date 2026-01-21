@@ -5,6 +5,7 @@ import Loading from "../../components/Loading"
 import styles from "./ReviewDetail.module.scss"
 
 const API_URL = import.meta.env.VITE_API_URL || "/api"
+const IMG_URL = import.meta.env.VITE_IMG_URL || "/img"
 const instance = axios.create({ withCredentials: true })
 
 function ReviewDetail() {
@@ -22,6 +23,7 @@ function ReviewDetail() {
     const fetchPost = async () => {
       try {
         const res = await instance.get(`${API_URL}/review/${id}`)
+        console.log("res", res.data.images[0].photo)
         setPost(res.data)
         setCurrentUserId(res.data.currentUserId)
 
@@ -134,10 +136,10 @@ function ReviewDetail() {
         <section className={styles.editorWrapper}>
           <div className={styles.imageList}>
             {post.images?.map((img, index) => {
-              const imageUrl = img.url
+              const imageUrl = img.photo
                 ? img.url.startsWith("http")
                   ? img.url
-                  : `${API_URL}/${img.url.replace(/\\/g, "/")}`
+                  : `${IMG_URL}/${img.photo.replace(/\\/g, "/")}`
                 : ""
               const isMyPost = !img.authorId || img.authorId === currentUserId
 

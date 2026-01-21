@@ -17,12 +17,12 @@ export default function DocumentList({ refreshTrigger }) {
       console.log("======================")
       if (res.data) {
         // res.data.sources가 없으면 빈 배열([])을 넣음
-        setStats({
-          ...res.data,
-          sources: res.data.sources || [],
+        //setStats({
+        //  ...res.data,
+        //  sources: res.data.sources || [],
 
-          //setStats(res.data)
-        })
+        setStats(res.data)
+        //})
       }
     } catch (e) {
       console.error("Failed to fetch stats", e)
@@ -42,14 +42,13 @@ export default function DocumentList({ refreshTrigger }) {
     if (!window.confirm("정말로 모든 문서를 초기화하시겠습니까?")) return
 
     try {
-      await axios.post(`${AI_URL}/reset`)
-      fetchStats()
+      await axios.post(`${AI_URL}/plan/reset`)
+      setStats({ count: 0, sources: [] }) // UI 즉시 반영
       alert("데이터베이스가 초기화되었습니다.")
     } catch (e) {
       alert("초기화 실패")
     }
   }
-
   return (
     <div className="mt-6 w-full bg-transparent p-4">
       <div className="flex items-center justify-between mb-3">
