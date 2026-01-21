@@ -67,6 +67,7 @@ button {
     background 0.15s ease,
     border-color 0.15s ease,
     transform 0.05s ease;
+  padding: 0.3rem 0.5rem;
 }
 button:active {
   transform: translateY(1px);
@@ -83,10 +84,10 @@ button:active {
   z-index: 10;
 
   color: black;
-  transition: transform 0.3s ease-in-out;
-  z-index: 1;
+  /* z-index: 1; */
 }
 .header.hidden {
+
   transform: translateY(-100%);
 }
 .header-content {

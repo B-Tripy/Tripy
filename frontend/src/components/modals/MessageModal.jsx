@@ -1,46 +1,46 @@
-import { useEffect, useState, useContext } from "react";
-import { useMessageStore } from "../../store/messageStore";
-import { useAuthStore } from "../../store/authStore";
-import styles from "./MessageModal.module.scss";
-import { Reset } from "../../context/ValueContext";
-import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+import { useEffect, useState, useContext } from "react"
+import { useMessageStore } from "../../store/messageStore"
+import { useAuthStore } from "../../store/authStore"
+import styles from "./MessageModal.module.scss"
+import { Reset } from "../../context/ValueContext"
+import axios from "axios"
+const API_URL = import.meta.env.VITE_API_URL || "/api"
 const MessageModal = () => {
-  const { user } = useAuthStore();
+  const { user } = useAuthStore()
   const { nextMessage, messages, latestMessage, clearLatest } =
-    useMessageStore();
-  const [visible, setVisible] = useState(false);
-  const { setReset } = useContext(Reset);
+    useMessageStore()
+  const [visible, setVisible] = useState(false)
+  const { setReset } = useContext(Reset)
 
   useEffect(() => {
     if (latestMessage) {
       // 메시지가 생기면 모달을 먼저 렌더링하고
       // 다음 tick에서 show 클래스를 붙여 transition 실행
-      setVisible(true);
+      setVisible(true)
     } else {
-      setVisible(false);
+      setVisible(false)
     }
-  }, [messages]);
+  }, [messages])
 
-  if (!latestMessage) return null;
+  if (!latestMessage) return null
 
   const confirm = async () => {
     try {
       const res = await axios.post(`${API_URL}/companion`, {
         tripId: latestMessage.tripId,
         userId: user.id,
-      });
-      nextMessage();
-      setReset(res.data); //Review화면 갱신
-      console.log("res.data", res.data, "messages", messages);
+      })
+      nextMessage()
+      setReset(res.data) //Review화면 갱신
+      console.log("res.data", res.data, "messages", messages)
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
-  };
+  }
 
   const hold = () => {
-    nextMessage();
-  };
+    nextMessage()
+  }
 
   return (
     <div className={`messageModal ${visible ? "show" : ""}`}>
@@ -87,7 +87,7 @@ const MessageModal = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MessageModal;
+export default MessageModal
