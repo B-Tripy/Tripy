@@ -16,7 +16,7 @@ const albumService = {
   // =================================================================
   // [메인] 업로드 프로세스 함수
   // =================================================================
-  uploadProcess: async (userId, file) => {
+  uploadProcess: async (userId, tripId, file) => {
     let finalPath = file.path;
     let finalFilename = file.filename;
 
@@ -44,19 +44,19 @@ const albumService = {
           message: "이미 등록한 사진입니다.",
         };
       }
-
+      
       // (2) 타인 중복 확인 (파일 재사용)
       const otherPhoto = await albumDb.findGlobalPhoto(takenAt);
       if (otherPhoto) {
         // 1. 방금 내가 올린 파일은 필요 없으니 삭제
         fs.unlink(file.path, () => {});
-
+        
         // 2. 기존에 있던 파일의 경로를 내 DB에 저장하기 위해 변수 교체
         finalPath = otherPhoto.url;
         finalFilename = otherPhoto.photo;
       }
     }
-
+    
     // 3. 주소 변환(Reverse Geocoding) (내부 함수 호출)
     let addressValue = "위치 정보 없음";
     if (lat && lon) {
@@ -68,18 +68,20 @@ const albumService = {
       throw new Error("분석할 파일이 존재하지 않습니다.");
     }
     const aiResults = await requestAiAnalysis(finalPath);
-
+    
     // =========================================================
     // 5. & 6. DB 저장을 트랜잭션으로 묶기 (All or Nothing)
     // =========================================================
     const t = await sequelize.transaction();
-
+    console.log("this", userId, tripId, file);
+    
     let newPhoto;
     try {
       // 5. Photo 저장 (트랜잭션 객체 t 전달)
       newPhoto = await albumDb.createPhoto(
         {
-          userId: userId,
+          userId,
+          tripId,
           photo: finalFilename,
           url: finalPath,
           takenAt: takenAt || new Date(),

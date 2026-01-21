@@ -6,12 +6,23 @@ const pool = require("./db");
  * 모든 게시글 조회 (최신순)
  * 반환: posts[]
  */
-async function getAllPosts() {
-  const [rows] = await pool.query(
-    "SELECT id,title FROM trips ORDER BY createdAt DESC",
+async function getAllPosts(userId) {
+  const [tripId] = await pool.query(
+    "SELECT tripId FROM usertrip where userId=?",
+    [userId],
   );
-  console.log(rows);
-  return rows;
+
+  if (tripId.length === 0) {
+    return []; // 혹은 적절한 빈 값 처리
+  }
+  console.log("tripId", tripId);
+  const ids = tripId.map((item) => item.tripId);
+  const [trips] = await pool.query(
+    "SELECT id, title FROM trips WHERE id IN (?)",
+    [ids],
+  );
+  console.log(trips);
+  return trips;
 }
 
 /**

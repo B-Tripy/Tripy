@@ -5,11 +5,19 @@ const albumDb = {
   // 1. 내 사진 중 중복 체크 (날짜 + 사용자ID)
   findMyPhoto: async (userId, takenAt) => {
     return await Photos.findOne({
-      where: {
-        takenAt: takenAt,
-        userId: userId,
-      },
-      include: [{ model: PhotoCategoryMaps, include: [Categories] }],
+      where: { takenAt, userId },
+      include: [
+        {
+          model: PhotoCategoryMaps,
+          as: "PhotoMaps", // 위에서 설정한 새로운 별칭과 일치시켜야 함
+          include: [
+            {
+              model: Categories,
+              as: "category", // PhotoCategoryMaps.js에서 설정한 belongsTo 별칭
+            },
+          ],
+        },
+      ],
     });
   },
 

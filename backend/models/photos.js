@@ -63,6 +63,11 @@ module.exports = class Photos extends Sequelize.Model {
       as: "categories",
     });
 
+    db.Photos.hasMany(db.PhotoCategoryMaps, { 
+    foreignKey: "photoId", 
+    as: "PhotoMaps" // 'PhotoCategoryMaps' 대신 다른 이름을 사용하세요.
+  });
+
     // ✅ Photos ↔ Posts (1:1)
     db.Photos.hasOne(db.Posts, {
       foreignKey: "photoId",
