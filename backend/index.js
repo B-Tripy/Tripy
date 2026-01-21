@@ -140,6 +140,7 @@ app.use("/api/chatbot", chatRouter);
 
 // 여행감성분석 라우터 연결
 app.use("/api/theme", themeRouter);
+app.use("/api/labels", boardRouter);
 
 // app.use("/api/chat", chatRouter);
 

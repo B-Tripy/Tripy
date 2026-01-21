@@ -106,6 +106,13 @@ router.delete("/:id", requireAuth, async (req, res) => {
     return res.status(500).json({ error: "서버 오류" });
   }
 });
-
+router.get("/getTripTitle", requireAuth, async (req, res) => {
+  try {
+    const trips = await getAllPosts();
+    console.log("trips", trips);
+    return res.status(200).json({ trips });
+  } catch (e) {
+    return res.status(500).json({ error: "서버 오류" });
+  }
+});
 module.exports = router;
-
