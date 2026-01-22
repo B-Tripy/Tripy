@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
-import { useContext } from "react";
+
 import { ValueContext } from "../../context/ValueContext";
 import { useAuthStore } from "../../store/authStore";
-
+import { SendMessageContext } from "../../context/FunctionContext";
 export default function Plan() {
   const { user } = useAuthStore();
   // const [email, setEmail] = useState("")
@@ -32,10 +32,11 @@ export default function Plan() {
 
     return null; //  통과
   };
-
+  const { func } = useContext(SendMessageContext);
   // const API_URL = "http://127.0.0.1:8000"
   const handleGeneratePlan = async () => {
     //  1. 폼 검증
+    console.log("func");
     const error = validateForm();
     if (error) {
       alert(error);
@@ -60,6 +61,7 @@ export default function Plan() {
       });
 
       console.log("AI 결과:", res.data);
+      func();
       setAiResult(res.data.result);
     } catch (e) {
       console.error("AI 일정 생성 실패", e);
@@ -231,7 +233,9 @@ export default function Plan() {
                 </div>
                 <button
                   style={generateButton}
+                  // onClick={handleGeneratePlan}
                   onClick={handleGeneratePlan}
+                  
                   onMouseOver={(e) => (e.currentTarget.style.opacity = 0.9)}
                   onMouseOut={(e) => (e.currentTarget.style.opacity = 1)}
                 >

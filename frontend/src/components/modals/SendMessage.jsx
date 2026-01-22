@@ -4,6 +4,7 @@ import { ValueContext } from "../../context/ValueContext";
 import axios from "axios";
 import { Reset } from "../../context/ValueContext";
 import { useAuthStore } from "../../store/authStore";
+import { SendMessageContext } from "../../context/FunctionContext";
 const API_URL = import.meta.env.VITE_API_URL || "/api";
 export default function SendMessage() {
   const [toUserEmail, setToUserEmail] = useState("");
@@ -14,6 +15,7 @@ export default function SendMessage() {
   const [visible, setVisible] = useState(false);
   const { value } = useContext(ValueContext);
   const { setReset } = useContext(Reset);
+  const { setFunc } = useContext(SendMessageContext);
 
   useEffect(() => {
     // delivery_status 이벤트는 컴포넌트가 마운트될 때 한 번만 등록
@@ -39,18 +41,6 @@ export default function SendMessage() {
     }
   };
 
-  useEffect(() => {
-    if (value.tripId) {
-      // 메시지가 생기면 모달을 먼저 렌더링하고
-      // 다음 tick에서 show 클래스를 붙여 transition 실행
-      getUsers();
-      setVisible(true);
-    } else {
-      setVisible(false);
-    }
-    // setValue({ tripId: 0, tripTitle: "", own: true });
-  }, [value]);
-
   const sendMessage = () => {
     const requests = sendMails.map(
       (email) =>
@@ -70,9 +60,9 @@ export default function SendMessage() {
               } else {
                 reject(response.error);
               }
-            }
+            },
           );
-        })
+        }),
     );
 
     Promise.all(requests)
@@ -83,6 +73,19 @@ export default function SendMessage() {
         console.error("하나라도 실패하면 여기로 옵니다:", e);
       });
   };
+  useEffect(() => {
+    if (value.tripId) {
+      // 메시지가 생기면 모달을 먼저 렌더링하고
+      // 다음 tick에서 show 클래스를 붙여 transition 실행
+      getUsers();
+      setVisible(true);
+    } else {
+      setVisible(false);
+      console.log("sendMessage", sendMessage);
+      setFunc(sendMessage);
+    }
+    // setValue({ tripId: 0, tripTitle: "", own: true });
+  }, [value]);
 
   const withdraw = async () => {
     console.log("user", user.id);
@@ -173,7 +176,7 @@ export default function SendMessage() {
                   {/* 확인/체크하면 배열에 넣고 보내기하면 promise.all사용 해 볼 것 */}
                 </label>
               </div>
-            )
+            ),
         )
       ) : (
         <div
