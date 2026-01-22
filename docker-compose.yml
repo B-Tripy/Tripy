@@ -4,6 +4,7 @@ name: tripyserver
 
 services:
   frontend:
+    # [수정] 앞에 ID를 꼭 붙여야 함.
     image: mic006016/tripy-nginx:latest
     container_name: frontend
     build:
@@ -15,7 +16,8 @@ services:
       - tripyserver
 
   backend:
-    image: tripy-node
+    # [수정] 앞에 ID를 꼭 붙여야 함.
+    image: mic006016/tripy-node:latest
     container_name: backend
     build:
       context: ./backend
