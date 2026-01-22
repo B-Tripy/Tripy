@@ -59,6 +59,7 @@ redisClient.connect().catch(console.error)
 // 3. CORS 설정 (Nginx 포트 추가)
 const allowedOrigins = [
   process.env.VITE,
+  "http://3.25.11.158",
   process.env.NGINX,
   process.env.EXPO,
   "http://localhost:5173",
@@ -67,9 +68,19 @@ const allowedOrigins = [
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
+    methods: ["GET", "POST"], // [추가 권장] 허용 메소드 명시
     credentials: true,
   },
 })
+
+// ▼▼▼ [디버깅용 추가] 연결 에러 로그 찍기 ▼▼▼
+io.engine.on("connection_error", (err) => {
+  console.log("❌ 소켓 연결 에러 발생!")
+  console.log("코드:", err.code) // 예: 0(전송 에러), 1(세션 에러), 2(핸드셰이크 에러), 3(Bad Request)
+  console.log("메시지:", err.message) // 예: "websocket error", "transport reject"
+  console.log("컨텍스트:", err.context) // 에러 발생 상황
+})
+// ▲▲▲ 여기까지 ▲▲▲
 
 app.use(
   cors({
@@ -108,7 +119,10 @@ const sessionMiddleware = session({
 
 // 필수 미들웨어들
 app.use(express.static(path.join(__dirname, "public")))
-app.use("/uploads", express.static(path.join(__dirname, "uploads")))
+// [수정 후] - 프로젝트 실행 루트(root) 기준으로 uploads 폴더를 찾음 (더 안전함)
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")))
+// 혹시 /img 경로로도 접근한다면 같이 수정
+app.use("/img", express.static(path.join(process.cwd(), "uploads")))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser(process.env.COOKIE_SECRET))

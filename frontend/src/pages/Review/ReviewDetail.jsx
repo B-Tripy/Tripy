@@ -4,6 +4,7 @@ import axios from "axios"
 import Loading from "../../components/Loading"
 import styles from "./ReviewDetail.module.scss"
 
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://3.25.11.158:5000"
 const API_URL = import.meta.env.VITE_API_URL || "/api"
 const instance = axios.create({ withCredentials: true })
 
@@ -134,11 +135,24 @@ function ReviewDetail() {
         <section className={styles.editorWrapper}>
           <div className={styles.imageList}>
             {post.images?.map((img, index) => {
-              const imageUrl = img.url
-                ? img.url.startsWith("http")
-                  ? img.url
-                  : `${API_URL}/${img.url.replace(/\\/g, "/")}`
-                : ""
+              // 1. URL이 http로 시작하면 그대로 사용
+              // 2. 아니면 서버 주소 + DB 저장 경로 결합
+              // 3. ★핵심★ 한글 파일명이 깨지지 않도록 encodeURI 사용
+              // 4. replace(/\\/g, "/")는 윈도우 역슬래시(\)를 슬래시(/)로 바꿔줌
+
+              let imageUrl = ""
+              if (img.url) {
+                if (img.url.startsWith("http")) {
+                  imageUrl = img.url
+                } else {
+                  // DB에 'uploads/파일명'으로 저장되어 있으므로
+                  // SERVER_URL + "/" + img.url 형태가 되어야 함
+                  // 예: http://3.25.11.158 + / + uploads/파일명
+                  const cleanUrl = img.url.replace(/\\/g, "/")
+                  imageUrl = `${SERVER_URL}/${encodeURI(cleanUrl)}`
+                }
+              }
+
               const isMyPost = !img.authorId || img.authorId === currentUserId
 
               return (

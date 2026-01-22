@@ -1,4 +1,4 @@
-"use strict";
+"use strict"
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -60,13 +60,13 @@ module.exports = {
         // updatedAt은 모델에서 false로 설정했으므로 제외
       },
       {
-        charset: "utf8",
-        collate: "utf8_general_ci",
+        charset: "utf8mb4",
+        collate: "utf8mb4_unicode_ci",
       },
-    );
+    )
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("photos");
+    await queryInterface.dropTable("photos")
   },
-};
+}

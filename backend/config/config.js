@@ -10,6 +10,17 @@ module.exports = {
     port: process.env.DB_PORT,
     dialect: "mysql",
     logging: true,
+    timezone: "+09:00",
+    dialectOptions: {
+      charset: "utf8mb4",
+      dateStrings: true,
+      typeCast: true,
+    },
+    define: {
+      charset: "utf8mb4",
+      collate: "utf8mb4_unicode_ci",
+      timestamps: true,
+    },
   },
   test: {
     username: process.env.DB_USER,
@@ -26,5 +37,16 @@ module.exports = {
     port: process.env.DB_PORT,
     dialect: "mysql",
     logging: false,
+    timezone: "+09:00",
+    dialectOptions: {
+      charset: "utf8mb4",
+      dateStrings: true,
+      typeCast: true,
+    },
+    define: {
+      charset: "utf8mb4",
+      collate: "utf8mb4_unicode_ci",
+      timestamps: true,
+    },
   },
 }
