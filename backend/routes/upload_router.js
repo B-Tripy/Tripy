@@ -10,6 +10,7 @@ const path = require("path");
 // =========================================================
 router.post("/", upload.single("file"), async (req, res) => {
   try {
+    const { tripId } = req.body;
     // 1. 로그인 여부 확인 (Passport가 제공하는 함수)
     if (!req.isAuthenticated())
       return res.status(401).json({ error: "로그인이 필요합니다." });
@@ -33,7 +34,11 @@ router.post("/", upload.single("file"), async (req, res) => {
     // req.file 정보를 압축본으로 교체
     req.file.path = outputPath;
     req.file.filename = path.basename(outputPath);
-    const result = await albumService.uploadProcess(req.user.id, req.file);
+    const result = await albumService.uploadProcess(
+      req.user.id,
+      tripId,
+      req.file,
+    );
     res.status(200).json(result);
   } catch (err) {
     console.error(err);
