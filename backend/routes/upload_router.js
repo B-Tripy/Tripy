@@ -19,27 +19,25 @@ router.post("/", upload.single("file"), async (req, res) => {
     }
     // 원본 파일 경로
     const inputPath = req.file.path
-    // 리사이즈된 파일 저장 경로
-    // const outputPath = path.join(
-    //   "uploads",
-    //   Date.now() + "-" + req.file.originalname,
-    // );
-    // sharp으로 리사이즈 (예: 가로 1024px, 세로는 비율 유지)
-    // await sharp(inputPath)
-    //   .resize({ width: 1024 })
-    //   .jpeg({ quality: 70 })
-    //   .toFile(outputPath);
-    // console.log("업로드 및 리사이즈 성공");
-    // 원본 삭제 (원본을 남기고 싶으면 이 줄 제거)
-    console.log("inputPath", inputPath)
-    // fs.unlinkSync(inputPath);
+    const outputPath = path.join(
+      "uploads",
+      Date.now() + "-" + req.file.originalname,
+    )
+    // sharp으로 리사이즈 및 압축
+    await sharp(inputPath)
+      .resize({ width: 1024 }) // 가로 1024px, 세로는 비율 유지
+      .jpeg({ quality: 70 }) // JPEG 품질 70%
+      .toFile(outputPath)
+    // 원본 삭제 → 압축본만 남김
+    fs.unlinkSync(inputPath)
+    // req.file 정보를 압축본으로 교체
+    req.file.path = outputPath
+    req.file.filename = path.basename(outputPath)
     const result = await albumService.uploadProcess(req.user.id, req.file)
-    console.log("result", result)
     res.status(200).json(result)
   } catch (err) {
     console.error(err)
-    // 에러 발생 시 임시 파일 정리
-    if (req.file && require("fs").existsSync(req.file.path)) {
+    if (req.file && fs.existsSync(req.file.path)) {
       fs.unlink(req.file.path, () => {})
     }
     res.status(500).json({ error: "서버 내부 에러" })
