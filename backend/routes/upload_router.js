@@ -17,6 +17,7 @@ router.post("/", upload.single("file"), async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: "파일 없음" })
     }
+    const { postId } = req.body
     // 원본 파일 경로
     const inputPath = req.file.path
     const outputPath = path.join(
@@ -33,7 +34,11 @@ router.post("/", upload.single("file"), async (req, res) => {
     // req.file 정보를 압축본으로 교체
     req.file.path = outputPath
     req.file.filename = path.basename(outputPath)
-    const result = await albumService.uploadProcess(req.user.id, req.file)
+    const result = await albumService.uploadProcess(
+      req.user.id,
+      postId,
+      req.file,
+    )
     res.status(200).json(result)
   } catch (err) {
     console.error(err)
