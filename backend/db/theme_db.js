@@ -16,7 +16,7 @@ const pool = require("./db")
 async function getTripList(userId, year) {
   const sql_list = `SELECT A.id, A.title, A.description, DATE_FORMAT(A.createdAt, '%Y/%m/%d') AS createdAt 
                       FROM trips A INNER JOIN usertrip B 
-                        ON A.id = B.TripId 
+                        ON A.id = B.tripId 
                      WHERE B.userId = ?
                        AND A.createdAt LIKE '%${year}%'                       
                      ORDER BY A.createdAt DESC
@@ -39,7 +39,7 @@ async function getTripTrend(userId, year) {
                                     , DATE_FORMAT(A.createdAt, '%m') AS MM
                                     , 1 AS VAL
                                   FROM trips A INNER JOIN usertrip B 
-                                    ON A.id = B.TripId 
+                                    ON A.id = B.tripId 
                                   WHERE B.userId = ? 
                                     AND A.createdAt LIKE '%${year}%') X
                             GROUP BY X.yy, X.mm
@@ -67,7 +67,7 @@ async function getTripPreferences(userId, year) {
   const sql_preferences = `SELECT IF(A.themecode = 1,'자연관광',IF(A.themecode = 2,'역사문화',IF(A.themecode = 3, '엔터테인먼트','기타'))) name
                                 , COUNT(A.themecode) AS value   
                               FROM themes A INNER JOIN usertrip B 
-                                ON A.TripId = B.TripId 
+                                ON A.tripId = B.tripId 
                             WHERE B.userId = ? 
                               AND A.createdAt LIKE '%${year}%'
                              GROUP BY A.themecode`
@@ -81,28 +81,28 @@ async function getTripSatisfaction(userId, year) {
                                  , CAST(SUM(if(t1.satisfaction IN ('L','X'), 1, 0)) AS UNSIGNED) AS dissatis
                               FROM emotionsTargets t1
                              WHERE t1.createdAt LIKE '%${year}%'
-                             GROUP BY t1.TripId, t1.target`
+                             GROUP BY t1.tripId, t1.target`
   const [rows] = await pool.query(sql_satisfaction, [userId], [year])
   return rows
 }
 
 // ML argumnets 추출
 async function getMLArguments(userId, year) {
-  const sql_ml_args = `SELECT IFNULL(M2.TripId,1) AS TripId, IFNULL(M2.PhotoId,2) AS PhotoId, M1.category, if(M2.PhotoId IS NULL, 0, 1)  AS val
+  const sql_ml_args = `SELECT IFNULL(M2.tripId,1) AS tripId, IFNULL(M2.photoId,2) AS photoId, M1.category, if(M2.photoId IS NULL, 0, 1)  AS val
                          FROM 
                          (
                             SELECT T3.id, T3.category 
                               FROM categories T3
                           ) M1 LEFT OUTER JOIN 
                           (
-                            SELECT T1.id, T1.TripId, T2.CategoryId, T2.PhotoId, T4.themecode
-                              FROM photos T1 INNER JOIN photoCategoryMaps T2 ON T1.id = T2.PhotoId
-                                             LEFT OUTER JOIN themes T4 ON T1.TripId = T4.TripId
-                            WHERE UserId = ?
+                            SELECT T1.id, T1.tripId, T2.categoryId, T2.photoId, T4.themecode
+                              FROM photos T1 INNER JOIN photoCategoryMaps T2 ON T1.id = T2.photoId
+                                             LEFT OUTER JOIN themes T4 ON T1.tripId = T4.tripId
+                            WHERE userId = ?
                               AND T1.createdAt LIKE '%${year}%' 
-                              AND (T1.TripId, T4.themecode) NOT IN (SELECT T5.TripId, T5.themecode FROM themes T5)
+                              AND (T1.tripId, T4.themecode) NOT IN (SELECT T5.tripId, T5.themecode FROM themes T5)
                           ) M2	 		 
-                          ON M1.id = M2.CategoryId`
+                          ON M1.id = M2.categoryId`
 
   const [rows] = await pool.query(sql_ml_args, [userId], [year])
   return rows
@@ -110,7 +110,7 @@ async function getMLArguments(userId, year) {
 
 // 2. 선호도 ML 저장
 async function saveTripPreferencesML(themecode, TripId) {
-  const sql_insert = `INSERT INTO themes (themecode, createdAt, TripId) 
+  const sql_insert = `INSERT INTO themes (themecode, createdAt, tripId) 
                                   VALUES (?, CURRENT_TIMESTAMP, ?)`
   const values = [themecode, TripId]
 
@@ -135,7 +135,7 @@ const saveEmotionTargets = async (data) => {
 
   const values = [satisfy, target, tripId, photoId]
 
-  const sql_emotionT = `INSERT INTO emotionsTargets (satisfaction, target, createdAt, TripId, PhotoId)
+  const sql_emotionT = `INSERT INTO emotionsTargets (satisfaction, target, createdAt, tripId, photoId)
 							                               VALUES (?,?,CURRENT_TIMESTAMP,?,?)`
   return new Promise((resolve, reject) => {
     pool.query(sql_emotionT, values, (error, results) => {
