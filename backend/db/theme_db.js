@@ -158,4 +158,3 @@ module.exports = {
   getMLArguments,
   saveTripPreferencesML,
   saveEmotionTargets,
-}
